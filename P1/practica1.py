@@ -337,8 +337,8 @@ def readData(file_x, file_y):
                 y.append(label1)
             x.append(np.array([1, datax[i][0], datax[i][1]]))
  			
-        x = np.array(x, np.float64)
-        y = np.array(y, np.float64)
+    x = np.array(x, np.float64)
+    y = np.array(y, np.float64)
  	
     return x, y
 
@@ -346,15 +346,33 @@ def readData(file_x, file_y):
 def Err(x,y,w):
     return 
 
+def sum_mini_batch():#summation of a mini-batch (x_nj*(h(x_n)-y_n))
+    summation = 0
+    return summation
+
 # Gradiente Descendente Estocastico
-def sgd(?):
-    #
-    return w
+# Need x (input data) and y (the labels (desired output))
+def sgd(x,y,eta,size_batch):
+    
+    w = np.zeros(3) #initialize w to 0
+    #shuffle the indexes
+    indices = np.random.permutation(len(x))
+    min_batch_n = 0 # indexe of mini-batch
+    
+    print(indices)
+    
+    while(not fin):# while it doesn't go through all items of the sample
+        #increase the limit of each mini-batch
+        max_iteration = size_batch+(min_batch_n*size_batch)
+        for i in indices[(min_batch_n*size_batch):max_iteration]:
+            w = w - (eta*)
+    
+    return w #it return the optimal w
 
 # Pseudoinversa	
-def pseudoinverse(?):
-    #
-    return w
+# def pseudoinverse(?):
+#     #
+#     return w
 
 
 # Lectura de los datos de entrenamiento
@@ -362,28 +380,38 @@ x, y = readData('datos/X_train.npy', 'datos/y_train.npy')
 # Lectura de los datos para el test
 x_test, y_test = readData('datos/X_test.npy', 'datos/y_test.npy')
 
+print(len(x))
+print("-----")
+print(len(y))
+print("-----")
+print(len(x_test))
+print("-----")
+print(len(y_test))
 
-w = sgd(?)
-print ('Bondad del resultado para grad. descendente estocastico:\n')
-print ("Ein: ", Err(x,y,w))
-print ("Eout: ", Err(x_test, y_test, w))
+eta = 0.01 #learning rate
+size_batch=32 #it is the size for each mini-batch
+
+w = sgd(x,y,eta,size_batch)
+# print ('Bondad del resultado para grad. descendente estocastico:\n')
+# print ("Ein: ", Err(x,y,w))
+# print ("Eout: ", Err(x_test, y_test, w))
 
 input("\n--- Pulsar tecla para continuar ---\n")
 
 #Seguir haciendo el ejercicio...
 
-print('Ejercicio 2\n')
-# Simula datos en un cuadrado [-size,size]x[-size,size]
-def simula_unif(N, d, size):
- 	return np.random.uniform(-size,size,(N,d))
+# print('Ejercicio 2\n')
+# # Simula datos en un cuadrado [-size,size]x[-size,size]
+# def simula_unif(N, d, size):
+#  	return np.random.uniform(-size,size,(N,d))
 
-def sign(x):
- 	if x >= 0:
-		return 1
- 	return -1
+# def sign(x):
+#  	if x >= 0:
+# 		return 1
+#  	return -1
 
-def f(x1, x2):
- 	return sign(?) 
+# def f(x1, x2):
+#  	return sign(?) 
 
 #Seguir haciendo el ejercicio...
 
