@@ -12,4 +12,4 @@
 
 <p>The Gadient Descent algorithm is a general iterative optimization technique, where reach a local optimum.</p>
 
-<img src="http://github.com/RubenGiC/Practices-about-Maching-learning/blob/main/descarga.gif?raw=true" alt="Gradient Descent">
+<img src="http://github.com/RubenGiC/Practices-about-Maching-learning/blob/main/P1/Images/descarga.gif?raw=true" alt="Gradient Descent">
