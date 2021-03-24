@@ -7,6 +7,7 @@
   * Iterative Search for Optimal
     
     <img src="http://github.com/RubenGiC/Practices-about-Maching-learning/blob/main/P1/Images/Tex2Img_1616618057.jpg?raw=true" alt="f(x,y)">
+    </br>
     <img src="http://github.com/RubenGiC/Practices-about-Maching-learning/blob/main/P1/Images/Tex2Img_1616618271.jpg?raw=true" alt="Tex2Img_1616618271.jpg">
 
 ## Gradient Descent Implementation 
