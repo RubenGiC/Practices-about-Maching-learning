@@ -359,12 +359,26 @@ def sgd(x,y,eta,size_batch):
     indices = np.random.permutation(len(x))
     min_batch_n = 0 # indexe of mini-batch
     
-    print(indices)
+    fin = False
     
     while(not fin):# while it doesn't go through all items of the sample
         #increase the limit of each mini-batch
         max_iteration = size_batch+(min_batch_n*size_batch)
-        for i in indices[(min_batch_n*size_batch):max_iteration]:
+        
+        #if the mini-batch limit is less than the size of x
+        if(max_iteration<len(x)):#create the mini-batch
+            mini_batch = x[indices[(min_batch_n*size_batch):_max_iteration]]
+        #if the mini-batch limit is greater than the size of x and the first index
+        #is less than the size of x
+        elif(max_iteration>=len(x) and (min_batch_n*size_batch)<len(x)):
+            #create the mini-batch from the first index to (the size of x) -1
+            mini_batch = x[indices[(min_batch_n*size_batch):len(x)]]
+        else:#otherwise it ends
+            fin = True
+        
+        #if it doesn't end
+        if(not fin):
+            #calculate the new w
             w = w - (eta*)
     
     return w #it return the optimal w
