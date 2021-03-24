@@ -4,7 +4,7 @@
 
 **I have learned Linear Regression and Iterative Search for Optimal through several samples**
 * Part 1
-  * Iterative Search for Optimal
+  * Iterative Search for Optimal with these functions
     
     <img src="http://github.com/RubenGiC/Practices-about-Maching-learning/blob/main/P1/Images/Tex2Img_1616618057.jpg?raw=true" alt="f(x,y)">
     </br>
