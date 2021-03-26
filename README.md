@@ -36,7 +36,8 @@
 ## Implementation Pseudo code
 
 ```c++ 
-//where w is the initial values, eta the learning rate, f the function and gradF is the gradient of the function
+//where w is the initial values, eta the learning rate, 
+//f the function and gradF is the gradient of the function
 GradientDescend(w, eta, maxIter, f, gradF){
   it = 0;// number of iterations run
   while(it < maxIter and f(w) change){
