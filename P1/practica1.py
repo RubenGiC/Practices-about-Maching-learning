@@ -309,7 +309,7 @@ np.random.seed(1)
 # ax3b1.legend()
 # ax3b1.set_title('Comparación de la evolución del Gradiente Descendiente en F(x,y)')
 
-input("\n--- Pulsar tecla para continuar ---\n")
+# input("\n--- Pulsar tecla para continuar ---\n")
 
 ###############################################################################
 ###############################################################################
@@ -365,21 +365,28 @@ def sgd(x,y,eta,size_batch):
         #increase the limit of each mini-batch
         max_iteration = size_batch+(min_batch_n*size_batch)
         
-        #if the mini-batch limit is less than the size of x
-        if(max_iteration<len(x)):#create the mini-batch
-            mini_batch = x[indices[(min_batch_n*size_batch):_max_iteration]]
+            
         #if the mini-batch limit is greater than the size of x and the first index
         #is less than the size of x
-        elif(max_iteration>=len(x) and (min_batch_n*size_batch)<len(x)):
+        if(max_iteration>=len(x) and (min_batch_n*size_batch)<len(x)):
             #create the mini-batch from the first index to (the size of x) -1
-            mini_batch = x[indices[(min_batch_n*size_batch):len(x)]]
-        else:#otherwise it ends
-            fin = True
+            max_iteration = len(x)
+        #else:#otherwise it ends
+        #    fin = True
+            
+        mini_batch = indices[(min_batch_n*size_batch):max_iteration]
+        mini_batch = indices[(min_batch_n*size_batch):max_iteration]
+        for i in mini_batch:
+            #w = w - eta * Xn * (h(Xn) - Yn), where n is the iteration of the mini-batch
+            w = w - eta*((w*x[i])-y[i])
+            print(w)
+            
+        fin = True
         
         #if it doesn't end
-        if(not fin):
+        #if(not fin):
             #calculate the new w
-            w = w - (eta*)
+         #   w = w - (eta*)
     
     return w #it return the optimal w
 
@@ -394,13 +401,13 @@ x, y = readData('datos/X_train.npy', 'datos/y_train.npy')
 # Lectura de los datos para el test
 x_test, y_test = readData('datos/X_test.npy', 'datos/y_test.npy')
 
-print(len(x))
-print("-----")
-print(len(y))
-print("-----")
-print(len(x_test))
-print("-----")
-print(len(y_test))
+# print(len(x))
+# print("-----")
+# print(len(y))
+# print("-----")
+# print(len(x_test))
+# print("-----")
+# print(len(y_test))
 
 eta = 0.01 #learning rate
 size_batch=32 #it is the size for each mini-batch
