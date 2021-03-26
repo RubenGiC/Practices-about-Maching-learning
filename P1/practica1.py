@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import imageio
 import os
 from sympy import *
+from time import time
 
 np.random.seed(1)
 
@@ -352,20 +353,26 @@ def sum_mini_batch():#summation of a mini-batch (x_nj*(h(x_n)-y_n))
 
 # Gradiente Descendente Estocastico
 # Need x (input data) and y (the labels (desired output))
-def sgd(x,y,eta,size_batch):
+def sgd(x,y,eta,size_batch, maxIter):
     
     w = np.zeros(3) #initialize w to 0
     #shuffle the indexes
     indices = np.random.permutation(len(x))
     min_batch_n = 0 # indexe of mini-batch
+    iterate=0
+    max_iteration = size_batch
     
     fin = False
     
-    while(not fin):# while it doesn't go through all items of the sample
-        #increase the limit of each mini-batch
-        max_iteration = size_batch+(min_batch_n*size_batch)
+    print("calculate... (aprox 30 seconds)")
+    
+    # while it doesn't go through all items of the sample and doesn't exceed the
+    #maximum number of iterations
+    while(not fin and iterate < maxIter):
         
-            
+        #save w old
+        w_old = w
+        
         #if the mini-batch limit is greater than the size of x and the first index
         #is less than the size of x
         if(max_iteration>=len(x) and (min_batch_n*size_batch)<len(x)):
@@ -374,19 +381,37 @@ def sgd(x,y,eta,size_batch):
         #else:#otherwise it ends
         #    fin = True
             
-        mini_batch = indices[(min_batch_n*size_batch):max_iteration]
-        mini_batch = indices[(min_batch_n*size_batch):max_iteration]
-        for i in mini_batch:
-            #w = w - eta * Xn * (h(Xn) - Yn), where n is the iteration of the mini-batch
-            w = w - eta*((w*x[i])-y[i])
-            print(w)
-            
-        fin = True
+        sum_total_batch = 0
         
-        #if it doesn't end
-        #if(not fin):
-            #calculate the new w
-         #   w = w - (eta*)
+        #create the mini-batch
+        mini_batch = indices[min_batch_n:max_iteration]
+        
+        #iterate the mini-batch
+        for i in mini_batch:
+            
+            #w = w - eta * sumatory(Xn * (h(Xn) - Yn)), where n is the iteration of the mini-batch
+            sum_total_batch += x[i]*(np.sum(w*x[i])-y[i])
+            #print(sum_total_batch)
+        
+        #update the w
+        w = w - (eta*(sum_total_batch*2/len(mini_batch)))
+        #print(w)
+            
+        #increase the limit of each mini-batch and minimum
+        max_iteration = max_iteration + size_batch
+        min_batch_n += size_batch
+        
+        
+        if(min_batch_n > len(x)):
+            min_batch_n = 0
+            max_iteration = size_batch
+            
+        
+        iterate = iterate + 1
+            
+        #if w is equal to w_old finish
+        if((w == w_old).all()):
+            fin = True
     
     return w #it return the optimal w
 
@@ -401,7 +426,7 @@ x, y = readData('datos/X_train.npy', 'datos/y_train.npy')
 # Lectura de los datos para el test
 x_test, y_test = readData('datos/X_test.npy', 'datos/y_test.npy')
 
-# print(len(x))
+print("size x: ",len(x))
 # print("-----")
 # print(len(y))
 # print("-----")
@@ -411,13 +436,28 @@ x_test, y_test = readData('datos/X_test.npy', 'datos/y_test.npy')
 
 eta = 0.01 #learning rate
 size_batch=32 #it is the size for each mini-batch
+maxIter = 50000
 
-w = sgd(x,y,eta,size_batch)
+start_time = time()
+w = sgd(x,y,eta,size_batch, maxIter)
+elapsed_time = time() - start_time
+print("Elapsed time: %0.10f seconds" %elapsed_time)
 # print ('Bondad del resultado para grad. descendente estocastico:\n')
 # print ("Ein: ", Err(x,y,w))
 # print ("Eout: ", Err(x_test, y_test, w))
 
 input("\n--- Pulsar tecla para continuar ---\n")
+
+#grafica de la evolución de cada punto inicial
+
+fig21 = plt.figure()
+ax21 = fig21.add_subplot()
+ax21.scatter(x[:,1],x[:,2],c=y)
+ax21.plot([0,1], [-w[0]/w[2], -w[0]/w[2]-w[1]/w[2]])
+
+ax21.set_xlabel('Intensity')
+ax21.set_ylabel('Simmetry')
+ax21.set_title('SGD')
 
 #Seguir haciendo el ejercicio...
 
