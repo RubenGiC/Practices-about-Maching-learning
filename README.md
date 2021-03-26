@@ -21,6 +21,33 @@
 
 <img src="http://github.com/RubenGiC/Practices-about-Maching-learning/blob/main/P1/Images/learning%20rate.png?raw=true" alt="learning rate.png">
 
+<p>Before explaining the algorithm of mathematically, you need some values, apart from the learning rate, an initial value W0, which will be our stating point and the function that we want minimize.</p>
+
+<p>The general equation is:</p>
+
+<img src="http://github.com/RubenGiC/Practices-about-Maching-learning/blob/main/P1/Images/gd.png?raw=true" alt="gd.png">
+
+<p>where Ein/Wj is the gradient of the differemtiable function.</p>
+
+<p>this action is carried out simultaneously for all values of <b>j in N</b>, where <b>N</b> is a set of integer values.</p>
+
+<p>And it's repeated applying the same calculation, until the cost of function can't be minimized any more or when it exceeds an X number of iterations, since it could be the case that it doesn't find the minimum cost function.</p>
+
+## Implementation Pseudo code
+
+```c++ 
+//where w is the initial values, eta the learning rate, 
+//f the function and gradF is the gradient of the function
+GradientDescend(w, eta, maxIter, f, gradF){
+  it = 0;// number of iterations run
+  while(it < maxIter and f(w) change){
+    w = w - (eta * gradF(w));
+    ++it;
+  }
+  return w, it;
+}
+```
+
 # Bibliography
 * https://www.jeremyjordan.me/nn-learning-rate/
 * https://sigmoidal.ai/metodo-de-ensemble-vantagens-da-combinacao-de-diferentes-estimadores/
