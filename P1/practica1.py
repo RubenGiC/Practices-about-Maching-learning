@@ -347,10 +347,6 @@ def readData(file_x, file_y):
 def Err(x,y,w):
     return 
 
-def sum_mini_batch():#summation of a mini-batch (x_nj*(h(x_n)-y_n))
-    summation = 0
-    return summation
-
 # Gradiente Descendente Estocastico
 # Need x (input data) and y (the labels (desired output))
 def sgd(x,y,eta,size_batch, maxIter, w):
@@ -417,12 +413,9 @@ def sgd(x,y,eta,size_batch, maxIter, w):
 
 # Pseudoinversa	
 def pseudoinverse(x,y):
-    # create the matrix transpose    
-    x_trans = np.transpose(x)
-    #create the pseudo-inverse
-    x_pse_inv = (x*x_trans)
-    w=0
-    return w
+    #compute the pseudo-inverse with this function (np.linalg.pinv) and multiply 
+    #it by the label
+    return np.matmul(np.linalg.pinv(x), y)
 
 
 # Lectura de los datos de entrenamiento
@@ -443,19 +436,30 @@ size_batch=32 #it is the size for each mini-batch
 maxIter = 50000
 w = np.zeros(3) #initialize w to 0
 
+# start_time = time()
+# w = sgd(x,y,eta,size_batch, maxIter, w)
+# elapsed_time = time() - start_time
+# print("Elapsed time: %0.10f seconds" %elapsed_time)
+
+
+# start_time = time()
+# w1 = sgd(x_test,y_test,eta,size_batch, maxIter, w)
+# elapsed_time = time() - start_time
+# print("Elapsed time: %0.10f seconds" %elapsed_time)
+
 start_time = time()
-w = sgd(x,y,eta,size_batch, maxIter, w)
+w2 = pseudoinverse(x,y)
 elapsed_time = time() - start_time
 print("Elapsed time: %0.10f seconds" %elapsed_time)
 
-
 start_time = time()
-w1 = sgd(x_test,y_test,eta,size_batch, maxIter, w)
+w3 = pseudoinverse(x_test,y_test)
 elapsed_time = time() - start_time
 print("Elapsed time: %0.10f seconds" %elapsed_time)
 
+print(w2)
 
-#w2 = pseudoinverse(x,y)
+print(-w2[0]/w2[2], ", ", -w2[0]/w2[2]-w2[1]/w2[2])
 
 # print ('Bondad del resultado para grad. descendente estocastico:\n')
 # print ("Ein: ", Err(x,y,w))
@@ -465,23 +469,44 @@ input("\n--- Pulsar tecla para continuar ---\n")
 
 #grafica SGD 2 muestras
 
+# fig21 = plt.figure()
+# ax21 = fig21.add_subplot()
+# ax21.scatter(x[:,1],x[:,2],c=y)
+# ax21.plot([0,1], [-w[0]/w[2], -w[0]/w[2]-w[1]/w[2]])
+
+# ax21.set_xlabel('Intensity')
+# ax21.set_ylabel('Simmetry')
+# ax21.set_title('SGD 1')
+
+# fig212 = plt.figure()
+# ax212 = fig212.add_subplot()
+# ax212.scatter(x_test[:,1],x_test[:,2],c=y_test)
+# ax212.plot([0,1], [-w1[0]/w1[2], -w1[0]/w1[2]-w1[1]/w1[2]])
+
+# ax212.set_xlabel('Intensity')
+# ax212.set_ylabel('Simmetry')
+# ax212.set_title('SGD 2')
+
+#grafica pseudo-inverse 2 muestras
+
 fig21 = plt.figure()
 ax21 = fig21.add_subplot()
 ax21.scatter(x[:,1],x[:,2],c=y)
-ax21.plot([0,1], [-w[0]/w[2], -w[0]/w[2]-w[1]/w[2]])
+ax21.plot([0,1], [-w2[0]/w2[2], -w2[0]/w2[2]-w2[1]/w2[2]])
 
 ax21.set_xlabel('Intensity')
 ax21.set_ylabel('Simmetry')
-ax21.set_title('SGD 1')
+ax21.set_title('Pseudo-Inverse 1')
 
 fig212 = plt.figure()
 ax212 = fig212.add_subplot()
 ax212.scatter(x_test[:,1],x_test[:,2],c=y_test)
-ax212.plot([0,1], [-w1[0]/w1[2], -w1[0]/w1[2]-w1[1]/w1[2]])
+ax212.plot([0,1], [-w3[0]/w3[2], -w3[0]/w3[2]-w3[1]/w3[2]])
 
 ax212.set_xlabel('Intensity')
 ax212.set_ylabel('Simmetry')
-ax212.set_title('SGD 2')
+ax212.set_title('Pseudo-Inverse 2')
+
 
 #Seguir haciendo el ejercicio...
 
