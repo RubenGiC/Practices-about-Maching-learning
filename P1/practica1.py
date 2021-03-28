@@ -353,14 +353,15 @@ def sum_mini_batch():#summation of a mini-batch (x_nj*(h(x_n)-y_n))
 
 # Gradiente Descendente Estocastico
 # Need x (input data) and y (the labels (desired output))
-def sgd(x,y,eta,size_batch, maxIter):
+def sgd(x,y,eta,size_batch, maxIter, w):
     
-    w = np.zeros(3) #initialize w to 0
+    
     #shuffle the indexes
     indices = np.random.permutation(len(x))
     min_batch_n = 0 # indexe of mini-batch
     iterate=0
-    max_iteration = size_batch
+    #maximum number of iterate for each mini-batch
+    max_iteration_batch = size_batch
     
     fin = False
     
@@ -375,38 +376,37 @@ def sgd(x,y,eta,size_batch, maxIter):
         
         #if the mini-batch limit is greater than the size of x and the first index
         #is less than the size of x
-        if(max_iteration>=len(x) and (min_batch_n*size_batch)<len(x)):
+        if(max_iteration_batch>=len(x) and (min_batch_n*size_batch)<len(x)):
             #create the mini-batch from the first index to (the size of x) -1
-            max_iteration = len(x)
-        #else:#otherwise it ends
-        #    fin = True
+            max_iteration_batch = len(x)
             
-        sum_total_batch = 0
+        sum_total_batch = 0#reset sumatory
         
         #create the mini-batch
-        mini_batch = indices[min_batch_n:max_iteration]
+        mini_batch = indices[min_batch_n:max_iteration_batch]
         
         #iterate the mini-batch
         for i in mini_batch:
             
-            #w = w - eta * sumatory(Xn * (h(Xn) - Yn)), where n is the iteration of the mini-batch
+            #sumatory(Xn * (h(Xn) - Yn)), where n is the iteration of the mini-batch
             sum_total_batch += x[i]*(np.sum(w*x[i])-y[i])
             #print(sum_total_batch)
         
-        #update the w
-        w = w - (eta*(sum_total_batch*2/len(mini_batch)))
+        #update the w = w - eta * sumatory
+        w = w - (eta*(sum_total_batch*2/size_batch))
         #print(w)
             
         #increase the limit of each mini-batch and minimum
-        max_iteration = max_iteration + size_batch
+        max_iteration_batch = max_iteration_batch + size_batch
         min_batch_n += size_batch
         
-        
+        #if min_batch_n exceeds the minimum value above the sample size
         if(min_batch_n > len(x)):
+            # reset indexs
             min_batch_n = 0
-            max_iteration = size_batch
+            max_iteration_batch = size_batch
             
-        
+        #increment in each iteration
         iterate = iterate + 1
             
         #if w is equal to w_old finish
@@ -416,9 +416,13 @@ def sgd(x,y,eta,size_batch, maxIter):
     return w #it return the optimal w
 
 # Pseudoinversa	
-# def pseudoinverse(?):
-#     #
-#     return w
+def pseudoinverse(x,y):
+    # create the matrix transpose    
+    x_trans = np.transpose(x)
+    #create the pseudo-inverse
+    x_pse_inv = (x*x_trans)
+    w=0
+    return w
 
 
 # Lectura de los datos de entrenamiento
@@ -437,18 +441,29 @@ print("size x: ",len(x))
 eta = 0.01 #learning rate
 size_batch=32 #it is the size for each mini-batch
 maxIter = 50000
+w = np.zeros(3) #initialize w to 0
 
 start_time = time()
-w = sgd(x,y,eta,size_batch, maxIter)
+w = sgd(x,y,eta,size_batch, maxIter, w)
 elapsed_time = time() - start_time
 print("Elapsed time: %0.10f seconds" %elapsed_time)
+
+
+start_time = time()
+w1 = sgd(x_test,y_test,eta,size_batch, maxIter, w)
+elapsed_time = time() - start_time
+print("Elapsed time: %0.10f seconds" %elapsed_time)
+
+
+#w2 = pseudoinverse(x,y)
+
 # print ('Bondad del resultado para grad. descendente estocastico:\n')
 # print ("Ein: ", Err(x,y,w))
 # print ("Eout: ", Err(x_test, y_test, w))
 
 input("\n--- Pulsar tecla para continuar ---\n")
 
-#grafica de la evolución de cada punto inicial
+#grafica SGD 2 muestras
 
 fig21 = plt.figure()
 ax21 = fig21.add_subplot()
@@ -457,7 +472,16 @@ ax21.plot([0,1], [-w[0]/w[2], -w[0]/w[2]-w[1]/w[2]])
 
 ax21.set_xlabel('Intensity')
 ax21.set_ylabel('Simmetry')
-ax21.set_title('SGD')
+ax21.set_title('SGD 1')
+
+fig212 = plt.figure()
+ax212 = fig212.add_subplot()
+ax212.scatter(x_test[:,1],x_test[:,2],c=y_test)
+ax212.plot([0,1], [-w1[0]/w1[2], -w1[0]/w1[2]-w1[1]/w1[2]])
+
+ax212.set_xlabel('Intensity')
+ax212.set_ylabel('Simmetry')
+ax212.set_title('SGD 2')
 
 #Seguir haciendo el ejercicio...
 
