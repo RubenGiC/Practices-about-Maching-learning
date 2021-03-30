@@ -343,14 +343,14 @@ def readData(file_x, file_y):
  	
     return x, y
 
-# Funcion para calcular el error
+# Funcion para calcular el error cuadratico medio
 def Err(x,y,w):
-    #calculates the mean value
-    mean = np.sum(y/len(y))
     
-    # mse = 1/n * sumatory((yn-ŷ)²)
-    #return ((1/len(x))*np.sum(np.power(x-mean,2)))
-    return np.square(np.subtract(x,w)).mean()
+    #(yn - ŷ)²
+    result = np.power(np.swapaxes(x*w,0,1) - y, 2)
+    
+    #result/n
+    return result.mean()
 
 # Gradiente Descendente Estocastico
 # Need x (input data) and y (the labels (desired output))
@@ -428,18 +428,11 @@ x, y = readData('datos/X_train.npy', 'datos/y_train.npy')
 # Lectura de los datos para el test
 x_test, y_test = readData('datos/X_test.npy', 'datos/y_test.npy')
 
-# print("size x: ",len(x))
-# print("-----")
-# print(len(y))
-# print("-----")
-# print(len(x_test))
-# print("-----")
-# print(len(y_test))
-
 eta = 0.01 #learning rate
 size_batch=32 #it is the size for each mini-batch
 maxIter = 50000
 w = np.zeros(3) #initialize w to 0
+
 
 start_time = time()
 w = sgd(x,y,eta,size_batch, maxIter, w)
@@ -465,25 +458,25 @@ input("\n--- Pulsar tecla para continuar ---\n")
 
 #grafica SGD
 
-# fig21 = plt.figure()
-# ax21 = fig21.add_subplot()
-# ax21.scatter(x[:,1],x[:,2],c=y)
-# ax21.plot([0,1], [-w[0]/w[2], -w[0]/w[2]-w[1]/w[2]])
+fig21 = plt.figure()
+ax21 = fig21.add_subplot()
+ax21.scatter(x[:,1],x[:,2],c=y)
+ax21.plot([0,1], [-w[0]/w[2], -w[0]/w[2]-w[1]/w[2]])
 
-# ax21.set_xlabel('Intensity')
-# ax21.set_ylabel('Simmetry')
-# ax21.set_title('SGD 1')
+ax21.set_xlabel('Intensity')
+ax21.set_ylabel('Simmetry')
+ax21.set_title('SGD')
 
 #grafica pseudo-inverse
 
-# fig212 = plt.figure()
-# ax212 = fig212.add_subplot()
-# ax212.scatter(x_test[:,1],x_test[:,2],c=y_test)
-# ax212.plot([0,1], [-w2[0]/w2[2], -w2[0]/w2[2]-w2[1]/w2[2]])
+fig212 = plt.figure()
+ax212 = fig212.add_subplot()
+ax212.scatter(x_test[:,1],x_test[:,2],c=y_test)
+ax212.plot([0,1], [-w2[0]/w2[2], -w2[0]/w2[2]-w2[1]/w2[2]])
 
-# ax212.set_xlabel('Intensity')
-# ax212.set_ylabel('Simmetry')
-# ax212.set_title('Pseudo-Inverse')
+ax212.set_xlabel('Intensity')
+ax212.set_ylabel('Simmetry')
+ax212.set_title('Pseudo-Inverse')
 
 
 #Seguir haciendo el ejercicio...
