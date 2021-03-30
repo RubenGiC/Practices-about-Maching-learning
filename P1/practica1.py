@@ -347,10 +347,28 @@ def readData(file_x, file_y):
 def Err(x,y,w):
     
     #(yn - ŷ)²
-    result = np.power((x.dot(w) - y), 2)
+    result = np.float64(np.power((x.dot(w) - y), 2))
+    
+    result.dtype = np.float64
     
     #result/n
     return result.mean()
+
+# mini-batch gradient
+def gradient(x,y,w, mini_batch):
+    
+    sum_total_batch = 0
+    
+    #iterate the mini-batch
+    for i in mini_batch:
+        
+        #sumatory(Xn * (h(Xn) - Yn)), where n is the iteration of the mini-batch
+        sum_total_batch += x[i]*(np.sum(w*x[i])-y[i])
+        #print(sum_total_batch)
+    
+    #update the w = w - eta * sumatory
+    return (sum_total_batch*2/size_batch)
+        
 
 # Gradiente Descendente Estocastico
 # Need x (input data) and y (the labels (desired output))
@@ -366,7 +384,7 @@ def sgd(x,y,eta,size_batch, maxIter, w):
     
     fin = False
     
-    print("calculate... (aprox 30 seconds)")
+    print("calculate... (aprox 15 seconds)")
     
     # while it doesn't go through all items of the sample and doesn't exceed the
     #maximum number of iterations
@@ -380,21 +398,12 @@ def sgd(x,y,eta,size_batch, maxIter, w):
         if(max_iteration_batch>=len(x) and (min_batch_n*size_batch)<len(x)):
             #create the mini-batch from the first index to (the size of x) -1
             max_iteration_batch = len(x)
-            
-        sum_total_batch = 0#reset sumatory
         
         #create the mini-batch
         mini_batch = indices[min_batch_n:max_iteration_batch]
         
-        #iterate the mini-batch
-        for i in mini_batch:
-            
-            #sumatory(Xn * (h(Xn) - Yn)), where n is the iteration of the mini-batch
-            sum_total_batch += x[i]*(np.sum(w*x[i])-y[i])
-            #print(sum_total_batch)
-        
-        #update the w = w - eta * sumatory
-        w = w - (eta*(sum_total_batch*2/size_batch))
+        #update the w = w - eta * (derivate of square error)
+        w = w - (eta*gradient(x,y,w,mini_batch))
         #print(w)
             
         #increase the limit of each mini-batch and minimum
@@ -420,10 +429,10 @@ def sgd(x,y,eta,size_batch, maxIter, w):
 def pseudoinverse(x,y):
     #compute the pseudo-inverse with this function (np.linalg.inv)
     #X' = (X^T*X)^-1 * X^T
-    x_ps_inv = np.dot(np.linalg.inv(np.dot(x.T, x)), x.T)
+    x_ps_inv = np.float64(np.dot(np.linalg.inv(np.dot(x.T, x)), x.T))
     
     #w = X' * y
-    return x_ps_inv.dot(y)
+    return np.float64(x_ps_inv.dot(y))
 
 
 # Lectura de los datos de entrenamiento
@@ -434,7 +443,7 @@ x_test, y_test = readData('datos/X_test.npy', 'datos/y_test.npy')
 eta = 0.01 #learning rate
 size_batch=32 #it is the size for each mini-batch
 maxIter = 50000
-w = np.zeros(3) #initialize w to 0
+w = np.zeros(3, dtype=np.float64) #initialize w to 0
 
 
 start_time = time()
@@ -445,6 +454,7 @@ print("SGD Elapsed time: %0.10f seconds" %elapsed_time)
 
 start_time = time()
 w2 = pseudoinverse(x,y)
+w2.dtype=np.float64
 elapsed_time = time() - start_time
 print("Psud.-Inv Elapsed time: %0.10f seconds" %elapsed_time)
 
@@ -456,8 +466,8 @@ print ("Eout: ", Err(x_test, y_test, w))
 
 print ('\nBondad del resultado para Pseudo-Inverse:\n')
 print ("w: ", w2)
-print ("Ein: ", Err(x,y,w2))
-print ("Eout: ", Err(x_test, y_test, w2))
+print ("Ein: ", np.float64(Err(x,y,w2)))
+print ("Eout: ", np.float64(Err(x_test, y_test, w2)))
 
 input("\n--- Pulsar tecla para continuar ---\n")
 
