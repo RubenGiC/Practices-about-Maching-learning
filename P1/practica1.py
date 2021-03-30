@@ -347,7 +347,7 @@ def readData(file_x, file_y):
 def Err(x,y,w):
     
     #(yn - ŷ)²
-    result = np.power(np.swapaxes(x*w,0,1) - y, 2)
+    result = np.power((x.dot(w) - y), 2)
     
     #result/n
     return result.mean()
@@ -418,9 +418,12 @@ def sgd(x,y,eta,size_batch, maxIter, w):
 
 # Pseudoinversa	
 def pseudoinverse(x,y):
-    #compute the pseudo-inverse with this function (np.linalg.pinv) and multiply 
-    #it by the label
-    return np.matmul(np.linalg.pinv(x), y)
+    #compute the pseudo-inverse with this function (np.linalg.inv)
+    #X' = (X^T*X)^-1 * X^T
+    x_ps_inv = np.dot(np.linalg.inv(np.dot(x.T, x)), x.T)
+    
+    #w = X' * y
+    return x_ps_inv.dot(y)
 
 
 # Lectura de los datos de entrenamiento
@@ -447,10 +450,12 @@ print("Psud.-Inv Elapsed time: %0.10f seconds" %elapsed_time)
 
 
 print ('\nBondad del resultado para grad. descendente estocastico:\n')
+print ("w: ", w)
 print ("Ein: ", Err(x,y,w))
 print ("Eout: ", Err(x_test, y_test, w))
 
 print ('\nBondad del resultado para Pseudo-Inverse:\n')
+print ("w: ", w2)
 print ("Ein: ", Err(x,y,w2))
 print ("Eout: ", Err(x_test, y_test, w2))
 
@@ -458,25 +463,25 @@ input("\n--- Pulsar tecla para continuar ---\n")
 
 #grafica SGD
 
-fig21 = plt.figure()
-ax21 = fig21.add_subplot()
-ax21.scatter(x[:,1],x[:,2],c=y)
-ax21.plot([0,1], [-w[0]/w[2], -w[0]/w[2]-w[1]/w[2]])
+# fig21 = plt.figure()
+# ax21 = fig21.add_subplot()
+# ax21.scatter(x[:,1],x[:,2],c=y)
+# ax21.plot([0,1], [-w[0]/w[2], -w[0]/w[2]-w[1]/w[2]])
 
-ax21.set_xlabel('Intensity')
-ax21.set_ylabel('Simmetry')
-ax21.set_title('SGD')
+# ax21.set_xlabel('Intensity')
+# ax21.set_ylabel('Simmetry')
+# ax21.set_title('SGD')
 
-#grafica pseudo-inverse
+# #grafica pseudo-inverse
 
-fig212 = plt.figure()
-ax212 = fig212.add_subplot()
-ax212.scatter(x_test[:,1],x_test[:,2],c=y_test)
-ax212.plot([0,1], [-w2[0]/w2[2], -w2[0]/w2[2]-w2[1]/w2[2]])
+# fig212 = plt.figure()
+# ax212 = fig212.add_subplot()
+# ax212.scatter(x[:,1],x[:,2],c=y)
+# ax212.plot([0,1], [-w2[0]/w2[2], -w2[0]/w2[2]-w2[1]/w2[2]])
 
-ax212.set_xlabel('Intensity')
-ax212.set_ylabel('Simmetry')
-ax212.set_title('Pseudo-Inverse')
+# ax212.set_xlabel('Intensity')
+# ax212.set_ylabel('Simmetry')
+# ax212.set_title('Pseudo-Inverse')
 
 
 #Seguir haciendo el ejercicio...
