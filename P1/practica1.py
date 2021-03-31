@@ -501,6 +501,7 @@ def sign(x):
 #tags with 10% noise
 def noise(tags,percent):
     
+    #copy the tags
     tags_noise = tags.copy()
     #number of points with noise 10%
     n_noise = int(tags_noise.size*percent)
@@ -516,8 +517,8 @@ def noise(tags,percent):
 
 #function
 def F2(x1, x2):
-    result = np.power(x1-0.2,2)
-    result = result + np.power(x2,2) - 0.6
+    #f = (x1 -0.2)²+x2²-0.6
+    result = np.power(x1-0.2,2) + np.power(x2,2) - 0.6
     
     #tag array
     tags = np.zeros(x1.size)
@@ -526,11 +527,8 @@ def F2(x1, x2):
     
     for i in result:#loop throught the results of the function
         
-        point = i #save the result
-        
-       
         #add the tag
-        tags[ind]=sign(point)
+        tags[ind]=sign(i)
         ind = ind + 1
         
     #print(tags)
