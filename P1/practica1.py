@@ -13,83 +13,83 @@ from time import time
 
 np.random.seed(1)
 
-# print('EJERCICIO SOBRE LA BUSQUEDA ITERATIVA DE OPTIMOS\n')
-# print('Ejercicio 1.2\n')
+print('EJERCICIO SOBRE LA BUSQUEDA ITERATIVA DE OPTIMOS\n')
+print('Ejercicio 1.2\n')
 
-# def E(u,v):#calcula los valores u y v con la función E
-#     return ((np.power(u,3)*np.exp(v-2))-(2*np.power(v,2)*np.exp(-u)))**2#function   
+def E(u,v):#calcula los valores u y v con la función E
+    return ((np.power(u,3)*np.exp(v-2))-(2*np.power(v,2)*np.exp(-u)))**2#function   
 
-# #Derivada parcial de E con respecto a u
-# def dEu(u,v):
-#     #para crear la función indico los simbolos u y v
-#     x=Symbol('u')
-#     y=Symbol('v')
-#     #creo la función sin derivar
-#     f = ((x**3*exp(y-2))-(2*y**2*exp(-x)))**2
+#Derivada parcial de E con respecto a u
+def dEu(u,v):
+    #para crear la función indico los simbolos u y v
+    x=Symbol('u')
+    y=Symbol('v')
+    #creo la función sin derivar
+    f = ((x**3*exp(y-2))-(2*y**2*exp(-x)))**2
     
-#     # Derivo la función y la convierto en una función numerica, indicando que 
-#     # los simbolos son variables que recibe por parametro
-#     df = lambdify([x,y],f.diff(x))
+    # Derivo la función y la convierto en una función numerica, indicando que 
+    # los simbolos son variables que recibe por parametro
+    df = lambdify([x,y],f.diff(x))
     
-#     #print(df(u,v))
-#     #print(f.diff(x))
-#     #aplico la función derivable con los valores recibidos
-#     return df(u,v)#Derivada parcial de E con respecto a u resultado
+    #print(df(u,v))
+    #print(f.diff(x))
+    #aplico la función derivable con los valores recibidos
+    return df(u,v)#Derivada parcial de E con respecto a u resultado
     
-# #Derivada parcial de E con respecto a v
-# def dEv(u,v):
-#     #para crear la función indico los simbolos u y v
-#     x=Symbol('u')
-#     y=Symbol('v')
-#     #creo la función sin derivar
-#     f = ((x**3*exp(y-2))-(2*y**2*exp(-x)))**2
+#Derivada parcial de E con respecto a v
+def dEv(u,v):
+    #para crear la función indico los simbolos u y v
+    x=Symbol('u')
+    y=Symbol('v')
+    #creo la función sin derivar
+    f = ((x**3*exp(y-2))-(2*y**2*exp(-x)))**2
     
-#     # Derivo la función y la convierto en una función numerica, indicando que 
-#     # los simbolos son variables que recibe por parametro
-#     df = lambdify([x,y],f.diff(y))
+    # Derivo la función y la convierto en una función numerica, indicando que 
+    # los simbolos son variables que recibe por parametro
+    df = lambdify([x,y],f.diff(y))
     
-#     #print(df(u,v))
-#     #print(f.diff(y))
-#     #aplico la función derivable con los valores recibidos
-#     return df(u,v)#Derivada parcial de E con respecto a v resultado
+    #print(df(u,v))
+    #print(f.diff(y))
+    #aplico la función derivable con los valores recibidos
+    return df(u,v)#Derivada parcial de E con respecto a v resultado
 
-# #Gradiente de E (gradiente de la función)
-# def gradE(u,v):
-#     return np.array([np.float64(dEu(u,v)), np.float64(dEv(u,v))])
+#Gradiente de E (gradiente de la función)
+def gradE(u,v):
+    return np.array([np.float64(dEu(u,v)), np.float64(dEv(u,v))])
 
-# #necesita un w inicial, una constante pequeña (eta), numero maximo de iteraciones,
-# #la función a minimizar y el gradiente de dicha función,  Parte el error2get 
-# #como condicion de parada cuando la funcion llega a ser menor a error2get o 
-# #supere el numero maximo de iteraciones
-# def gradient_descent(w, eta, maxIter, error2get, F, gradF):
-#     #
-#     # gradiente descendente
-#     # 
+#necesita un w inicial, una constante pequeña (eta), numero maximo de iteraciones,
+#la función a minimizar y el gradiente de dicha función,  Parte el error2get 
+#como condicion de parada cuando la funcion llega a ser menor a error2get o 
+#supere el numero maximo de iteraciones
+def gradient_descent(w, eta, maxIter, error2get, F, gradF):
+    #
+    # gradiente descendente
+    # 
     
-#     iterations=0#numero de iteraciones que hace
+    iterations=0#numero de iteraciones que hace
 
-#     #mientras no supere el maximo de iteraciones y el resultado de la funcion
-#     #sea mayor al error2get que es 10⁻¹⁴    
-#     while(F(w[0],w[1])>error2get and iterations < maxIter):
-#         iterations += 1#cuento el numero de iteraciones que hace
+    #mientras no supere el maximo de iteraciones y el resultado de la funcion
+    #sea mayor al error2get que es 10⁻¹⁴    
+    while(F(w[0],w[1])>error2get and iterations < maxIter):
+        iterations += 1#cuento el numero de iteraciones que hace
         
-#         #el gradiente de la funcion gradE(u,v) es Ein(w)/wj
-#         w = np.float64(w - (eta * gradF(w[0],w[1])))
+        #el gradiente de la funcion gradE(u,v) es Ein(w)/wj
+        w = np.float64(w - (eta * gradF(w[0],w[1])))
         
-#         #el float64 es para que me muestre todos los decimales hasta 64 bits
-#         #aunque en mi caso no me hace falta ya que me da el mismo resultado, 
-#         #pero lo pongo porque eso dependera del computador
+        #el float64 es para que me muestre todos los decimales hasta 64 bits
+        #aunque en mi caso no me hace falta ya que me da el mismo resultado, 
+        #pero lo pongo porque eso dependera del computador
         
-#         #print("Funcion: " + str(F(w[0],w[1])))
+        #print("Funcion: " + str(F(w[0],w[1])))
     
-#     #devuelvo el valor de w y las iteraciones que hace
-#     return w, iterations    
+    #devuelvo el valor de w y las iteraciones que hace
+    return w, iterations    
 
 
-# eta = 0.1 #constante pequeña o learning rate
-# maxIter = 10000000000 #numero maximo de iteraciones
-# error2get = 1e-14
-# initial_point = np.array([1.0,1.0])#es el w inicial
+eta = 0.1 #constante pequeña o learning rate
+maxIter = 10000000000 #numero maximo de iteraciones
+error2get = 1e-14
+initial_point = np.array([1.0,1.0])#es el w inicial
 
 # w, it = gradient_descent(initial_point, eta, maxIter, error2get, E, gradE)
 
@@ -354,7 +354,7 @@ def Err(x,y,w):
     #result/n
     return result.mean()
 
-# mini-batch gradient
+# mini-batch gradient (derivate of the error function)
 def gradient(x,y,w, mini_batch):
     
     sum_total_batch = 0
@@ -372,7 +372,7 @@ def gradient(x,y,w, mini_batch):
 
 # Gradiente Descendente Estocastico
 # Need x (input data) and y (the labels (desired output))
-def sgd(x,y,eta,size_batch, maxIter, w):
+def sgd(x,y,eta,size_batch, maxIter, w, error2get):
     
     
     #shuffle the indexes
@@ -384,14 +384,11 @@ def sgd(x,y,eta,size_batch, maxIter, w):
     
     fin = False
     
-    print("calculate... (aprox 15 seconds)")
+    print("calculate... (aprox 25 seconds)")
     
     # while it doesn't go through all items of the sample and doesn't exceed the
     #maximum number of iterations
     while(not fin and iterate < maxIter):
-        
-        #save w old
-        w_old = w
         
         #if the mini-batch limit is greater than the size of x and the first index
         #is less than the size of x
@@ -419,8 +416,8 @@ def sgd(x,y,eta,size_batch, maxIter, w):
         #increment in each iteration
         iterate = iterate + 1
             
-        #if w is equal to w_old finish
-        if((w == w_old).all()):
+        #if the error is less than 10¹⁴ finish
+        if(Err(x,y,w)<error2get):
             fin = True
     
     return w #it return the optimal w
@@ -434,6 +431,7 @@ def pseudoinverse(x,y):
     #w = X' * y
     return np.float64(x_ps_inv.dot(y))
 
+   
 
 # Lectura de los datos de entrenamiento
 x, y = readData('datos/X_train.npy', 'datos/y_train.npy')
@@ -445,9 +443,8 @@ size_batch=32 #it is the size for each mini-batch
 maxIter = 50000
 w = np.zeros(3, dtype=np.float64) #initialize w to 0
 
-
 # start_time = time()
-# w = sgd(x,y,eta,size_batch, maxIter, w)
+# w = sgd(x,y,eta,size_batch, maxIter, w, error2get)
 # elapsed_time = time() - start_time
 # print("SGD Elapsed time: %0.10f seconds" %elapsed_time)
 
@@ -564,8 +561,20 @@ sample_c=sample_c.swapaxes(0,1)
 
 # print(sample_c[0])
 # print(sample[0])
+    
+# mini-batch gradient (derivate of the error function)
+def gradientF(x,y,w):
+    
+    sum_total_batch = 0
+        
+    #sumatory(Xn * (h(Xn) - Yn)), where n is the iteration of the mini-batch
+    sum_total_batch = np.sum(x.dot(w))-y
+    sum_total_batch = sum_total_batch.dot(x)
+    
+    #update the w = w - eta * sumatory
+    return (sum_total_batch*2/size_batch)
 
-def sgdF(x,y,eta,size_batch, maxIter, w):
+def sgdF(x,y,eta,size_batch, maxIter, w, error2get):
     
     
     #shuffle the indexes
@@ -577,26 +586,22 @@ def sgdF(x,y,eta,size_batch, maxIter, w):
     
     fin = False
     
-    print("calculate... (aprox 15 seconds)")
+    print("calculate... (aprox 10 seconds)")
     
     # while it doesn't go through all items of the sample and doesn't exceed the
     #maximum number of iterations
     while(not fin and iterate < maxIter):
         
-        #save w old
-        w_old = w
-        
-        #if the mini-batch limit is greater than the size of x and the first index
-        #is less than the size of x
         if(max_iteration_batch>=len(x) and (min_batch_n*size_batch)<len(x)):
             #create the mini-batch from the first index to (the size of x) -1
             max_iteration_batch = len(x)
         
-        #create the mini-batch
-        mini_batch = indices[min_batch_n:max_iteration_batch]
+        #create mini-batches
+        batch_x = x[indices[min_batch_n:max_iteration_batch],:]
+        batch_y = y[indices[min_batch_n:max_iteration_batch]]
         
         #update the w = w - eta * (derivate of square error)
-        w = w - (eta*gradient(x,y,w,mini_batch))
+        w = w - (eta*gradientF(batch_x,batch_y,w))
         #print(w)
             
         #increase the limit of each mini-batch and minimum
@@ -608,23 +613,23 @@ def sgdF(x,y,eta,size_batch, maxIter, w):
             # reset indexs
             min_batch_n = 0
             max_iteration_batch = size_batch
-            
+        
         #increment in each iteration
         iterate = iterate + 1
             
-        #if w is equal to w_old finish
-        if((w == w_old).all()):
+        #if the error is less than 10¹⁴ finish
+        if(Err(x,y,w)<error2get):
             fin = True
     
     return w #it return the optimal w
 
 eta = 0.01
-size_batch = 32
-max_it = 1000
+size_batch = 64
+max_it = 100000
 w = np.zeros(3, dtype=np.float64) #initialize w to 0
 
 start_time = time()
-w = sgdF(sample_c, tags, eta, size_batch, max_it,w)
+w = sgdF(sample_c, tags, eta, size_batch, max_it,w, error2get)
 w.dtype=np.float64
 elapsed_time = time() - start_time
 print("SGD Elapsed time: %0.10f seconds" %elapsed_time)
@@ -632,15 +637,18 @@ print("SGD Elapsed time: %0.10f seconds" %elapsed_time)
 
 print ('\nBondad del resultado para grad. descendente estocastico:\n')
 print ("w: ", w)
-# print ("Ein: ", Err(x,y,w))
-# print ("Eout: ", Err(x_test, y_test, w))
+print ("Ein: ", Err(x,y,w))
 
-fig21 = plt.figure()
-ax21 = fig21.add_subplot()
-ax21.scatter(sample_c[:,1],sample_c[:,2],c=tags)
-ax21.plot([-1,1], [-w[0]/w[2], -w[0]/w[2]-w[1]/w[2]])
+#graph SGD section C
+fig22c = plt.figure()
+ax22c = fig22c.add_subplot()
+ax22c.scatter(sample_c[:,1],sample_c[:,2],c=tags)
+X = np.linspace(-1, 1, y.size)
+Y = (-w[0]-w[1]*X)/w[2]
+ax22c.plot(X, Y)
+ax22c.set_ylim(-1.0,1.0)
 
-ax21.set_title('SGD')
+ax22c.set_title('SGD')
 
 
 
