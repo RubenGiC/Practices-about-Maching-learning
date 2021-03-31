@@ -446,30 +446,30 @@ maxIter = 50000
 w = np.zeros(3, dtype=np.float64) #initialize w to 0
 
 
-start_time = time()
-w = sgd(x,y,eta,size_batch, maxIter, w)
-elapsed_time = time() - start_time
-print("SGD Elapsed time: %0.10f seconds" %elapsed_time)
+# start_time = time()
+# w = sgd(x,y,eta,size_batch, maxIter, w)
+# elapsed_time = time() - start_time
+# print("SGD Elapsed time: %0.10f seconds" %elapsed_time)
 
 
-start_time = time()
-w2 = pseudoinverse(x,y)
-w2.dtype=np.float64
-elapsed_time = time() - start_time
-print("Psud.-Inv Elapsed time: %0.10f seconds" %elapsed_time)
+# start_time = time()
+# w2 = pseudoinverse(x,y)
+# w2.dtype=np.float64
+# elapsed_time = time() - start_time
+# print("Psud.-Inv Elapsed time: %0.10f seconds" %elapsed_time)
 
 
-print ('\nBondad del resultado para grad. descendente estocastico:\n')
-print ("w: ", w)
-print ("Ein: ", Err(x,y,w))
-print ("Eout: ", Err(x_test, y_test, w))
+# print ('\nBondad del resultado para grad. descendente estocastico:\n')
+# print ("w: ", w)
+# print ("Ein: ", Err(x,y,w))
+# print ("Eout: ", Err(x_test, y_test, w))
 
-print ('\nBondad del resultado para Pseudo-Inverse:\n')
-print ("w: ", w2)
-print ("Ein: ", np.float64(Err(x,y,w2)))
-print ("Eout: ", np.float64(Err(x_test, y_test, w2)))
+# print ('\nBondad del resultado para Pseudo-Inverse:\n')
+# print ("w: ", w2)
+# print ("Ein: ", np.float64(Err(x,y,w2)))
+# print ("Eout: ", np.float64(Err(x_test, y_test, w2)))
 
-input("\n--- Pulsar tecla para continuar ---\n")
+# input("\n--- Pulsar tecla para continuar ---\n")
 
 #grafica SGD
 
@@ -494,22 +494,155 @@ input("\n--- Pulsar tecla para continuar ---\n")
 # ax212.set_title('Pseudo-Inverse')
 
 
-#Seguir haciendo el ejercicio...
 
-# print('Ejercicio 2\n')
-# # Simula datos en un cuadrado [-size,size]x[-size,size]
-# def simula_unif(N, d, size):
-#  	return np.random.uniform(-size,size,(N,d))
+print('Ejercicio 2\n')
+# Simula datos en un cuadrado [-size,size]x[-size,size]
+def simula_unif(N, d, size):
+ 	return np.random.uniform(-size,size,(N,d))
 
-# def sign(x):
-#  	if x >= 0:
-# 		return 1
-#  	return -1
+def sign(x):
+ 	if x >= 0:
+         return 1
+ 	return -1
 
-# def f(x1, x2):
-#  	return sign(?) 
+def f(x1, x2):
+    result = np.power(x1-0.2,2)
+    result = result + np.power(x2,2) - 0.6
+    
+    #number of points with noise 10%
+    n_noise = int(x1.size*0.1)
+    
+    #indices of sample with noise (random integer without repeating)
+    ind_noise = np.random.choice(x1.size, n_noise, replace=False)
+    #print(ind_noise)
+    
+    #tag array
+    tags = np.zeros(x1.size)
+    
+    ind = 0 #index for noise
+    
+    for i in result:#loop throught the results of the function
+        
+        point = i #save the result
+        
+        #if the point is inside the ind_noise
+        if(np.where(ind_noise == ind) != []):
+            point = point * (-1)#change the sign
+        
+        #add the tag
+        tags[ind]=sign(point)            
+        ind = ind + 1
+        
+    #print(tags)
+    return tags
 
-#Seguir haciendo el ejercicio...
+sample = simula_unif(1000,2,1)
+
+#Section A: show the 2D points of the sample of 1000 random points
+# fig22a = plt.figure()
+# ax22a = fig22a.add_subplot()
+# ax22a.scatter(sample[:,0],sample[:,1])
+# ax22a.set_title('1000 Points random')
+
+#add the tags
+tags = f(sample[:,0],sample[:,1])
+
+#Section B: show the 2D points of the sample with the labels with 10% noise
+# fig22a = plt.figure()
+# ax22a = fig22a.add_subplot()
+# ax22a.scatter(sample[:,0],sample[:,1], c=tags)
+# ax22a.set_title('1000 Points random with 10% noise')
+
+
+#Section C: 
+#x0
+ones = np.ones(int(sample.size/2))
+#add x0, x1 and x2
+sample_c = np.array([ones,sample[:,0],sample[:,1]])
+#swap the axes, for sample_c(x0, x1, x2)
+sample_c=sample_c.swapaxes(0,1)
+
+# print(sample_c[0])
+# print(sample[0])
+
+def sgdF(x,y,eta,size_batch, maxIter, w):
+    
+    
+    #shuffle the indexes
+    indices = np.random.permutation(len(x))
+    min_batch_n = 0 # indexe of mini-batch
+    iterate=0
+    #maximum number of iterate for each mini-batch
+    max_iteration_batch = size_batch
+    
+    fin = False
+    
+    print("calculate... (aprox 15 seconds)")
+    
+    # while it doesn't go through all items of the sample and doesn't exceed the
+    #maximum number of iterations
+    while(not fin and iterate < maxIter):
+        
+        #save w old
+        w_old = w
+        
+        #if the mini-batch limit is greater than the size of x and the first index
+        #is less than the size of x
+        if(max_iteration_batch>=len(x) and (min_batch_n*size_batch)<len(x)):
+            #create the mini-batch from the first index to (the size of x) -1
+            max_iteration_batch = len(x)
+        
+        #create the mini-batch
+        mini_batch = indices[min_batch_n:max_iteration_batch]
+        
+        #update the w = w - eta * (derivate of square error)
+        w = w - (eta*gradient(x,y,w,mini_batch))
+        #print(w)
+            
+        #increase the limit of each mini-batch and minimum
+        max_iteration_batch = max_iteration_batch + size_batch
+        min_batch_n += size_batch
+        
+        #if min_batch_n exceeds the minimum value above the sample size
+        if(min_batch_n > len(x)):
+            # reset indexs
+            min_batch_n = 0
+            max_iteration_batch = size_batch
+            
+        #increment in each iteration
+        iterate = iterate + 1
+            
+        #if w is equal to w_old finish
+        if((w == w_old).all()):
+            fin = True
+    
+    return w #it return the optimal w
+
+eta = 0.01
+size_batch = 32
+max_it = 1000
+w = np.zeros(3, dtype=np.float64) #initialize w to 0
+
+start_time = time()
+w = sgdF(sample_c, tags, eta, size_batch, max_it,w)
+w.dtype=np.float64
+elapsed_time = time() - start_time
+print("SGD Elapsed time: %0.10f seconds" %elapsed_time)
+
+
+print ('\nBondad del resultado para grad. descendente estocastico:\n')
+print ("w: ", w)
+# print ("Ein: ", Err(x,y,w))
+# print ("Eout: ", Err(x_test, y_test, w))
+
+fig21 = plt.figure()
+ax21 = fig21.add_subplot()
+ax21.scatter(sample_c[:,1],sample_c[:,2],c=tags)
+ax21.plot([-1,1], [-w[0]/w[2], -w[0]/w[2]-w[1]/w[2]])
+
+ax21.set_title('SGD')
+
+
 
 
 
