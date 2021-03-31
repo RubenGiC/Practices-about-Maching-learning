@@ -386,9 +386,9 @@ def sgd(x,y,eta,size_batch, maxIter, w, error2get):
     
     print("calculate... (aprox 25 seconds)")
     
-    # while it doesn't go through all items of the sample and doesn't exceed the
+    # while the error is greater than 10¹⁴ and doesn't exceed the
     #maximum number of iterations
-    while(not fin and iterate < maxIter):
+    while(Err(x,y,w)>error2get and iterate < maxIter):
         
         #if the mini-batch limit is greater than the size of x and the first index
         #is less than the size of x
@@ -415,10 +415,6 @@ def sgd(x,y,eta,size_batch, maxIter, w, error2get):
             
         #increment in each iteration
         iterate = iterate + 1
-            
-        #if the error is less than 10¹⁴ finish
-        if(Err(x,y,w)<error2get):
-            fin = True
     
     return w #it return the optimal w
 
@@ -502,12 +498,13 @@ def sign(x):
          return 1
  	return -1
 
-def f(x1, x2):
+#function with 10% noise
+def f_noise(x1, x2, noise=0.1):
     result = np.power(x1-0.2,2)
     result = result + np.power(x2,2) - 0.6
     
     #number of points with noise 10%
-    n_noise = int(x1.size*0.1)
+    n_noise = int(x1.size*noise)
     
     #indices of sample with noise (random integer without repeating)
     ind_noise = np.random.choice(x1.size, n_noise, replace=False)
@@ -524,10 +521,11 @@ def f(x1, x2):
         
         #if the point is inside the ind_noise
         if(np.where(ind_noise == ind) != []):
-            point = point * (-1)#change the sign
-        
-        #add the tag
-        tags[ind]=sign(point)            
+            #add the tag
+            tags[ind]=-sign(point)#change the sign
+        else:
+            #add the tag
+            tags[ind]=sign(point)
         ind = ind + 1
         
     #print(tags)
@@ -542,7 +540,7 @@ sample = simula_unif(1000,2,1)
 # ax22a.set_title('1000 Points random')
 
 #add the tags
-tags = f(sample[:,0],sample[:,1])
+tags = f_noise(sample[:,0],sample[:,1])
 
 #Section B: show the 2D points of the sample with the labels with 10% noise
 # fig22a = plt.figure()
@@ -584,13 +582,9 @@ def sgdF(x,y,eta,size_batch, maxIter, w, error2get):
     #maximum number of iterate for each mini-batch
     max_iteration_batch = size_batch
     
-    fin = False
-    
-    print("calculate... (aprox 10 seconds)")
-    
-    # while it doesn't go through all items of the sample and doesn't exceed the
+    # while the error is greater than 10¹⁴ and doesn't exceed the
     #maximum number of iterations
-    while(not fin and iterate < maxIter):
+    while(Err(x,y,w)>error2get and iterate < maxIter):
         
         if(max_iteration_batch>=len(x) and (min_batch_n*size_batch)<len(x)):
             #create the mini-batch from the first index to (the size of x) -1
@@ -617,15 +611,12 @@ def sgdF(x,y,eta,size_batch, maxIter, w, error2get):
         #increment in each iteration
         iterate = iterate + 1
             
-        #if the error is less than 10¹⁴ finish
-        if(Err(x,y,w)<error2get):
-            fin = True
-    
+    print("Iterations: ",iterate)
     return w #it return the optimal w
 
 eta = 0.01
 size_batch = 64
-max_it = 100000
+max_it = 8000
 w = np.zeros(3, dtype=np.float64) #initialize w to 0
 
 start_time = time()
@@ -645,6 +636,7 @@ ax22c = fig22c.add_subplot()
 ax22c.scatter(sample_c[:,1],sample_c[:,2],c=tags)
 X = np.linspace(-1, 1, y.size)
 Y = (-w[0]-w[1]*X)/w[2]
+#ax22c.plot([-1,1], [-w[0]/w[2], -w[0]/w[2]-w[1]/w[2]])
 ax22c.plot(X, Y)
 ax22c.set_ylim(-1.0,1.0)
 
