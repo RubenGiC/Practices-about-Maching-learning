@@ -382,8 +382,6 @@ def sgd(x,y,eta,size_batch, maxIter, w, error2get):
     #maximum number of iterate for each mini-batch
     max_iteration_batch = size_batch
     
-    fin = False
-    
     print("calculate... (aprox 25 seconds)")
     
     # while the error is greater than 10¹⁴ and doesn't exceed the
