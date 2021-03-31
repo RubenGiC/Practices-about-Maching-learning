@@ -497,18 +497,27 @@ def sign(x):
  	if x >= 0:
          return 1
  	return -1
-
-#function with 10% noise
-def f_noise(x1, x2, noise=0.1):
-    result = np.power(x1-0.2,2)
-    result = result + np.power(x2,2) - 0.6
+ 
+#tags with 10% noise
+def noise(tags,percent):
     
+    tags_noise = tags.copy()
     #number of points with noise 10%
-    n_noise = int(x1.size*noise)
+    n_noise = int(tags_noise.size*percent)
     
     #indices of sample with noise (random integer without repeating)
-    ind_noise = np.random.choice(x1.size, n_noise, replace=False)
+    ind_noise = np.random.choice(tags_noise.size, n_noise, replace=False)
     #print(ind_noise)
+    
+    for i in ind_noise:
+        tags_noise[i]=-tags_noise[i]#change the sign
+    
+    return tags_noise
+
+#function
+def F2(x1, x2):
+    result = np.power(x1-0.2,2)
+    result = result + np.power(x2,2) - 0.6
     
     #tag array
     tags = np.zeros(x1.size)
@@ -519,13 +528,9 @@ def f_noise(x1, x2, noise=0.1):
         
         point = i #save the result
         
-        #if the point is inside the ind_noise
-        if(np.where(ind_noise == ind) != []):
-            #add the tag
-            tags[ind]=-sign(point)#change the sign
-        else:
-            #add the tag
-            tags[ind]=sign(point)
+       
+        #add the tag
+        tags[ind]=sign(point)
         ind = ind + 1
         
     #print(tags)
@@ -540,12 +545,13 @@ sample = simula_unif(1000,2,1)
 # ax22a.set_title('1000 Points random')
 
 #add the tags
-tags = f_noise(sample[:,0],sample[:,1])
+tags = F2(sample[:,0],sample[:,1])
+tags_noise = noise(tags,0.1)
 
 #Section B: show the 2D points of the sample with the labels with 10% noise
 # fig22a = plt.figure()
 # ax22a = fig22a.add_subplot()
-# ax22a.scatter(sample[:,0],sample[:,1], c=tags)
+# ax22a.scatter(sample[:,0],sample[:,1], c=tags_noise)
 # ax22a.set_title('1000 Points random with 10% noise')
 
 
@@ -616,11 +622,11 @@ def sgdF(x,y,eta,size_batch, maxIter, w, error2get):
 
 eta = 0.01
 size_batch = 64
-max_it = 8000
+max_it = 10000
 w = np.zeros(3, dtype=np.float64) #initialize w to 0
 
 start_time = time()
-w = sgdF(sample_c, tags, eta, size_batch, max_it,w, error2get)
+w = sgdF(sample_c, tags_noise, eta, size_batch, max_it,w, error2get)
 w.dtype=np.float64
 elapsed_time = time() - start_time
 print("SGD Elapsed time: %0.10f seconds" %elapsed_time)
@@ -633,7 +639,7 @@ print ("Ein: ", Err(x,y,w))
 #graph SGD section C
 fig22c = plt.figure()
 ax22c = fig22c.add_subplot()
-ax22c.scatter(sample_c[:,1],sample_c[:,2],c=tags)
+ax22c.scatter(sample_c[:,1],sample_c[:,2],c=tags_noise)
 X = np.linspace(-1, 1, y.size)
 Y = (-w[0]-w[1]*X)/w[2]
 #ax22c.plot([-1,1], [-w[0]/w[2], -w[0]/w[2]-w[1]/w[2]])
