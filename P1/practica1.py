@@ -645,11 +645,11 @@ ax22c.set_ylim(-1.0,1.0)
 ax22c.set_title('SGD')
 
 number_iterations = 1000
-max_it = 10000
+max_it = 1000
 
 Ein = np.empty(number_iterations)
 
-print("calculate 1000 samples diferents: ")
+print("calculate 1000 samples diferents: (aprox 2 minuts)")
 start_time = time()
 #Section D: run the experiment 1000 times with different samples and calculate the Ein and Eout
 for i in np.arange(number_iterations):
@@ -673,4 +673,4 @@ for i in np.arange(number_iterations):
     
 elapsed_time = time() - start_time
 print("SGD (1000 samples) Elapsed time: %0.10f seconds" %elapsed_time)
-print ("Ein medio: ", np.sum(Ein)/number_iterations)
+print ("Ein medio: ", Ein.mean())
