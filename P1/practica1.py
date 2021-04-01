@@ -648,6 +648,7 @@ number_iterations = 1000
 max_it = 1000
 
 Ein = np.empty(number_iterations)
+Eout = np.empty(number_iterations)
 
 print("calculate 1000 samples diferents: (aprox 2 minuts)")
 start_time = time()
@@ -668,9 +669,22 @@ for i in np.arange(number_iterations):
     w = sgdF(sample_c, tags_noise, eta, size_batch, max_it,w, error2get)
     w.dtype=np.float64
     
-    Ein[i]=Err(x,y,w)
+    Ein[i]=Err(sample_c,tags_noise,w)
+    
+    #Eout
+    sample_test = simula_unif(1000,2,1)
+    #x0
+    ones = np.ones(int(sample.size/2))
+    #add x0, x1 and x2
+    sample_test = np.array([ones,sample_test[:,0],sample_test[:,1]])
+    #swap the axes, for sample_c(x0, x1, x2)
+    sample_test=sample_test.swapaxes(0,1)
+    tags_test = F2(sample_test[:,0],sample_test[:,1])
+    
+    Eout[i] = Err(sample_test, tags_test, w)#calculate Eout
     
     
 elapsed_time = time() - start_time
 print("SGD (1000 samples) Elapsed time: %0.10f seconds" %elapsed_time)
 print ("Ein medio: ", Ein.mean())
+print ("Eout medio: ", Eout.mean())
