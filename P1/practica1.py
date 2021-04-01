@@ -613,7 +613,7 @@ def sgdF(x,y,eta,size_batch, maxIter, w, error2get):
         #increment in each iteration
         iterate = iterate + 1
             
-    print("Iterations: ",iterate)
+    #print("Iterations: ",iterate)
     return w #it return the optimal w
 
 eta = 0.01
@@ -630,7 +630,7 @@ print("SGD Elapsed time: %0.10f seconds" %elapsed_time)
 
 print ('\nBondad del resultado para grad. descendente estocastico:\n')
 print ("w: ", w)
-print ("Ein: ", Err(x,y,w))
+print ("Ein: ", Err(sample_c,tags_noise,w))
 
 #graph SGD section C
 fig22c = plt.figure()
@@ -644,7 +644,33 @@ ax22c.set_ylim(-1.0,1.0)
 
 ax22c.set_title('SGD')
 
+number_iterations = 1000
+max_it = 10000
 
+Ein = np.empty(number_iterations)
 
+print("calculate 1000 samples diferents: ")
+start_time = time()
+#Section D: run the experiment 1000 times with different samples and calculate the Ein and Eout
+for i in np.arange(number_iterations):
+    sample = simula_unif(1000,2,1)
+    #x0
+    ones = np.ones(int(sample.size/2))
+    #add x0, x1 and x2
+    sample_c = np.array([ones,sample[:,0],sample[:,1]])
+    #swap the axes, for sample_c(x0, x1, x2)
+    sample_c=sample_c.swapaxes(0,1)
 
-
+    #add the tags
+    tags = F2(sample[:,0],sample[:,1])
+    tags_noise = noise(tags,0.1)
+    
+    w = sgdF(sample_c, tags_noise, eta, size_batch, max_it,w, error2get)
+    w.dtype=np.float64
+    
+    Ein[i]=Err(x,y,w)
+    
+    
+elapsed_time = time() - start_time
+print("SGD (1000 samples) Elapsed time: %0.10f seconds" %elapsed_time)
+print ("Ein medio: ", np.sum(Ein)/number_iterations)
