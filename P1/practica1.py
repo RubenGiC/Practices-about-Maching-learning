@@ -513,7 +513,7 @@ def noise(tags,percent):
     
     return tags_noise
 
-#function
+#function that calculate the tags
 def F2(x1, x2):
     #f = (x1 -0.2)²+x2²-0.6
     result = np.power(x1-0.2,2) + np.power(x2,2) - 0.6
@@ -597,7 +597,7 @@ def sgdF(x,y,eta,size_batch, maxIter, w, error2get):
         batch_y = y[indices[min_batch_n:max_iteration_batch]]
         
         #update the w = w - eta * (derivate of square error)
-        w = w - (eta*gradientF(batch_x,batch_y,w))
+        w = w - (eta*gradientF(batch_x,batch_y,w))        
         #print(w)
             
         #increase the limit of each mini-batch and minimum
@@ -625,7 +625,7 @@ start_time = time()
 w = sgdF(sample_c, tags_noise, eta, size_batch, max_it,w, error2get)
 w.dtype=np.float64
 elapsed_time = time() - start_time
-print("SGD Elapsed time: %0.10f seconds" %elapsed_time)
+print("SGD Elapsed time (10 percent noise): %0.10f seconds" %elapsed_time)
 
 
 print ('\nBondad del resultado para grad. descendente estocastico:\n')
@@ -638,7 +638,6 @@ ax22c = fig22c.add_subplot()
 ax22c.scatter(sample_c[:,1],sample_c[:,2],c=tags_noise)
 X = np.linspace(-1, 1, y.size)
 Y = (-w[0]-w[1]*X)/w[2]
-#ax22c.plot([-1,1], [-w[0]/w[2], -w[0]/w[2]-w[1]/w[2]])
 ax22c.plot(X, Y)
 ax22c.set_ylim(-1.0,1.0)
 
@@ -650,7 +649,7 @@ max_it = 1000
 Ein = np.empty(number_iterations)
 Eout = np.empty(number_iterations)
 
-print("calculate 1000 samples diferents: (aprox 2 minuts)")
+print("\ncalculate 1000 samples diferents: (aprox 2 minuts)")
 start_time = time()
 #Section D: run the experiment 1000 times with different samples and calculate the Ein and Eout
 for i in np.arange(number_iterations):
