@@ -350,7 +350,7 @@ def Err(x,y,w):
     result = np.float64(np.power((x.dot(w) - y), 2))
     
     result.dtype = np.float64
-    
+
     #result/n
     return result.mean()
 
@@ -366,7 +366,7 @@ def gradient(x,y,w, mini_batch):
         #print(sum_total_batch)
     
     #update the w = w - eta * sumatory
-    return (sum_total_batch*2/size_batch)
+    return (sum_total_batch*2/mini_batch.size)
         
 
 # Gradiente Descendente Estocastico
@@ -436,10 +436,10 @@ size_batch=32 #it is the size for each mini-batch
 maxIter = 50000
 w = np.zeros(3, dtype=np.float64) #initialize w to 0
 
-start_time = time()
-w = sgd(x,y,eta,size_batch, maxIter, w, error2get)
-elapsed_time = time() - start_time
-print("SGD Elapsed time: %0.10f seconds" %elapsed_time)
+# start_time = time()
+# w = sgd(x,y,eta,size_batch, maxIter, w, error2get)
+# elapsed_time = time() - start_time
+# print("SGD Elapsed time: %0.10f seconds" %elapsed_time)
 
 
 # start_time = time()
@@ -449,10 +449,10 @@ print("SGD Elapsed time: %0.10f seconds" %elapsed_time)
 # print("Psud.-Inv Elapsed time: %0.10f seconds" %elapsed_time)
 
 
-print ('\nBondad del resultado para grad. descendente estocastico:\n')
-print ("w: ", w)
-print ("Ein: ", Err(x,y,w))
-print ("Eout: ", Err(x_test, y_test, w))
+# print ('\nBondad del resultado para grad. descendente estocastico:\n')
+# print ("w: ", w)
+# print ("Ein: ", Err(x,y,w))
+# print ("Eout: ", Err(x_test, y_test, w))
 
 # print ('\nBondad del resultado para Pseudo-Inverse:\n')
 # print ("w: ", w2)
@@ -563,15 +563,12 @@ sample_c=sample_c.swapaxes(0,1)
     
 # mini-batch gradient (derivate of the error function)
 def gradientF(x,y,w):
-    
-    sum_total_batch = 0
         
-    #sumatory(Xn * (h(Xn) - Yn)), where n is the iteration of the mini-batch
+    #sumatory(Xn * (h(Xn) - Yn)*2)/n, where n is the iteration of the mini-batch
     sum_total_batch = np.sum(x.dot(w))-y
-    sum_total_batch = sum_total_batch.dot(x)
     
-    #update the w = w - eta * sumatory
-    return (sum_total_batch*2/size_batch)
+    #derivate
+    return (sum_total_batch.dot(x)*2/x[:,0].size)
 
 def sgdF(x,y,eta,size_batch, maxIter, w, error2get):
     
@@ -615,35 +612,35 @@ def sgdF(x,y,eta,size_batch, maxIter, w, error2get):
     #print("Iterations: ",iterate)
     return w #it return the optimal w
 
-eta = 0.01
+eta = 0.001
 size_batch = 64
-max_it = 1000
+max_it = 5000
 w = np.zeros(3, dtype=np.float64) #initialize w to 0
 
-# start_time = time()
-# w = sgdF(sample_c, tags_noise, eta, size_batch, max_it,w, error2get)
-# w.dtype=np.float64
-# elapsed_time = time() - start_time
-# print("SGD Elapsed time (10 percent noise): %0.10f seconds" %elapsed_time)
+start_time = time()
+w = sgdF(sample_c, tags_noise, eta, size_batch, max_it,w, error2get)
+w.dtype=np.float64
+elapsed_time = time() - start_time
+print("SGD Elapsed time (10 percent noise): %0.10f seconds" %elapsed_time)
 
 
-# print ('\nBondad del resultado para grad. descendente estocastico:\n')
-# print ("w: ", w)
-# print ("Ein: ", Err(sample_c,tags_noise,w))
+print ('\nBondad del resultado para grad. descendente estocastico:\n')
+print ("w: ", w)
+print ("Ein: ", Err(sample_c,tags_noise,w))
 
-# #graph SGD section C
-# fig22c = plt.figure()
-# ax22c = fig22c.add_subplot()
-# ax22c.scatter(sample_c[:,1],sample_c[:,2],c=tags_noise)
-# X = np.linspace(-1, 1, y.size)
-# Y = (-w[0]-w[1]*X)/w[2]
-# ax22c.plot(X, Y)
-# ax22c.set_ylim(-1.0,1.0)
+#graph SGD section C
+fig22c = plt.figure()
+ax22c = fig22c.add_subplot()
+ax22c.scatter(sample_c[:,1],sample_c[:,2],c=tags_noise)
+X = np.linspace(-1, 1, y.size)
+Y = (-w[0]-w[1]*X)/w[2]
+ax22c.plot(X, Y)
+ax22c.set_ylim(-1.0,1.0)
 
-# ax22c.set_title('SGD')
+ax22c.set_title('SGD')
 
-# number_iterations = 1000
-# max_it = 400
+number_iterations = 1000
+max_it = 400
 
 # Ein = np.empty(number_iterations)
 # Eout = np.empty(number_iterations)
@@ -693,7 +690,7 @@ print('Ejercicio 2 NO LINEAL\n')
 
 # Simulate the data
 def vectorFeature(x1, x2):
-    print(x1)
+    
  	#feature vector to return
     vf = np.zeros((x1.size,6))
     vf.dtype= np.float64
@@ -706,9 +703,111 @@ def vectorFeature(x1, x2):
     #print(vf)
     return vf
 
-#create the random sample    
-sample = simula_unif(10,2,1)
-#create the sample with feature = (1, x1, x2, x1x2, x1²,x2²)
-sample_c=vectorFeature(sample[:,0],sample[:,1])
-
+# mini-batch gradient (derivate of the error function)
+def gradientF2(x,y,w):
     
+    #sumatory(h(Xn) - Yn), where n is the iteration of the mini-batch
+    sum_total_batch = np.sum(x.dot(w)) - y
+    
+    #(2 * Xn * sum_total_batch)/n
+    # arr_total_batch = (sum_total_batch.dot(x)*2)/x[:,0].size
+    
+    #derivate (2 * Xn * sum_total_batch)/n
+    return sum_total_batch.dot(x)*2/x[:,0].size#arr_total_batch
+
+def sgdF2(x,y,eta,size_batch, maxIter, w, error2get):
+    
+    
+    #shuffle the indexes
+    indices = np.random.permutation(len(x))
+    min_batch_n = 0 # indexe of mini-batch
+    iterate=0
+    #maximum number of iterate for each mini-batch
+    max_iteration_batch = size_batch
+    
+    # while the error is greater than 10¹⁴ and doesn't exceed the
+    #maximum number of iterations
+    while(Err(x,y,w)>error2get and iterate < maxIter):
+        
+        if(max_iteration_batch>=len(x) and (min_batch_n*size_batch)<len(x)):
+            #create the mini-batch from the first index to (the size of x) -1
+            max_iteration_batch = len(x)
+        
+        #create mini-batches
+        batch_x = x[indices[min_batch_n:max_iteration_batch],:]
+        batch_y = y[indices[min_batch_n:max_iteration_batch]]
+        
+        #update the w = w - eta * (derivate of square error)
+        w = w - (eta*gradientF2(batch_x,batch_y,w))
+        #print(w)
+            
+        #increase the limit of each mini-batch and minimum
+        max_iteration_batch = max_iteration_batch + size_batch
+        min_batch_n += size_batch
+        
+        #if min_batch_n exceeds the minimum value above the sample size
+        if(min_batch_n > len(x)):
+            # reset indexs
+            min_batch_n = 0
+            max_iteration_batch = size_batch
+        
+        #increment in each iteration
+        iterate = iterate + 1
+            
+    #print("Iterations: ",iterate)
+    return w #it return the optimal w    
+
+
+Ein2 = np.empty(number_iterations)
+Eout2 = np.empty(number_iterations)
+w = np.zeros(6, dtype=np.float64) #initialize w to 0
+number_iterations = 1000
+max_it = 500
+size_batch = 32
+eta = 0.001
+    
+print("\ncalculate 1000 samples diferents non-linear: (aprox 1 minut)")
+start_time = time()
+
+# #Section D: repeat the experiment but with non-linear characteristics
+for i in np.arange(number_iterations):
+    #create the random sample    
+    sample = simula_unif(1000,2,1)
+    #create the sample with feature = (1, x1, x2, x1x2, x1²,x2²)
+    sample_c=vectorFeature(sample[:,0],sample[:,1])
+    
+    #add the tags
+    tags = F2(sample[:,0],sample[:,1])
+    tags_noise = noise(tags,0.1)
+    
+    w = sgdF(sample_c, tags_noise, eta, size_batch, max_it,w, error2get)
+    w.dtype=np.float64
+    
+    #print(w)
+    
+    Ein2[i]=Err(sample_c,tags_noise,w)
+    
+    #create the random sample test   
+    sample_test = simula_unif(1000,2,1)
+    #create the sample test with feature = (1, x1, x2, x1x2, x1²,x2²)
+    sample_test_c=vectorFeature(sample_test[:,0],sample_test[:,1])
+    
+    #add the tags test
+    tags_test = F2(sample_test[:,0],sample_test[:,1])
+    tags_test_noise = noise(tags,0.1)
+    
+    Eout2[i] = Err(sample_test_c, tags_test_noise, w)#calculate Eout
+    
+    #graph SGD section C
+    # fig22c = plt.figure()
+    # ax22c = fig22c.add_subplot()
+    # ax22c.scatter(sample_c[:,1],sample_c[:,2],c=tags_noise)
+    # X = np.linspace(-1, 1, y.size)
+    # Y = (-w[0]-w[1]*X)/w[2]
+    # ax22c.plot(X, Y)
+    
+    
+elapsed_time = time() - start_time
+print("SGD (1000 samples) Elapsed time: %0.10f seconds" %elapsed_time)
+print ("Ein medio: ", Ein2.mean())
+print ("Eout medio: ", Eout2.mean())
