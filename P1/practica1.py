@@ -361,7 +361,6 @@ def gradient(x,y,w, mini_batch):
     
     #iterate the mini-batch
     for i in mini_batch:
-        
         #sumatory(Xn * (h(Xn) - Yn)), where n is the iteration of the mini-batch
         sum_total_batch += x[i]*(np.sum(w*x[i])-y[i])
         #print(sum_total_batch)
@@ -437,10 +436,10 @@ size_batch=32 #it is the size for each mini-batch
 maxIter = 50000
 w = np.zeros(3, dtype=np.float64) #initialize w to 0
 
-# start_time = time()
-# w = sgd(x,y,eta,size_batch, maxIter, w, error2get)
-# elapsed_time = time() - start_time
-# print("SGD Elapsed time: %0.10f seconds" %elapsed_time)
+start_time = time()
+w = sgd(x,y,eta,size_batch, maxIter, w, error2get)
+elapsed_time = time() - start_time
+print("SGD Elapsed time: %0.10f seconds" %elapsed_time)
 
 
 # start_time = time()
@@ -450,10 +449,10 @@ w = np.zeros(3, dtype=np.float64) #initialize w to 0
 # print("Psud.-Inv Elapsed time: %0.10f seconds" %elapsed_time)
 
 
-# print ('\nBondad del resultado para grad. descendente estocastico:\n')
-# print ("w: ", w)
-# print ("Ein: ", Err(x,y,w))
-# print ("Eout: ", Err(x_test, y_test, w))
+print ('\nBondad del resultado para grad. descendente estocastico:\n')
+print ("w: ", w)
+print ("Ein: ", Err(x,y,w))
+print ("Eout: ", Err(x_test, y_test, w))
 
 # print ('\nBondad del resultado para Pseudo-Inverse:\n')
 # print ("w: ", w2)
@@ -618,72 +617,98 @@ def sgdF(x,y,eta,size_batch, maxIter, w, error2get):
 
 eta = 0.01
 size_batch = 64
-max_it = 10000
+max_it = 1000
 w = np.zeros(3, dtype=np.float64) #initialize w to 0
 
-start_time = time()
-w = sgdF(sample_c, tags_noise, eta, size_batch, max_it,w, error2get)
-w.dtype=np.float64
-elapsed_time = time() - start_time
-print("SGD Elapsed time (10 percent noise): %0.10f seconds" %elapsed_time)
+# start_time = time()
+# w = sgdF(sample_c, tags_noise, eta, size_batch, max_it,w, error2get)
+# w.dtype=np.float64
+# elapsed_time = time() - start_time
+# print("SGD Elapsed time (10 percent noise): %0.10f seconds" %elapsed_time)
 
 
-print ('\nBondad del resultado para grad. descendente estocastico:\n')
-print ("w: ", w)
-print ("Ein: ", Err(sample_c,tags_noise,w))
+# print ('\nBondad del resultado para grad. descendente estocastico:\n')
+# print ("w: ", w)
+# print ("Ein: ", Err(sample_c,tags_noise,w))
 
-#graph SGD section C
-fig22c = plt.figure()
-ax22c = fig22c.add_subplot()
-ax22c.scatter(sample_c[:,1],sample_c[:,2],c=tags_noise)
-X = np.linspace(-1, 1, y.size)
-Y = (-w[0]-w[1]*X)/w[2]
-ax22c.plot(X, Y)
-ax22c.set_ylim(-1.0,1.0)
+# #graph SGD section C
+# fig22c = plt.figure()
+# ax22c = fig22c.add_subplot()
+# ax22c.scatter(sample_c[:,1],sample_c[:,2],c=tags_noise)
+# X = np.linspace(-1, 1, y.size)
+# Y = (-w[0]-w[1]*X)/w[2]
+# ax22c.plot(X, Y)
+# ax22c.set_ylim(-1.0,1.0)
 
-ax22c.set_title('SGD')
+# ax22c.set_title('SGD')
 
-number_iterations = 1000
-max_it = 1000
+# number_iterations = 1000
+# max_it = 400
 
-Ein = np.empty(number_iterations)
-Eout = np.empty(number_iterations)
+# Ein = np.empty(number_iterations)
+# Eout = np.empty(number_iterations)
 
-print("\ncalculate 1000 samples diferents: (aprox 2 minuts)")
-start_time = time()
-#Section D: run the experiment 1000 times with different samples and calculate the Ein and Eout
-for i in np.arange(number_iterations):
-    sample = simula_unif(1000,2,1)
-    #x0
-    ones = np.ones(int(sample.size/2))
-    #add x0, x1 and x2
-    sample_c = np.array([ones,sample[:,0],sample[:,1]])
-    #swap the axes, for sample_c(x0, x1, x2)
-    sample_c=sample_c.swapaxes(0,1)
+# print("\ncalculate 1000 samples diferents: (aprox 2 minuts)")
+# start_time = time()
+# #Section D: run the experiment 1000 times with different samples and calculate the Ein and Eout
+# for i in np.arange(number_iterations):
+#     sample = simula_unif(1000,2,1)
+#     #x0
+#     ones = np.ones(int(sample.size/2))
+#     #add x0, x1 and x2
+#     sample_c = np.array([ones,sample[:,0],sample[:,1]])
+#     #swap the axes, for sample_c(x0, x1, x2)
+#     sample_c=sample_c.swapaxes(0,1)
 
-    #add the tags
-    tags = F2(sample[:,0],sample[:,1])
-    tags_noise = noise(tags,0.1)
+#     #add the tags
+#     tags = F2(sample[:,0],sample[:,1])
+#     tags_noise = noise(tags,0.1)
     
-    w = sgdF(sample_c, tags_noise, eta, size_batch, max_it,w, error2get)
-    w.dtype=np.float64
+#     w = sgdF(sample_c, tags_noise, eta, size_batch, max_it,w, error2get)
+#     w.dtype=np.float64
     
-    Ein[i]=Err(sample_c,tags_noise,w)
+#     Ein[i]=Err(sample_c,tags_noise,w)
     
-    #Eout
-    sample_test = simula_unif(1000,2,1)
-    #x0
-    ones = np.ones(int(sample.size/2))
-    #add x0, x1 and x2
-    sample_test = np.array([ones,sample_test[:,0],sample_test[:,1]])
-    #swap the axes, for sample_c(x0, x1, x2)
-    sample_test=sample_test.swapaxes(0,1)
-    tags_test = F2(sample_test[:,0],sample_test[:,1])
+#     #Eout
+#     sample_test = simula_unif(1000,2,1)
+#     #x0
+#     ones = np.ones(int(sample.size/2))
+#     #add x0, x1 and x2
+#     sample_test = np.array([ones,sample_test[:,0],sample_test[:,1]])
+#     #swap the axes, for sample_c(x0, x1, x2)
+#     sample_test=sample_test.swapaxes(0,1)
+#     #add tags with 10% noise
+#     tags_test = F2(sample_test[:,0],sample_test[:,1])
+#     tags_test = noise(tags_test,0.1)
     
-    Eout[i] = Err(sample_test, tags_test, w)#calculate Eout
+#     Eout[i] = Err(sample_test, tags_test, w)#calculate Eout
     
     
-elapsed_time = time() - start_time
-print("SGD (1000 samples) Elapsed time: %0.10f seconds" %elapsed_time)
-print ("Ein medio: ", Ein.mean())
-print ("Eout medio: ", Eout.mean())
+# elapsed_time = time() - start_time
+# print("SGD (1000 samples) Elapsed time: %0.10f seconds" %elapsed_time)
+# print ("Ein medio: ", Ein.mean())
+# print ("Eout medio: ", Eout.mean())
+
+print('Ejercicio 2 NO LINEAL\n')
+
+# Simulate the data
+def vectorFeature(x1, x2):
+    print(x1)
+ 	#feature vector to return
+    vf = np.zeros((x1.size,6))
+    vf.dtype= np.float64
+    vf[:,0] = 1
+    vf[:,1] = x1
+    vf[:,2] = x2
+    vf[:,3] = x1*x2
+    vf[:,4] = np.power(x1,2)
+    vf[:,5] = np.power(x2,2)
+    #print(vf)
+    return vf
+
+#create the random sample    
+sample = simula_unif(10,2,1)
+#create the sample with feature = (1, x1, x2, x1x2, x1²,x2²)
+sample_c=vectorFeature(sample[:,0],sample[:,1])
+
+    
