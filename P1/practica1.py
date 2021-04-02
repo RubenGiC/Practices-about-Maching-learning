@@ -91,226 +91,226 @@ maxIter = 10000000000 #numero maximo de iteraciones
 error2get = 1e-14
 initial_point = np.array([1.0,1.0])#es el w inicial
 
-# w, it = gradient_descent(initial_point, eta, maxIter, error2get, E, gradE)
+w, it = gradient_descent(initial_point, eta, maxIter, error2get, E, gradE)
 
-# print ('Numero de iteraciones: ', it)
-# print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
+print ('Numero de iteraciones: ', it)
+print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
 
 
-# # DISPLAY FIGURE
-# from mpl_toolkits.mplot3d import Axes3D
-# x = np.linspace(-30, 30, 50)
-# y = np.linspace(-30, 30, 50)
-# X, Y = np.meshgrid(x, y)
+# DISPLAY FIGURE
+from mpl_toolkits.mplot3d import Axes3D
+x = np.linspace(-30, 30, 50)
+y = np.linspace(-30, 30, 50)
+X, Y = np.meshgrid(x, y)
 
-# Z = E(X, Y) #E_w([X, Y])
-# fig = plt.figure()
-# ax = Axes3D(fig)
-# surf = ax.plot_surface(X, Y, Z, edgecolor='none', rstride=1,
-#                         cstride=1, cmap='jet')
-# min_point = np.array([w[0],w[1]])
-# min_point_ = min_point[:, np.newaxis]
-# ax.plot(min_point_[0], min_point_[1], E(min_point_[0], min_point_[1]), 'r*', markersize=10)
-# ax.set(title='Ejercicio 1.2. Función sobre la que se calcula el descenso de gradiente')
-# ax.set_xlabel('u')
-# ax.set_ylabel('v')
-# ax.set_zlabel('E(u,v)')
+Z = E(X, Y) #E_w([X, Y])
+fig = plt.figure()
+ax = Axes3D(fig)
+surf = ax.plot_surface(X, Y, Z, edgecolor='none', rstride=1,
+                        cstride=1, cmap='jet')
+min_point = np.array([w[0],w[1]])
+min_point_ = min_point[:, np.newaxis]
+ax.plot(min_point_[0], min_point_[1], E(min_point_[0], min_point_[1]), 'r*', markersize=10)
+ax.set(title='Ejercicio 1.2. Función sobre la que se calcula el descenso de gradiente')
+ax.set_xlabel('u')
+ax.set_ylabel('v')
+ax.set_zlabel('E(u,v)')
 
-# input("\n--- Pulsar tecla para continuar ---\n")
+input("\n--- Pulsar tecla para continuar ---\n")
 
-# print('Ejercicio 1.3.A\n')
+print('Ejercicio 1.3.A\n')
 
-# def F(x,y):#calcula los valores x e y con la función F
-#     return (np.power((x+2),2)+(2*np.power((y-2),2))+(2*np.sin(2*np.pi*x)*np.sin(2*np.pi*y)))#function   
+def F(x,y):#calcula los valores x e y con la función F
+    return (np.power((x+2),2)+(2*np.power((y-2),2))+(2*np.sin(2*np.pi*x)*np.sin(2*np.pi*y)))#function   
 
-# #Derivada parcial de F con respecto a x
-# def dFx(x,y):
+#Derivada parcial de F con respecto a x
+def dFx(x,y):
     
-#     return 2*(x+2)+(4*np.pi*np.cos(2*np.pi*x)*np.sin(2*np.pi*y))#Derivada parcial de F con respecto a x resultado
+    return 2*(x+2)+(4*np.pi*np.cos(2*np.pi*x)*np.sin(2*np.pi*y))#Derivada parcial de F con respecto a x resultado
     
-# #Derivada parcial de F con respecto a y
-# def dFy(x,y):
+#Derivada parcial de F con respecto a y
+def dFy(x,y):
     
-#     return 4*(y-2)+4*np.pi*np.sin(2*np.pi*x)*np.cos(2*np.pi*y)#Derivada parcial de F con respecto a y resultado
+    return 4*(y-2)+4*np.pi*np.sin(2*np.pi*x)*np.cos(2*np.pi*y)#Derivada parcial de F con respecto a y resultado
 
-# #Gradiente de F (gradiente de la función)
-# def gradF(x,y):
-#     return np.array([np.float64(dFx(x,y)), np.float64(dFy(x,y))])
+#Gradiente de F (gradiente de la función)
+def gradF(x,y):
+    return np.array([np.float64(dFx(x,y)), np.float64(dFy(x,y))])
 
-# def gradient_descentF(w, eta, maxIter, F, gradF):
-#     #
-#     # gradiente descendente
-#     # 
-#     w_old= np.array([0.0,0.0])
-#     iterations=0#numero de iteraciones que hace
-#     points = []
+def gradient_descentF(w, eta, maxIter, F, gradF):
+    #
+    # gradiente descendente
+    # 
+    w_old= np.array([0.0,0.0])
+    iterations=0#numero de iteraciones que hace
+    points = []
 
-#     #mientras no supere el maximo de iteraciones
-#     while(iterations < maxIter):
+    #mientras no supere el maximo de iteraciones
+    while(iterations < maxIter):
         
-#         #guardo el valor de F con los valores obtenidos de inicio y los nuevos
-#         #en cada iteración, y en la iteración que se ha hecho
-#         points.append([F(w[0],w[1]),iterations])
-#         #obtengo el nuevo valor de w
-#         w = np.float64(w - (eta * gradF(w[0],w[1])))
+        #guardo el valor de F con los valores obtenidos de inicio y los nuevos
+        #en cada iteración, y en la iteración que se ha hecho
+        points.append([F(w[0],w[1]),iterations])
+        #obtengo el nuevo valor de w
+        w = np.float64(w - (eta * gradF(w[0],w[1])))
         
         
-#         iterations += 1#cuento el numero de iteraciones que hace
-#     #guardo el valor de F de la w final
-#     points.append([F(w[0],w[1]),iterations])
-#     #devuelvo el valor de w, las iteraciones que hace y los valores de F en cada w
-#     return w, iterations, points
+        iterations += 1#cuento el numero de iteraciones que hace
+    #guardo el valor de F de la w final
+    points.append([F(w[0],w[1]),iterations])
+    #devuelvo el valor de w, las iteraciones que hace y los valores de F en cada w
+    return w, iterations, points
 
-# eta = 0.01 #constante pequeña o learning rate
-# maxIter = 50 #numero maximo de iteraciones
-# initial_point = np.array([-1.0,1.0])#es el w inicial
+eta = 0.01 #constante pequeña o learning rate
+maxIter = 50 #numero maximo de iteraciones
+initial_point = np.array([-1.0,1.0])#es el w inicial
 
-# w, it, points = gradient_descentF(initial_point, eta, maxIter, F, gradF)
-# arr_points = np.array(points)#lo convierto a un array para mostrarlos en la grafica
+w, it, points = gradient_descentF(initial_point, eta, maxIter, F, gradF)
+arr_points = np.array(points)#lo convierto a un array para mostrarlos en la grafica
 
-# print('Learning Rate ',eta)
-# print ('Numero de iteraciones: ', it)
-# print ('Coordenadas obtenidas: F(', w[0], ', ', w[1],') = ',F(w[0],w[1]))
-
-
-# # DISPLAY FIGURE 3D 3.A eta=0.01
-# x = np.linspace(-30, 30, 50)
-# y = np.linspace(-30, 30, 50)
-# X, Y = np.meshgrid(x, y)
-
-# Z = F(X, Y)
-# fig = plt.figure()
-# ax = Axes3D(fig)
-# surf = ax.plot_surface(X, Y, Z, edgecolor='none', rstride=1,
-#                         cstride=1, cmap='jet')
-# min_point = np.array([w[0],w[1]])
-# min_point_ = min_point[:, np.newaxis]
-# ax.plot(min_point_[0], min_point_[1], F(min_point_[0], min_point_[1]), 'r*', markersize=10)
-# ax.set(title='Ejercicio 1.3.a Función sobre la que se calcula el descenso de gradiente F(x,y) eta=0\'01')
-# ax.set_xlabel('X')
-# ax.set_ylabel('Y')
-# ax.set_zlabel('F(x,y)')
-# fig.suptitle('Figura 3D Ejercicio 1.3.a eta=0\'01')
-
-# # DISPLAY FIGURE 2D 3.A eta=0.01
-# # for i in arr_points:
-# #     print(i[0],', ',i[1])
-# fig1 = plt.figure()
-# ax1 = fig1.add_subplot()
-# ax1.plot(arr_points[:,1],arr_points[:,0])
-# ax1.set_xlabel('Iteraciones')
-# ax1.set_ylabel('F(x,y)')
-# ax1.set_title('Evolución del Gradiente Descendiente en F(x,y), con eta=0\'01')
-
-# eta = 0.1 #constante pequeña o learning rate
-
-# w, it, points = gradient_descentF(initial_point, eta, maxIter, F, gradF)
-# arr_points2 = np.array(points)
-
-# print('Learning Rate ',eta)
-# print ('Numero de iteraciones: ', it)
-# print ('Coordenadas obtenidas: F(', w[0], ', ', w[1],') = ',F(w[0],w[1]))
+print('Learning Rate ',eta)
+print ('Numero de iteraciones: ', it)
+print ('Coordenadas obtenidas: F(', w[0], ', ', w[1],') = ',F(w[0],w[1]))
 
 
-# # DISPLAY FIGURE 3D 3.A eta=0.1
-# x = np.linspace(-30, 30, 50)
-# y = np.linspace(-30, 30, 50)
-# X, Y = np.meshgrid(x, y)
+# DISPLAY FIGURE 3D 3.A eta=0.01
+x = np.linspace(-30, 30, 50)
+y = np.linspace(-30, 30, 50)
+X, Y = np.meshgrid(x, y)
 
-# Z = F(X, Y)
-# fig = plt.figure()
-# ax = Axes3D(fig)
-# surf = ax.plot_surface(X, Y, Z, edgecolor='none', rstride=1,
-#                         cstride=1, cmap='jet')
-# min_point = np.array([w[0],w[1]])
-# min_point_ = min_point[:, np.newaxis]
-# ax.plot(min_point_[0], min_point_[1], F(min_point_[0], min_point_[1]), 'r*', markersize=10)
-# ax.set(title='Ejercicio 1.3.a Función sobre la que se calcula el descenso de gradiente F(x,y) eta=0\'1')
-# ax.set_xlabel('X')
-# ax.set_ylabel('Y')
-# ax.set_zlabel('F(x,y)')
-# fig.suptitle('Figura 3D Ejercicio 1.3.a eta=0\'1')
+Z = F(X, Y)
+fig = plt.figure()
+ax = Axes3D(fig)
+surf = ax.plot_surface(X, Y, Z, edgecolor='none', rstride=1,
+                        cstride=1, cmap='jet')
+min_point = np.array([w[0],w[1]])
+min_point_ = min_point[:, np.newaxis]
+ax.plot(min_point_[0], min_point_[1], F(min_point_[0], min_point_[1]), 'r*', markersize=10)
+ax.set(title='Ejercicio 1.3.a Función sobre la que se calcula el descenso de gradiente F(x,y) eta=0\'01')
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('F(x,y)')
+fig.suptitle('Figura 3D Ejercicio 1.3.a eta=0\'01')
 
-# # DISPLAY FIGURE 2D 3.A eta=0.1
-# # for i in arr_points2:
-# #     print(i[0],', ',i[1])
+# DISPLAY FIGURE 2D 3.A eta=0.01
+# for i in arr_points:
+#     print(i[0],', ',i[1])
+fig1 = plt.figure()
+ax1 = fig1.add_subplot()
+ax1.plot(arr_points[:,1],arr_points[:,0])
+ax1.set_xlabel('Iteraciones')
+ax1.set_ylabel('F(x,y)')
+ax1.set_title('Evolución del Gradiente Descendiente en F(x,y), con eta=0\'01')
+
+eta = 0.1 #constante pequeña o learning rate
+
+w, it, points = gradient_descentF(initial_point, eta, maxIter, F, gradF)
+arr_points2 = np.array(points)
+
+print('Learning Rate ',eta)
+print ('Numero de iteraciones: ', it)
+print ('Coordenadas obtenidas: F(', w[0], ', ', w[1],') = ',F(w[0],w[1]))
+
+
+# DISPLAY FIGURE 3D 3.A eta=0.1
+x = np.linspace(-30, 30, 50)
+y = np.linspace(-30, 30, 50)
+X, Y = np.meshgrid(x, y)
+
+Z = F(X, Y)
+fig = plt.figure()
+ax = Axes3D(fig)
+surf = ax.plot_surface(X, Y, Z, edgecolor='none', rstride=1,
+                        cstride=1, cmap='jet')
+min_point = np.array([w[0],w[1]])
+min_point_ = min_point[:, np.newaxis]
+ax.plot(min_point_[0], min_point_[1], F(min_point_[0], min_point_[1]), 'r*', markersize=10)
+ax.set(title='Ejercicio 1.3.a Función sobre la que se calcula el descenso de gradiente F(x,y) eta=0\'1')
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('F(x,y)')
+fig.suptitle('Figura 3D Ejercicio 1.3.a eta=0\'1')
+
+# DISPLAY FIGURE 2D 3.A eta=0.1
+# for i in arr_points2:
+#     print(i[0],', ',i[1])
     
-# fig2 = plt.figure()
-# ax2 = fig2.add_subplot()
-# ax2.plot(arr_points2[:,1],arr_points2[:,0])
-# ax2.set_xlabel('Iteraciones')
-# ax2.set_ylabel('F(x,y)')
-# ax2.set_title('Evolución del Gradiente Descendiente en F(x,y), con eta=0\'1')
+fig2 = plt.figure()
+ax2 = fig2.add_subplot()
+ax2.plot(arr_points2[:,1],arr_points2[:,0])
+ax2.set_xlabel('Iteraciones')
+ax2.set_ylabel('F(x,y)')
+ax2.set_title('Evolución del Gradiente Descendiente en F(x,y), con eta=0\'1')
 
-# # DISPLAY FIGURE 2D 3.A compare eta = 0.01 y 0.1
-# fig3 = plt.figure()
-# ax3 = fig3.add_subplot()
-# ax3.plot(arr_points2[:,1],arr_points2[:,0],color='orange')
-# ax3.plot(arr_points[:,1],arr_points[:,0],color='blue')
-# ax3.set_xlabel('Iteraciones')
-# ax3.set_ylabel('F(x,y)')
-# ax3.set_title('Comparación de la evolución del Gradiente Descendiente en F(x,y), con eta=0\'01 y 0\'1')
+# DISPLAY FIGURE 2D 3.A compare eta = 0.01 y 0.1
+fig3 = plt.figure()
+ax3 = fig3.add_subplot()
+ax3.plot(arr_points2[:,1],arr_points2[:,0],color='orange')
+ax3.plot(arr_points[:,1],arr_points[:,0],color='blue')
+ax3.set_xlabel('Iteraciones')
+ax3.set_ylabel('F(x,y)')
+ax3.set_title('Comparación de la evolución del Gradiente Descendiente en F(x,y), con eta=0\'01 y 0\'1')
 
-# input("\n--- Pulsar tecla para continuar ---\n")
+input("\n--- Pulsar tecla para continuar ---\n")
 
-# print('Ejercicio 1.3.B\n')
+print('Ejercicio 1.3.B\n')
 
-# eta = 0.01 #constante pequeña o learning rate
-# maxIter = 50 #numero maximo de iteraciones
-# #creo un array de w0s
-# initial_points = np.array([[-0.5,-0.5],[1.0,1.0],[2.1,-2.1],[-3.0,3.0],[-2.0,2.0]])
+eta = 0.01 #constante pequeña o learning rate
+maxIter = 50 #numero maximo de iteraciones
+#creo un array de w0s
+initial_points = np.array([[-0.5,-0.5],[1.0,1.0],[2.1,-2.1],[-3.0,3.0],[-2.0,2.0]])
 
-# #creo una matriz 5x5 donde cada fila guarda:
-# #el w inicial, el w final y el valor de F del w final
-# results_w = np.array(np.zeros((5,5)))
-# results_p = []#lista de puntos para la grafica
-# pos=0
+#creo una matriz 5x5 donde cada fila guarda:
+#el w inicial, el w final y el valor de F del w final
+results_w = np.array(np.zeros((5,5)))
+results_p = []#lista de puntos para la grafica
+pos=0
 
-# for ip in initial_points:# recorro el array de puntos iniciales
-#     #calculo el w final, el numero de iteraciones y la evolución de w
-#     w, it, points = gradient_descentF(ip, eta, maxIter, F, gradF)
+for ip in initial_points:# recorro el array de puntos iniciales
+    #calculo el w final, el numero de iteraciones y la evolución de w
+    w, it, points = gradient_descentF(ip, eta, maxIter, F, gradF)
     
-#     #guardo el resultado para la tabla
-#     results_w[pos]=[ip[0],ip[1],w[0],w[1],F(w[0],w[1])]
-#     results_p.append(points)#guardo los puntos
-#     pos +=1#para la matriz
+    #guardo el resultado para la tabla
+    results_w[pos]=[ip[0],ip[1],w[0],w[1],F(w[0],w[1])]
+    results_p.append(points)#guardo los puntos
+    pos +=1#para la matriz
     
-#     print('Initial Point ',ip)
-#     print ('Numero de iteraciones: ', it)
-#     print ('Coordenadas obtenidas: F(', w[0], ', ', w[1],') = ',F(w[0],w[1]),'\n')
+    print('Initial Point ',ip)
+    print ('Numero de iteraciones: ', it)
+    print ('Coordenadas obtenidas: F(', w[0], ', ', w[1],') = ',F(w[0],w[1]),'\n')
     
-# #print(results_w)
+#print(results_w)
     
-# #tablas que muestran los resultados de cada uno de los puntos iniciales
-# fig3b=plt.figure(dpi=200)#pongo esto porque sino pierde resolución
-# ax3b = fig3b.add_subplot()
-# ax3b.axis('off')
-# labels = ['w0 x','w0 y','wf x','wf y','F(wf)']
-# tabla = ax3b.table(
-#     cellText=(results_w), 
-#     loc='upper left', 
-#     colLabels=(labels), 
-#     colColours=["palegreen"]*5,
-#     cellLoc='center'
-#     )
-# tabla.auto_set_font_size(False)
-# tabla.set_fontsize(5)
+#tablas que muestran los resultados de cada uno de los puntos iniciales
+fig3b=plt.figure(dpi=200)#pongo esto porque sino pierde resolución
+ax3b = fig3b.add_subplot()
+ax3b.axis('off')
+labels = ['w0 x','w0 y','wf x','wf y','F(wf)']
+tabla = ax3b.table(
+    cellText=(results_w), 
+    loc='upper left', 
+    colLabels=(labels), 
+    colColours=["palegreen"]*5,
+    cellLoc='center'
+    )
+tabla.auto_set_font_size(False)
+tabla.set_fontsize(5)
 
-# #grafica de la evolución de cada punto inicial
-# arr_results_p = np.array(results_p)
-# fig3b1 = plt.figure()
-# ax3b1 = fig3b1.add_subplot()
-# ax3b1.plot(arr_results_p[0,:,1],arr_results_p[0,:,0],color='orange',label='(-0.5,-0.5)')
-# ax3b1.plot(arr_results_p[1,:,1],arr_results_p[1,:,0],color='blue',label='(1.0,1.0)')
-# ax3b1.plot(arr_results_p[2,:,1],arr_results_p[2,:,0],color='red',label='(2.1,-2.1)')
-# ax3b1.plot(arr_results_p[3,:,1],arr_results_p[3,:,0],color='green',label='(-3.0,3.0)')
-# ax3b1.plot(arr_results_p[4,:,1],arr_results_p[4,:,0],color='yellow',label='(-2.0,2.0)')
-# ax3b1.set_xlabel('Iteraciones')
-# ax3b1.set_ylabel('F(x,y)')
-# ax3b1.legend()
-# ax3b1.set_title('Comparación de la evolución del Gradiente Descendiente en F(x,y)')
+#grafica de la evolución de cada punto inicial
+arr_results_p = np.array(results_p)
+fig3b1 = plt.figure()
+ax3b1 = fig3b1.add_subplot()
+ax3b1.plot(arr_results_p[0,:,1],arr_results_p[0,:,0],color='orange',label='(-0.5,-0.5)')
+ax3b1.plot(arr_results_p[1,:,1],arr_results_p[1,:,0],color='blue',label='(1.0,1.0)')
+ax3b1.plot(arr_results_p[2,:,1],arr_results_p[2,:,0],color='red',label='(2.1,-2.1)')
+ax3b1.plot(arr_results_p[3,:,1],arr_results_p[3,:,0],color='green',label='(-3.0,3.0)')
+ax3b1.plot(arr_results_p[4,:,1],arr_results_p[4,:,0],color='yellow',label='(-2.0,2.0)')
+ax3b1.set_xlabel('Iteraciones')
+ax3b1.set_ylabel('F(x,y)')
+ax3b1.legend()
+ax3b1.set_title('Comparación de la evolución del Gradiente Descendiente en F(x,y)')
 
-# input("\n--- Pulsar tecla para continuar ---\n")
+input("\n--- Pulsar tecla para continuar ---\n")
 
 ###############################################################################
 ###############################################################################
@@ -436,52 +436,52 @@ size_batch=32 #it is the size for each mini-batch
 maxIter = 50000
 w = np.zeros(3, dtype=np.float64) #initialize w to 0
 
-# start_time = time()
-# w = sgd(x,y,eta,size_batch, maxIter, w, error2get)
-# elapsed_time = time() - start_time
-# print("SGD Elapsed time: %0.10f seconds" %elapsed_time)
+start_time = time()
+w = sgd(x,y,eta,size_batch, maxIter, w, error2get)
+elapsed_time = time() - start_time
+print("SGD Elapsed time: %0.10f seconds" %elapsed_time)
 
 
-# start_time = time()
-# w2 = pseudoinverse(x,y)
-# w2.dtype=np.float64
-# elapsed_time = time() - start_time
-# print("Psud.-Inv Elapsed time: %0.10f seconds" %elapsed_time)
+start_time = time()
+w2 = pseudoinverse(x,y)
+w2.dtype=np.float64
+elapsed_time = time() - start_time
+print("Psud.-Inv Elapsed time: %0.10f seconds" %elapsed_time)
 
 
-# print ('\nBondad del resultado para grad. descendente estocastico:\n')
-# print ("w: ", w)
-# print ("Ein: ", Err(x,y,w))
-# print ("Eout: ", Err(x_test, y_test, w))
+print ('\nBondad del resultado para grad. descendente estocastico:\n')
+print ("w: ", w)
+print ("Ein: ", Err(x,y,w))
+print ("Eout: ", Err(x_test, y_test, w))
 
-# print ('\nBondad del resultado para Pseudo-Inverse:\n')
-# print ("w: ", w2)
-# print ("Ein: ", np.float64(Err(x,y,w2)))
-# print ("Eout: ", np.float64(Err(x_test, y_test, w2)))
+print ('\nBondad del resultado para Pseudo-Inverse:\n')
+print ("w: ", w2)
+print ("Ein: ", np.float64(Err(x,y,w2)))
+print ("Eout: ", np.float64(Err(x_test, y_test, w2)))
 
-# input("\n--- Pulsar tecla para continuar ---\n")
+input("\n--- Pulsar tecla para continuar ---\n")
 
 #grafica SGD
 
-# fig21 = plt.figure()
-# ax21 = fig21.add_subplot()
-# ax21.scatter(x[:,1],x[:,2],c=y)
-# ax21.plot([0,1], [-w[0]/w[2], -w[0]/w[2]-w[1]/w[2]])
+fig21 = plt.figure()
+ax21 = fig21.add_subplot()
+ax21.scatter(x[:,1],x[:,2],c=y)
+ax21.plot([0,1], [-w[0]/w[2], -w[0]/w[2]-w[1]/w[2]])
 
-# ax21.set_xlabel('Intensity')
-# ax21.set_ylabel('Simmetry')
-# ax21.set_title('SGD')
+ax21.set_xlabel('Intensity')
+ax21.set_ylabel('Simmetry')
+ax21.set_title('SGD')
 
-# #grafica pseudo-inverse
+#grafica pseudo-inverse
 
-# fig212 = plt.figure()
-# ax212 = fig212.add_subplot()
-# ax212.scatter(x[:,1],x[:,2],c=y)
-# ax212.plot([0,1], [-w2[0]/w2[2], -w2[0]/w2[2]-w2[1]/w2[2]])
+fig212 = plt.figure()
+ax212 = fig212.add_subplot()
+ax212.scatter(x[:,1],x[:,2],c=y)
+ax212.plot([0,1], [-w2[0]/w2[2], -w2[0]/w2[2]-w2[1]/w2[2]])
 
-# ax212.set_xlabel('Intensity')
-# ax212.set_ylabel('Simmetry')
-# ax212.set_title('Pseudo-Inverse')
+ax212.set_xlabel('Intensity')
+ax212.set_ylabel('Simmetry')
+ax212.set_title('Pseudo-Inverse')
 
 
 
@@ -534,10 +534,10 @@ def F2(x1, x2):
 sample = simula_unif(1000,2,1)
 
 #Section A: show the 2D points of the sample of 1000 random points
-# fig22a = plt.figure()
-# ax22a = fig22a.add_subplot()
-# ax22a.scatter(sample[:,0],sample[:,1])
-# ax22a.set_title('1000 Points random')
+fig22a = plt.figure()
+ax22a = fig22a.add_subplot()
+ax22a.scatter(sample[:,0],sample[:,1])
+ax22a.set_title('1000 Points random')
 
 #add the tags
 tags = F2(sample[:,0],sample[:,1])
@@ -558,8 +558,6 @@ sample_c = np.array([ones,sample[:,0],sample[:,1]])
 #swap the axes, for sample_c(x0, x1, x2)
 sample_c=sample_c.swapaxes(0,1)
 
-# print(sample_c[0])
-# print(sample[0])
     
 # mini-batch gradient (derivate of the error function)
 def gradientF(x,y,w):
@@ -574,7 +572,7 @@ def sgdF(x,y,eta,size_batch, maxIter, w, error2get):
     
     
     #shuffle the indexes
-    indices = np.random.permutation(len(x))
+    indices = np.random.permutation(x[:,0].size)
     min_batch_n = 0 # indexe of mini-batch
     iterate=0
     #maximum number of iterate for each mini-batch
@@ -584,9 +582,9 @@ def sgdF(x,y,eta,size_batch, maxIter, w, error2get):
     #maximum number of iterations
     while(Err(x,y,w)>error2get and iterate < maxIter):
         
-        if(max_iteration_batch>=len(x) and (min_batch_n*size_batch)<len(x)):
+        if(max_iteration_batch>=x[:,0].size and (min_batch_n*size_batch)<len(x)):
             #create the mini-batch from the first index to (the size of x) -1
-            max_iteration_batch = len(x)
+            max_iteration_batch = x[:,0].size
         
         #create mini-batches
         batch_x = x[indices[min_batch_n:max_iteration_batch],:]
@@ -642,49 +640,49 @@ ax22c.set_title('SGD')
 number_iterations = 1000
 max_it = 400
 
-# Ein = np.empty(number_iterations)
-# Eout = np.empty(number_iterations)
+Ein = np.empty(number_iterations)
+Eout = np.empty(number_iterations)
 
-# print("\ncalculate 1000 samples diferents: (aprox 2 minuts)")
-# start_time = time()
-# #Section D: run the experiment 1000 times with different samples and calculate the Ein and Eout
-# for i in np.arange(number_iterations):
-#     sample = simula_unif(1000,2,1)
-#     #x0
-#     ones = np.ones(int(sample.size/2))
-#     #add x0, x1 and x2
-#     sample_c = np.array([ones,sample[:,0],sample[:,1]])
-#     #swap the axes, for sample_c(x0, x1, x2)
-#     sample_c=sample_c.swapaxes(0,1)
+print("\ncalculate 1000 samples diferents: (aprox 2 minuts)")
+start_time = time()
+#Section D: run the experiment 1000 times with different samples and calculate the Ein and Eout
+for i in np.arange(number_iterations):
+    sample = simula_unif(1000,2,1)
+    #x0
+    ones = np.ones(int(sample.size/2))
+    #add x0, x1 and x2
+    sample_c = np.array([ones,sample[:,0],sample[:,1]])
+    #swap the axes, for sample_c(x0, x1, x2)
+    sample_c=sample_c.swapaxes(0,1)
 
-#     #add the tags
-#     tags = F2(sample[:,0],sample[:,1])
-#     tags_noise = noise(tags,0.1)
+    #add the tags
+    tags = F2(sample[:,0],sample[:,1])
+    tags_noise = noise(tags,0.1)
     
-#     w = sgdF(sample_c, tags_noise, eta, size_batch, max_it,w, error2get)
-#     w.dtype=np.float64
+    w = sgdF(sample_c, tags_noise, eta, size_batch, max_it,w, error2get)
+    w.dtype=np.float64
     
-#     Ein[i]=Err(sample_c,tags_noise,w)
+    Ein[i]=Err(sample_c,tags_noise,w)
     
-#     #Eout
-#     sample_test = simula_unif(1000,2,1)
-#     #x0
-#     ones = np.ones(int(sample.size/2))
-#     #add x0, x1 and x2
-#     sample_test = np.array([ones,sample_test[:,0],sample_test[:,1]])
-#     #swap the axes, for sample_c(x0, x1, x2)
-#     sample_test=sample_test.swapaxes(0,1)
-#     #add tags with 10% noise
-#     tags_test = F2(sample_test[:,0],sample_test[:,1])
-#     tags_test = noise(tags_test,0.1)
+    #Eout
+    sample_test = simula_unif(1000,2,1)
+    #x0
+    ones = np.ones(int(sample.size/2))
+    #add x0, x1 and x2
+    sample_test = np.array([ones,sample_test[:,0],sample_test[:,1]])
+    #swap the axes, for sample_c(x0, x1, x2)
+    sample_test=sample_test.swapaxes(0,1)
+    #add tags with 10% noise
+    tags_test = F2(sample_test[:,0],sample_test[:,1])
+    tags_test = noise(tags_test,0.1)
     
-#     Eout[i] = Err(sample_test, tags_test, w)#calculate Eout
+    Eout[i] = Err(sample_test, tags_test, w)#calculate Eout
     
     
-# elapsed_time = time() - start_time
-# print("SGD (1000 samples) Elapsed time: %0.10f seconds" %elapsed_time)
-# print ("Ein medio: ", Ein.mean())
-# print ("Eout medio: ", Eout.mean())
+elapsed_time = time() - start_time
+print("SGD (1000 samples) Elapsed time: %0.10f seconds" %elapsed_time)
+print ("Ein medio: ", Ein.mean())
+print ("Eout medio: ", Eout.mean())
 
 print('Ejercicio 2 NO LINEAL\n')
 
@@ -709,11 +707,8 @@ def gradientF2(x,y,w):
     #sumatory(h(Xn) - Yn), where n is the iteration of the mini-batch
     sum_total_batch = np.sum(x.dot(w)) - y
     
-    #(2 * Xn * sum_total_batch)/n
-    # arr_total_batch = (sum_total_batch.dot(x)*2)/x[:,0].size
-    
     #derivate (2 * Xn * sum_total_batch)/n
-    return sum_total_batch.dot(x)*2/x[:,0].size#arr_total_batch
+    return (sum_total_batch.dot(x)*2/x[:,0].size)#arr_total_batch
 
 def sgdF2(x,y,eta,size_batch, maxIter, w, error2get):
     
@@ -738,7 +733,7 @@ def sgdF2(x,y,eta,size_batch, maxIter, w, error2get):
         batch_y = y[indices[min_batch_n:max_iteration_batch]]
         
         #update the w = w - eta * (derivate of square error)
-        w = w - (eta*gradientF2(batch_x,batch_y,w))
+        w = w - (eta*gradientF(batch_x,batch_y,w))
         #print(w)
             
         #increase the limit of each mini-batch and minimum
@@ -772,42 +767,43 @@ start_time = time()
 # #Section D: repeat the experiment but with non-linear characteristics
 for i in np.arange(number_iterations):
     #create the random sample    
-    sample = simula_unif(1000,2,1)
+    sample2 = simula_unif(1000,2,1)
     #create the sample with feature = (1, x1, x2, x1x2, x1²,x2²)
-    sample_c=vectorFeature(sample[:,0],sample[:,1])
+    sample_c2=vectorFeature(sample2[:,0],sample2[:,1])
     
     #add the tags
-    tags = F2(sample[:,0],sample[:,1])
-    tags_noise = noise(tags,0.1)
+    tags2 = F2(sample2[:,0],sample2[:,1])
+    tags_noise2 = noise(tags2,0.1)
     
-    w = sgdF(sample_c, tags_noise, eta, size_batch, max_it,w, error2get)
+    w = sgdF(sample_c2, tags_noise2, eta, size_batch, max_it, w, error2get)
     w.dtype=np.float64
     
     #print(w)
     
-    Ein2[i]=Err(sample_c,tags_noise,w)
+    Ein2[i]=Err(sample_c2,tags_noise2,w)
     
     #create the random sample test   
-    sample_test = simula_unif(1000,2,1)
+    sample_test2 = simula_unif(1000,2,1)
     #create the sample test with feature = (1, x1, x2, x1x2, x1²,x2²)
-    sample_test_c=vectorFeature(sample_test[:,0],sample_test[:,1])
+    sample_test_c2=vectorFeature(sample_test2[:,0],sample_test2[:,1])
     
     #add the tags test
-    tags_test = F2(sample_test[:,0],sample_test[:,1])
-    tags_test_noise = noise(tags,0.1)
+    tags_test2 = F2(sample_test2[:,0],sample_test2[:,1])
+    tags_test_noise2 = noise(tags2,0.1)
     
-    Eout2[i] = Err(sample_test_c, tags_test_noise, w)#calculate Eout
-    
-    #graph SGD section C
-    # fig22c = plt.figure()
-    # ax22c = fig22c.add_subplot()
-    # ax22c.scatter(sample_c[:,1],sample_c[:,2],c=tags_noise)
-    # X = np.linspace(-1, 1, y.size)
-    # Y = (-w[0]-w[1]*X)/w[2]
-    # ax22c.plot(X, Y)
+    Eout2[i] = Err(sample_test_c2, tags_test_noise2, w)#calculate Eout
     
     
 elapsed_time = time() - start_time
 print("SGD (1000 samples) Elapsed time: %0.10f seconds" %elapsed_time)
 print ("Ein medio: ", Ein2.mean())
 print ("Eout medio: ", Eout2.mean())
+
+
+Ein2 = np.empty(number_iterations)
+Eout2 = np.empty(number_iterations)
+w = np.zeros(6, dtype=np.float64) #initialize w to 0
+number_iterations = 1000
+max_it = 500
+size_batch = 32
+eta = 0.001
