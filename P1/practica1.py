@@ -544,10 +544,10 @@ tags = F2(sample[:,0],sample[:,1])
 tags_noise = noise(tags,0.1)
 
 #Section B: show the 2D points of the sample with the labels with 10% noise
-# fig22a = plt.figure()
-# ax22a = fig22a.add_subplot()
-# ax22a.scatter(sample[:,0],sample[:,1], c=tags_noise)
-# ax22a.set_title('1000 Points random with 10% noise')
+fig22a = plt.figure()
+ax22a = fig22a.add_subplot()
+ax22a.scatter(sample[:,0],sample[:,1], c=tags_noise)
+ax22a.set_title('1000 Points random with 10% noise')
 
 
 #Section C: 
@@ -684,7 +684,7 @@ print("SGD (1000 samples) Elapsed time: %0.10f seconds" %elapsed_time)
 print ("Ein medio: ", Ein.mean())
 print ("Eout medio: ", Eout.mean())
 
-print('Ejercicio 2 NO LINEAL\n')
+print('\nEjercicio 2 NO LINEAL\n')
 
 # Simulate the data
 def vectorFeature(x1, x2):
@@ -699,58 +699,7 @@ def vectorFeature(x1, x2):
     vf[:,4] = np.power(x1,2)
     vf[:,5] = np.power(x2,2)
     #print(vf)
-    return vf
-
-# mini-batch gradient (derivate of the error function)
-def gradientF2(x,y,w):
-    
-    #sumatory(h(Xn) - Yn), where n is the iteration of the mini-batch
-    sum_total_batch = np.sum(x.dot(w)) - y
-    
-    #derivate (2 * Xn * sum_total_batch)/n
-    return (sum_total_batch.dot(x)*2/x[:,0].size)#arr_total_batch
-
-def sgdF2(x,y,eta,size_batch, maxIter, w, error2get):
-    
-    
-    #shuffle the indexes
-    indices = np.random.permutation(len(x))
-    min_batch_n = 0 # indexe of mini-batch
-    iterate=0
-    #maximum number of iterate for each mini-batch
-    max_iteration_batch = size_batch
-    
-    # while the error is greater than 10¹⁴ and doesn't exceed the
-    #maximum number of iterations
-    while(Err(x,y,w)>error2get and iterate < maxIter):
-        
-        if(max_iteration_batch>=len(x) and (min_batch_n*size_batch)<len(x)):
-            #create the mini-batch from the first index to (the size of x) -1
-            max_iteration_batch = len(x)
-        
-        #create mini-batches
-        batch_x = x[indices[min_batch_n:max_iteration_batch],:]
-        batch_y = y[indices[min_batch_n:max_iteration_batch]]
-        
-        #update the w = w - eta * (derivate of square error)
-        w = w - (eta*gradientF(batch_x,batch_y,w))
-        #print(w)
-            
-        #increase the limit of each mini-batch and minimum
-        max_iteration_batch = max_iteration_batch + size_batch
-        min_batch_n += size_batch
-        
-        #if min_batch_n exceeds the minimum value above the sample size
-        if(min_batch_n > len(x)):
-            # reset indexs
-            min_batch_n = 0
-            max_iteration_batch = size_batch
-        
-        #increment in each iteration
-        iterate = iterate + 1
-            
-    #print("Iterations: ",iterate)
-    return w #it return the optimal w    
+    return vf  
 
 
 Ein2 = np.empty(number_iterations)
@@ -761,7 +710,7 @@ max_it = 500
 size_batch = 32
 eta = 0.001
     
-print("\ncalculate 1000 samples diferents non-linear: (aprox 1 minut)")
+print("calculate 1000 samples diferents non-linear: (aprox 1 minut)")
 start_time = time()
 
 # #Section D: repeat the experiment but with non-linear characteristics

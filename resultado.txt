@@ -1,0 +1,3 @@
+SGD (1000 samples) Elapsed time: 46.2017946243 seconds
+Ein medio:  0.593730367915392
+Eout medio:  1.4396564900929927
