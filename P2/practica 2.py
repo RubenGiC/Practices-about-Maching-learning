@@ -93,25 +93,68 @@ for i in np.arange(x[:,0].size):
     tag[i] = f(x[i,0], x[i,1], a, b)
     
 
+# #Draw the graph
+# fig2a = plt.figure()
+# ax2a = fig2a.add_subplot()
+# ax2a.scatter(x[:,0],x[:,1],c=tag)
+# #calculate the perfect parting line
+# X = np.linspace(-50, 50, tag.size)
+# #solves the function for the variable Y
+# #f(x,y) = y - ax -b
+# Y = (a*X) + b
+# ax2a.plot(X, Y)
+# ax2a.set_title('Nube de puntos aleatoria uniforme, ajuste perfecto (100)')
+
+
+input("\n--- Pulsar tecla para continuar ---\n")
+
+# 1.2.b. Dibujar una gráfica donde los puntos muestren el resultado de su etiqueta, junto con la recta usada para ello
+# Array con 10% de indices aleatorios para introducir ruido
+
+#tags with 10% noise to positive tags and 10% to negative tags
+def noise(tags,percent):
+    
+    #copy the tags
+    tags_noise = tags.copy()
+
+    #max number of points to change positive and negative (10%)
+    max_positive = int(tags.size*percent)
+    max_negative = int(tags.size*percent)
+    
+    #indices of sample with noise (random integer without repeating)
+    ind_noise = np.random.choice(tags_noise.size, tags_noise.size, replace=False)
+    print(ind_noise)
+    i = p = n = 0
+    
+    while(p < max_positive and n < max_negative):
+        
+        if(tags_noise[i]>0):
+            tags_noise[ind_noise[i]]=-tags_noise[ind_noise[i]]#change the sign
+            ++max_positive
+        else:
+            tags_noise[ind_noise[i]]=-tags_noise[ind_noise[i]]#change the sign
+            ++max_negative
+        ++i
+    
+    return tags_noise
+
+
+#add 10% noise to the positive points and another 10% noise for the negative points
+tag = noise(tag,0.1)
+
 #Draw the graph
 fig2a = plt.figure()
 ax2a = fig2a.add_subplot()
 ax2a.scatter(x[:,0],x[:,1],c=tag)
 #calculate the perfect parting line
 X = np.linspace(-50, 50, tag.size)
+#solves the function for the variable Y
+#f(x,y) = y - ax -b
 Y = (a*X) + b
 ax2a.plot(X, Y)
 ax2a.set_title('Nube de puntos aleatoria uniforme, ajuste perfecto (100)')
 
-
 input("\n--- Pulsar tecla para continuar ---\n")
-
-# # 1.2.b. Dibujar una gráfica donde los puntos muestren el resultado de su etiqueta, junto con la recta usada para ello
-# # Array con 10% de indices aleatorios para introducir ruido
-
-# #CODIGO DEL ESTUDIANTE
-
-# input("\n--- Pulsar tecla para continuar ---\n")
 
 # ###############################################################################
 # ###############################################################################
