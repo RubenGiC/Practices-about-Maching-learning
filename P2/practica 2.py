@@ -157,6 +157,12 @@ tag_noise = noise(tag,0.1)
 fig2a = plt.figure()
 ax2a = fig2a.add_subplot()
 ax2a.scatter(x[:,0],x[:,1],c=tag_noise)
+#calculate the perfect parting line
+X = np.linspace(-50, 50, tag_noise.size)
+#solves the function for the variable Y
+#f(x,y) = y - ax -b
+Y = (a*X) + b
+ax2a.plot(X, Y)
 ax2a.set_title('Nube de puntos aleatoria uniforme, con 10% de ruido para los puntos positivos y negativos')
 
 input("\n--- Pulsar tecla para continuar ---\n")
