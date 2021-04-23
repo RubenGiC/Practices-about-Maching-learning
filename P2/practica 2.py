@@ -5,6 +5,7 @@ Nombre Estudiante:
 """
 import numpy as np
 import matplotlib.pyplot as plt
+from time import time
 
 
 # Fijamos la semilla
@@ -116,10 +117,21 @@ def noise(tags,percent):
     
     #copy the tags
     tags_noise = tags.copy()
+    
+    n_positive = 0
+    n_negative = 0
+    
+    for i in tags:
+        if(i>0):
+            n_positive = n_positive + 1
+        else:
+            n_negative = n_negative + 1
 
     #max number of points to change positive and negative (10%)
-    max_positive = int(tags.size*percent)
-    max_negative = int(tags.size*percent)
+    max_positive = int(n_positive*percent)
+    max_negative = int(n_negative*percent)
+    
+    #print("POSITIVOS: ",n_positive,", NEGATIVOS: ",n_negative,", 10%: ",max_positive,", ",max_negative)
     
     #indices of sample with noise (random integer without repeating)
     ind_noise = np.random.choice(tags_noise.size, tags_noise.size, replace=False)
@@ -225,16 +237,15 @@ def f3(x):
 def f4(x):
     return (x[:,1]-(np.dot(20,np.power(x[:,0],2)))-(x[:,0].dot(5))+3)
 
-y1 = f1(x)
-plot_datos_cuad(x, y1, f1,'f(x,y) = (x-10)² + (y-20)² - 400, with 20% noise')
-y2 = f2(x)
-plot_datos_cuad(x, y2, f2,'f(x,y) = 0.5*(x+10)² + (y-20)² - 400, with 20% noise')
-y3 = f3(x)
-plot_datos_cuad(x, y3, f3,'f(x,y) = 0.5*(x-10)² - (y+20)² - 400, with 20% noise')
-y4 = f4(x)
-plot_datos_cuad(x, y4, f4,'f(x,y) = y - 20*x² - 5*x + 3, with 20% noise')
-    
-# #CODIGO DEL ESTUDIANTE
+#calculate and show
+# y1 = f1(x)
+# plot_datos_cuad(x, y1, f1,'f(x,y) = (x-10)² + (y-20)² - 400, with 20% noise')
+# y2 = f2(x)
+# plot_datos_cuad(x, y2, f2,'f(x,y) = 0.5*(x+10)² + (y-20)² - 400, with 20% noise')
+# y3 = f3(x)
+# plot_datos_cuad(x, y3, f3,'f(x,y) = 0.5*(x-10)² - (y+20)² - 400, with 20% noise')
+# y4 = f4(x)
+# plot_datos_cuad(x, y4, f4,'f(x,y) = y - 20*x² - 5*x + 3, with 20% noise')
 
 # input("\n--- Pulsar tecla para continuar ---\n")
 
@@ -242,27 +253,63 @@ plot_datos_cuad(x, y4, f4,'f(x,y) = y - 20*x² - 5*x + 3, with 20% noise')
 # ###############################################################################
 # ###############################################################################
 
-# # EJERCICIO 2.1: ALGORITMO PERCEPTRON
+# EJERCICIO 2.1: ALGORITMO PERCEPTRON
 
-# def ajusta_PLA(datos, label, max_iter, vini):
-#     #CODIGO DEL ESTUDIANTE
+#sign(w^T*xi) = w0 + x1*w1 + x2*w2
+def sign(x,w):
+    return np.sum(x.dot(w))
+
+#update w_new = w_old + xi*yi
+def update_w(w,element, label):
+    return (w+element.dot(label))
+
+def ajusta_PLA(datos, label, max_iter, vini):
+    w = np.full(3,vini)
+    w_old = w
+    i = 0 #index of each label
+    iterations = 0;
+    same = False
+    #while w change
+    while(not same):
+        #go through the entire sample
+        for element in datos:
+            #if the classification is wrong
+            if(sign(element,w) != label[i]):
+                #update w
+                w = update_w(w,element,label[i])
+            iterations += 1 #counts the number of iterations of each element accessed
+        #if w does not change ends
+        if(w_old.all() == w.all()):
+            same = True
+        w_old = w
+    print(w," vs ",w_old)
+    #print("Iterations: ",iterations)
+    #return ?  
     
-#     return ?  
 
-# #CODIGO DEL ESTUDIANTE
+ones = np.ones(int(x[:,0].size))
+#add x0, x1 and x2
+x_complet = np.array([ones,x[:,0],x[:,1]])
+#swap the axes, for x(x0, x1, x2)
+x_complet=x_complet.swapaxes(0,1)
 
-# # Random initializations
-# iterations = []
-# for i in range(0,10):
-#     #CODIGO DEL ESTUDIANTE
+start = time()
+ajusta_PLA(x_complet,tag,1000,0)
+elapsed = time() - start
+print("Elapsed time",elapsed)
+
+# Random initializations
+iterations = []
+#for i in range(0,10):
+    #CODIGO DEL ESTUDIANTE
     
 # print('Valor medio de iteraciones necesario para converger: {}'.format(np.mean(np.asarray(iterations))))
 
 # input("\n--- Pulsar tecla para continuar ---\n")
 
-# # Ahora con los datos del ejercicio 1.2.b
+# Ahora con los datos del ejercicio 1.2.b
 
-# #CODIGO DEL ESTUDIANTE
+#CODIGO DEL ESTUDIANTE
 
 
 # input("\n--- Pulsar tecla para continuar ---\n")
@@ -369,4 +416,4 @@ plot_datos_cuad(x, y4, f4,'f(x,y) = y - 20*x² - 5*x + 3, with 20% noise')
 
 #COTA SOBRE EL ERROR
 
-#CODIGO DEL ESTUDIANTE
+# CODIGO DEL ESTUDIANTE
