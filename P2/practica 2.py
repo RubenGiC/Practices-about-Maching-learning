@@ -211,12 +211,28 @@ def plot_datos_cuad(X, y, fz, title='Point cloud plot', xaxis='x axis', yaxis='y
 
 #f(x,y) = (x-1)² + (y-20)² - 400
 def f1(x):
-    return (np.power(x[:,0]-1,2)+np.power(x[:,1]-20,2)-400)
+    return (np.power(x[:,0]-10,2)+np.power(x[:,1]-20,2)-400)
 
-#
+#f(x,y) = 0.5*(x+10)² + (y-20)² - 400
+def f2(x):
+    return ((np.dot(np.power(x[:,0]+10,2),0.5))+np.power(x[:,1]-20,2)-400)
+
+#f(x,y) = 0.5*(x-10)² - (y+20)² - 400
+def f3(x):
+    return ((np.dot(np.power(x[:,0]-10,2),0.5))-np.power(x[:,1]+20,2)-400)
+
+#f(x,y) = y - 20*x² - 5*x + 3
+def f4(x):
+    return (x[:,1]-(np.dot(20,np.power(x[:,0],2)))-(x[:,0].dot(5))+3)
 
 y1 = f1(x)
-plot_datos_cuad(x, y1, f1,'f(x,y) = (x-1)² + (y-20)² - 400, with 20% noise')
+plot_datos_cuad(x, y1, f1,'f(x,y) = (x-10)² + (y-20)² - 400, with 20% noise')
+y2 = f2(x)
+plot_datos_cuad(x, y2, f2,'f(x,y) = 0.5*(x+10)² + (y-20)² - 400, with 20% noise')
+y3 = f3(x)
+plot_datos_cuad(x, y3, f3,'f(x,y) = 0.5*(x-10)² - (y+20)² - 400, with 20% noise')
+y4 = f4(x)
+plot_datos_cuad(x, y4, f4,'f(x,y) = y - 20*x² - 5*x + 3, with 20% noise')
     
 # #CODIGO DEL ESTUDIANTE
 
