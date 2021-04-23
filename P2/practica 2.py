@@ -106,7 +106,7 @@ for i in np.arange(x[:,0].size):
 # ax2a.set_title('Nube de puntos aleatoria uniforme, ajuste perfecto (100)')
 
 
-input("\n--- Pulsar tecla para continuar ---\n")
+# input("\n--- Pulsar tecla para continuar ---\n")
 
 # 1.2.b. Dibujar una gráfica donde los puntos muestren el resultado de su etiqueta, junto con la recta usada para ello
 # Array con 10% de indices aleatorios para introducir ruido
@@ -123,36 +123,41 @@ def noise(tags,percent):
     
     #indices of sample with noise (random integer without repeating)
     ind_noise = np.random.choice(tags_noise.size, tags_noise.size, replace=False)
-    print(ind_noise)
-    i = p = n = 0
+    #print(ind_noise)
+    #count change positive and negative points
+    i = 0
+    n = 0
+    p = 0
     
-    while(p < max_positive and n < max_negative):
+    #as long as 10% of the noise isn't reached for the negative and positive points
+    while(p < max_positive or n < max_negative):
         
-        if(tags_noise[i]>0):
+        #print("Indice: ",ind_noise[i],", value: ",tags_noise[ind_noise[i]])
+        #change the vaule of the label if the vaule is positive and has not reached 10%
+        if(tags_noise[ind_noise[i]]>0 and p < max_positive):
+            #print("POSITIVE")
             tags_noise[ind_noise[i]]=-tags_noise[ind_noise[i]]#change the sign
-            ++max_positive
-        else:
+            p = p + 1
+        #change the vaule of the label if the vaule is negative and has not reached 10%
+        elif(n < max_negative):
+            #print("NEGATIVE")
             tags_noise[ind_noise[i]]=-tags_noise[ind_noise[i]]#change the sign
-            ++max_negative
-        ++i
+            n = n + 1
+        i = i + 1
+        
+    #print(p,", ",n," vs max: ",max_positive,", ",max_negative)
     
-    return tags_noise
+    return tags_noise#return tag with noise
 
 
 #add 10% noise to the positive points and another 10% noise for the negative points
-tag = noise(tag,0.1)
+tag_noise = noise(tag,0.1)
 
 #Draw the graph
 fig2a = plt.figure()
 ax2a = fig2a.add_subplot()
-ax2a.scatter(x[:,0],x[:,1],c=tag)
-#calculate the perfect parting line
-X = np.linspace(-50, 50, tag.size)
-#solves the function for the variable Y
-#f(x,y) = y - ax -b
-Y = (a*X) + b
-ax2a.plot(X, Y)
-ax2a.set_title('Nube de puntos aleatoria uniforme, ajuste perfecto (100)')
+ax2a.scatter(x[:,0],x[:,1],c=tag_noise)
+ax2a.set_title('Nube de puntos aleatoria uniforme, con 10% de ruido para los puntos positivos y negativos')
 
 input("\n--- Pulsar tecla para continuar ---\n")
 
