@@ -153,60 +153,70 @@ def noise(tags,percent):
 #add 10% noise to the positive points and another 10% noise for the negative points
 tag_noise = noise(tag,0.1)
 
-#Draw the graph
-fig2a = plt.figure()
-ax2a = fig2a.add_subplot()
-ax2a.scatter(x[:,0],x[:,1],c=tag_noise)
-#calculate the perfect parting line
-X = np.linspace(-50, 50, tag_noise.size)
-#solves the function for the variable Y
-#f(x,y) = y - ax -b
-Y = (a*X) + b
-ax2a.plot(X, Y)
-ax2a.set_title('Nube de puntos aleatoria uniforme, con 10% de ruido para los puntos positivos y negativos')
+# #Draw the graph
+# fig2a = plt.figure()
+# ax2a = fig2a.add_subplot()
+# ax2a.scatter(x[:,0],x[:,1],c=tag_noise)
+# #calculate the perfect parting line
+# X = np.linspace(-50, 50, tag_noise.size)
+# #solves the function for the variable Y
+# #f(x,y) = y - ax -b
+# Y = (a*X) + b
+# ax2a.plot(X, Y)
+# ax2a.set_title('Nube de puntos aleatoria uniforme, con 10% de ruido para los puntos positivos y negativos')
 
-input("\n--- Pulsar tecla para continuar ---\n")
+# input("\n--- Pulsar tecla para continuar ---\n")
 
-# ###############################################################################
-# ###############################################################################
-# ###############################################################################
+###############################################################################
+###############################################################################
+###############################################################################
 
-# # EJERCICIO 1.3: Supongamos ahora que las siguientes funciones definen la frontera de clasificación de los puntos de la muestra en lugar de una recta
+# EJERCICIO 1.3: Supongamos ahora que las siguientes funciones definen la frontera de clasificación de los puntos de la muestra en lugar de una recta
 
-# def plot_datos_cuad(X, y, fz, title='Point cloud plot', xaxis='x axis', yaxis='y axis'):
-#     #Preparar datos
-#     min_xy = X.min(axis=0)
-#     max_xy = X.max(axis=0)
-#     border_xy = (max_xy-min_xy)*0.01
+def plot_datos_cuad(X, y, fz, title='Point cloud plot', xaxis='x axis', yaxis='y axis'):
+    #Preparar datos
+    min_xy = X.min(axis=0)
+    max_xy = X.max(axis=0)
+    border_xy = (max_xy-min_xy)*0.01
     
-#     #Generar grid de predicciones
-#     xx, yy = np.mgrid[min_xy[0]-border_xy[0]:max_xy[0]+border_xy[0]+0.001:border_xy[0], 
-#                       min_xy[1]-border_xy[1]:max_xy[1]+border_xy[1]+0.001:border_xy[1]]
-#     grid = np.c_[xx.ravel(), yy.ravel(), np.ones_like(xx).ravel()]
-#     pred_y = fz(grid)
-#     # pred_y[(pred_y>-1) & (pred_y<1)]
-#     pred_y = np.clip(pred_y, -1, 1).reshape(xx.shape)
+    #Generar grid de predicciones
+    xx, yy = np.mgrid[min_xy[0]-border_xy[0]:max_xy[0]+border_xy[0]+0.001:border_xy[0], 
+                      min_xy[1]-border_xy[1]:max_xy[1]+border_xy[1]+0.001:border_xy[1]]
+    grid = np.c_[xx.ravel(), yy.ravel(), np.ones_like(xx).ravel()]
+    pred_y = fz(grid)
+    # pred_y[(pred_y>-1) & (pred_y<1)]
+    pred_y = np.clip(pred_y, -1, 1).reshape(xx.shape)
     
-#     #Plot
-#     f, ax = plt.subplots(figsize=(8, 6))
-#     contour = ax.contourf(xx, yy, pred_y, 50, cmap='RdBu',vmin=-1, vmax=1)
-#     ax_c = f.colorbar(contour)
-#     ax_c.set_label('$f(x, y)$')
-#     ax_c.set_ticks([-1, -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 1])
-#     ax.scatter(X[:, 0], X[:, 1], c=y, s=50, linewidth=2, 
-#                 cmap="RdYlBu", edgecolor='white')
+    #Plot
+    f, ax = plt.subplots(figsize=(8, 6))
+    contour = ax.contourf(xx, yy, pred_y, 50, cmap='RdBu',vmin=-1, vmax=1)
+    ax_c = f.colorbar(contour)
+    ax_c.set_label('$f(x, y)$')
+    ax_c.set_ticks([-1, -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 1])
+    ax.scatter(X[:, 0], X[:, 1], c=y, s=50, linewidth=2, 
+                cmap="RdYlBu", edgecolor='white')
     
-#     XX, YY = np.meshgrid(np.linspace(round(min(min_xy)), round(max(max_xy)),X.shape[0]),np.linspace(round(min(min_xy)), round(max(max_xy)),X.shape[0]))
-#     positions = np.vstack([XX.ravel(), YY.ravel()])
-#     ax.contour(XX,YY,fz(positions.T).reshape(X.shape[0],X.shape[0]),[0], colors='black')
+    XX, YY = np.meshgrid(np.linspace(round(min(min_xy)), round(max(max_xy)),X.shape[0]),np.linspace(round(min(min_xy)), round(max(max_xy)),X.shape[0]))
+    positions = np.vstack([XX.ravel(), YY.ravel()])
+    ax.contour(XX,YY,fz(positions.T).reshape(X.shape[0],X.shape[0]),[0], colors='black')
     
-#     ax.set(
-#        xlim=(min_xy[0]-border_xy[0], max_xy[0]+border_xy[0]), 
-#        ylim=(min_xy[1]-border_xy[1], max_xy[1]+border_xy[1]),
-#        xlabel=xaxis, ylabel=yaxis)
-#     plt.title(title)
-#     plt.show()
+    ax.set(
+        xlim=(min_xy[0]-border_xy[0], max_xy[0]+border_xy[0]), 
+        ylim=(min_xy[1]-border_xy[1], max_xy[1]+border_xy[1]),
+        xlabel=xaxis, ylabel=yaxis)
+    plt.title(title)
+    plt.show()
     
+#create the complex funtions of the line
+
+#f(x,y) = (x-1)² + (y-20)² - 400
+def f1(x):
+    return (np.power(x[:,0]-1,2)+np.power(x[:,1]-20,2)-400)
+
+#
+
+y1 = f1(x)
+plot_datos_cuad(x, y1, f1,'f(x,y) = (x-1)² + (y-20)² - 400, with 20% noise')
     
 # #CODIGO DEL ESTUDIANTE
 
