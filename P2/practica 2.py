@@ -256,34 +256,46 @@ def f4(x):
 # EJERCICIO 2.1: ALGORITMO PERCEPTRON
 
 #sign(w^T*xi) = w0 + x1*w1 + x2*w2
-def sign(x,w):
-    return np.sum(x.dot(w))
+def sign(x,y,w):
+    #print(np.sum(x.dot(w)))
+    #return np.sum(w.dot(x))
+    #print(np.dot(x,np.transpose(w))*y)
+    return np.dot(np.transpose(w),x)*y
 
 #update w_new = w_old + xi*yi
 def update_w(w,element, label):
-    return (w+element.dot(label))
+    return(w+np.dot(label,element))
+    
 
 def ajusta_PLA(datos, label, max_iter, vini):
     w = vini
-    w_old = w
+    #w_old = w
     i = 0 #index of each label
-    iterations = 0;
-    same = False
+    iterations = 0
+    change = 0
+
     #while w change
-    while(not same):
+    while(iterations<max_iter and change < label.size):
         #go through the entire sample
         for element in datos:
+            
             #if the classification is wrong
-            if(sign(element,w) != label[i]):
+            if(sign(element,label[i],w) <= 0):
+                change = 0
                 #update w
                 w = update_w(w,element,label[i])
-            iterations += 1 #counts the number of iterations of each element accessed
-            if(iterations>=max_iter):
+            else:
+                change += 1
+            #if w does not change or exceed the maximum number of iterations, ends
+            if(iterations>=max_iter or change >= label.size):
+                #print(w," vs ",w_old)
                 return w, iterations
-        #if w does not change ends
-        if(w_old.all() == w.all()):
-            return w, iterations
-        w_old = w
+            i += 1
+            iterations += 1 #counts the number of iterations of each element accessed
+        
+        i = 0
+        
+        #w_old = w
     #print(w," vs ",w_old)
     #print("Iterations: ",iterations)
     return w, iterations
@@ -305,44 +317,47 @@ x_complet = np.array([ones,x[:,0],x[:,1]])
 x_complet=x_complet.swapaxes(0,1)
 w_initial = np.zeros(3)
 
-start = time()
-w, iterations = ajusta_PLA(x_complet,tag,1000,w_initial)
-elapsed = time() - start
-print("Elapsed time",elapsed)
-print("W = ",w_initial,": W final: ",w,", iteraciones: ",iterations)
+#without noise
 
-# Random initializations
-iterations = []
-for i in range(0,10):
-    rand_initialize = np.random.uniform(0,1.000000000000000001,3)
-    w, iterate = ajusta_PLA(x_complet,tag,1000,rand_initialize)
-    #print("W =",rand_initialize,": W final: ",w,", iteraciones: ",iterate)
-    iterations.append(iterate)
+# start = time()
+# w, iterations = ajusta_PLA(x_complet,tag,10000,w_initial)
+# elapsed = time() - start
+# print("Elapsed time",elapsed)
+# print("W = ",w_initial,": W final: ",w,", iteraciones: ",iterations)
+
+# # Random initializations
+# iterations = []
+# for i in range(0,10):
+#     rand_initialize = np.random.uniform(0,1.000000000000000001,3)
+#     w, iterate = ajusta_PLA(x_complet,tag,100000,rand_initialize)
+#     #print("W =",rand_initialize,": W final: ",w,", iteraciones: ",iterate)
+#     iterations.append(iterate)
     
-print('Valor medio de iteraciones necesario para converger: {}'.format(np.mean(np.asarray(iterations))))
+# print('Valor medio de iteraciones necesario para converger: {}'.format(np.mean(np.asarray(iterations))))
 
 # input("\n--- Pulsar tecla para continuar ---\n")
 
-# Ahora con los datos del ejercicio 1.2.b
-#with 10% of noise
-tag_noise = noise(tag, 0.1)
-start = time()
-w, iterations = ajusta_PLA(x_complet,tag_noise,1000,w_initial)
-elapsed = time() - start
-print("Elapsed time",elapsed)
-print("W = ",w_initial,": W final: ",w,", iteraciones: ",iterations)
+# # Ahora con los datos del ejercicio 1.2.b
+# #with 10% of noise
+# tag_noise = noise(tag, 0.1)
+
+# start = time()
+# w, iterations = ajusta_PLA(x_complet,tag_noise,100000,w_initial)
+# elapsed = time() - start
+# print("Elapsed time",elapsed)
+# print("W = ",w_initial,": W final: ",w,", iteraciones: ",iterations)
 
 
-iterations = []
-for i in range(0,10):
-    rand_initialize = np.random.uniform(0,1.000000000000000001,3)
-    w, iterate = ajusta_PLA(x_complet,tag_noise,1000,rand_initialize)
-    #print("W =",rand_initialize,": W final: ",w,", iteraciones: ",iterate)
-    iterations.append(iterate)
+# iterations = []
+# for i in range(0,10):
+#     rand_initialize = np.random.uniform(0,1.000000000000000001,3)
+#     w, iterate = ajusta_PLA(x_complet,tag_noise,100000,rand_initialize)
+#     #print("W =",rand_initialize,": W final: ",w,", iteraciones: ",iterate)
+#     iterations.append(iterate)
     
-print('Valor medio de iteraciones necesario para converger (con ruido): {}'.format(np.mean(np.asarray(iterations))))
+# print('Valor medio de iteraciones necesario para converger (con ruido): {}'.format(np.mean(np.asarray(iterations))))
 
-input("\n--- Pulsar tecla para continuar ---\n")
+# input("\n--- Pulsar tecla para continuar ---\n")
 
 ###############################################################################
 ###############################################################################
@@ -352,23 +367,58 @@ input("\n--- Pulsar tecla para continuar ---\n")
 
 # def functionLR():
     
-def gradient(x, y, w, t):
+def gradient(x, y, w):
+    
+    #print("X = ",x)
+    #print("Y = ",y)
+    #print("W = ",w)
     result = 0
-    for i in np.arange(y.size):
-        result += np.sum(x[i].dot(y[i])/(1+np.exp(y[i])))
+    result = y*x/(1+np.exp(y*w.dot(x)))
+    #print("result = ",result)
     return result
 
-print(gradient(x_complet,tag,w,0))
-
-def sgdRL(x,y,w):
-    t = 0
+def RL(x,y,w,t,eta):
+    delta = 999
+    w_old = w
     Ein = 0
-    
-    Ein = -(1/w[:,0].size)*gradient(x,y,w,t)
+    while(delta >= t):
+        
+        for i in np.arange(y.size):
+            Ein += gradient(x[i],y[i],w)
+        Ein = -(Ein/y.size)
+        w = w - (eta * Ein)
+        
+        
+        delta = np.linalg.norm(w_old-w)
+        # print("W = ",w)
+        # print("W_old = ",w_old)
+        # print("delta = ",delta)
+        w_old = w
 
     return w
 
 w_initial = np.zeros(3)
+
+#simulate point cloud
+x_test = simula_unif(100,2,[-50,50])
+
+#generates the a and b values to calculate the tags of each point
+a, b = simula_recta([-50,50])
+
+#generates the tags
+tag_test = np.zeros(x_test[:,0].size)
+for i in np.arange(x_test[:,0].size):
+    tag_test[i] = f(x_test[i,0], x_test[i,1], a, b)
+ #now we have the perfect sample and tags
+
+    
+#add x0, x1 and x2
+x_complet = np.array([ones,x[:,0],x[:,1]])
+#swap the axes, for x(x0, x1, x2)
+x_complet=x_complet.swapaxes(0,1)
+
+w = RL(x_complet,tag,w_initial,0.01,0.01)
+print(w)
 
 # #CODIGO DEL ESTUDIANTE
 
