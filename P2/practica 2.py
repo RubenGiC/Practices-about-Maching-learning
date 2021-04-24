@@ -73,6 +73,14 @@ x_gaus = simula_gaus(50, 2, np.array([5,7]))
 
 # EJERCICIO 1.2: Dibujar una gráfica con la nube de puntos de salida correspondiente
 
+#calculate miss clasification rate in %
+def missClasificationRate(y_training,y_test):
+    error = 0;
+    for i in np.arange(y_test.size):
+        if(y_training[i] != y_test[i]):
+            error += 1
+    return (error/y_test.size)*100
+
 # La funcion np.sign(0) da 0, lo que nos puede dar problemas
 def signo(x):
     if x >= 0:
@@ -92,6 +100,9 @@ x = simula_unif(100,2,[-50,50])
 tag = np.zeros(x[:,0].size)
 for i in np.arange(x[:,0].size):
     tag[i] = f(x[i,0], x[i,1], a, b)
+    
+    
+# print("Porcentaje de error de clasificación (sin ruido): ",missClasificationRate(tag,tag),"%")
     
 
 # #Draw the graph
@@ -165,6 +176,8 @@ def noise(tags,percent):
 #add 10% noise to the positive points and another 10% noise for the negative points
 tag_noise = noise(tag,0.1)
 
+# print("Porcentaje de error de clasificación (con ruido): ",missClasificationRate(tag_noise,tag),"%")
+
 # #Draw the graph
 # fig2a = plt.figure()
 # ax2a = fig2a.add_subplot()
@@ -237,14 +250,34 @@ def f3(x):
 def f4(x):
     return (x[:,1]-(np.dot(20,np.power(x[:,0],2)))-(x[:,0].dot(5))+3)
 
+
+#calculate miss clasification rate in %
+def missClasificationRate2(y_training,y_test):
+    error = 0;
+    for i in np.arange(y_test.size):
+        
+        #print(y_training[i]," vs ",y_test[i])
+        
+        if(y_training[i]>0 and y_test[i]<0):
+            #print("entra1")
+            error += 1
+        elif(y_training[i]<0 and y_test[i]>0):
+            #print("entra2")
+            error += 1
+    return (error/y_test.size)*100
+
 #calculate and show
-# y1 = f1(x)
+# y1 = f1(x)    
+# print("Porcentaje de error de clasificación (función 1): ",missClasificationRate2(y1,tag),"%")
 # plot_datos_cuad(x, y1, f1,'f(x,y) = (x-10)² + (y-20)² - 400, with 20% noise')
 # y2 = f2(x)
+# print("Porcentaje de error de clasificación (función 2): ",missClasificationRate2(y2,tag),"%")
 # plot_datos_cuad(x, y2, f2,'f(x,y) = 0.5*(x+10)² + (y-20)² - 400, with 20% noise')
 # y3 = f3(x)
+# print("Porcentaje de error de clasificación (función 3): ",missClasificationRate2(y3,tag),"%")
 # plot_datos_cuad(x, y3, f3,'f(x,y) = 0.5*(x-10)² - (y+20)² - 400, with 20% noise')
 # y4 = f4(x)
+# print("Porcentaje de error de clasificación (función 4): ",missClasificationRate2(y4,tag),"%")
 # plot_datos_cuad(x, y4, f4,'f(x,y) = y - 20*x² - 5*x + 3, with 20% noise')
 
 # input("\n--- Pulsar tecla para continuar ---\n")
@@ -260,6 +293,9 @@ def sign(x,y,w):
     #print(np.sum(x.dot(w)))
     #return np.sum(w.dot(x))
     #print(np.dot(x,np.transpose(w))*y)
+    # lo de multiplicarlo por la etiqueta la encontre en esta página en la sección 2.8:
+    # https://medium.com/analytics-vidhya/perceptron-learning-algorithm-2-67e49cbce2fd
+    
     return np.dot(np.transpose(w),x)*y
 
 #update w_new = w_old + xi*yi
