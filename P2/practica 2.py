@@ -350,10 +350,21 @@ input("\n--- Pulsar tecla para continuar ---\n")
 
 # EJERCICIO 3: REGRESIÓN LOGÍSTICA CON STOCHASTIC GRADIENT DESCENT
 
-def functionLR()
+# def functionLR():
+    
+def gradient(x, y, w, t):
+    result = 0
+    for i in np.arange(y.size):
+        result += np.sum(x[i].dot(y[i])/(1+np.exp(y[i])))
+    return result
 
-def sgdRL(x,w):
+print(gradient(x_complet,tag,w,0))
+
+def sgdRL(x,y,w):
     t = 0
+    Ein = 0
+    
+    Ein = -(1/w[:,0].size)*gradient(x,y,w,t)
 
     return w
 
