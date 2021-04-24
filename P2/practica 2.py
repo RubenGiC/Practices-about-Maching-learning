@@ -264,7 +264,7 @@ def update_w(w,element, label):
     return (w+element.dot(label))
 
 def ajusta_PLA(datos, label, max_iter, vini):
-    w = np.full(3,vini)
+    w = vini
     w_old = w
     i = 0 #index of each label
     iterations = 0;
@@ -278,54 +278,86 @@ def ajusta_PLA(datos, label, max_iter, vini):
                 #update w
                 w = update_w(w,element,label[i])
             iterations += 1 #counts the number of iterations of each element accessed
+            if(iterations>=max_iter):
+                return w, iterations
         #if w does not change ends
         if(w_old.all() == w.all()):
-            same = True
+            return w, iterations
         w_old = w
-    print(w," vs ",w_old)
+    #print(w," vs ",w_old)
     #print("Iterations: ",iterations)
-    #return ?  
-    
+    return w, iterations
 
+#simulate the point cloud randomly evelyn
+x = simula_unif(100, 2, [-50,50])
+#generates the a and b values to calculate the tags of each point
+a, b = simula_recta([-50,50])
+#generates the tags
+tag = np.zeros(x[:,0].size)
+for i in np.arange(x[:,0].size):
+    tag[i] = f(x[i,0], x[i,1], a, b)
+    
+#create x0
 ones = np.ones(int(x[:,0].size))
 #add x0, x1 and x2
 x_complet = np.array([ones,x[:,0],x[:,1]])
 #swap the axes, for x(x0, x1, x2)
 x_complet=x_complet.swapaxes(0,1)
+w_initial = np.zeros(3)
 
 start = time()
-ajusta_PLA(x_complet,tag,1000,0)
+w, iterations = ajusta_PLA(x_complet,tag,1000,w_initial)
 elapsed = time() - start
 print("Elapsed time",elapsed)
+print("W = ",w_initial,": W final: ",w,", iteraciones: ",iterations)
 
 # Random initializations
 iterations = []
-#for i in range(0,10):
-    #CODIGO DEL ESTUDIANTE
+for i in range(0,10):
+    rand_initialize = np.random.uniform(0,1.000000000000000001,3)
+    w, iterate = ajusta_PLA(x_complet,tag,1000,rand_initialize)
+    #print("W =",rand_initialize,": W final: ",w,", iteraciones: ",iterate)
+    iterations.append(iterate)
     
-# print('Valor medio de iteraciones necesario para converger: {}'.format(np.mean(np.asarray(iterations))))
+print('Valor medio de iteraciones necesario para converger: {}'.format(np.mean(np.asarray(iterations))))
 
 # input("\n--- Pulsar tecla para continuar ---\n")
 
 # Ahora con los datos del ejercicio 1.2.b
-
-#CODIGO DEL ESTUDIANTE
-
-
-# input("\n--- Pulsar tecla para continuar ---\n")
-
-# ###############################################################################
-# ###############################################################################
-# ###############################################################################
-
-# # EJERCICIO 3: REGRESIÓN LOGÍSTICA CON STOCHASTIC GRADIENT DESCENT
-
-# def sgdRL(?):
-#     #CODIGO DEL ESTUDIANTE
-
-#     return w
+#with 10% of noise
+tag_noise = noise(tag, 0.1)
+start = time()
+w, iterations = ajusta_PLA(x_complet,tag_noise,1000,w_initial)
+elapsed = time() - start
+print("Elapsed time",elapsed)
+print("W = ",w_initial,": W final: ",w,", iteraciones: ",iterations)
 
 
+iterations = []
+for i in range(0,10):
+    rand_initialize = np.random.uniform(0,1.000000000000000001,3)
+    w, iterate = ajusta_PLA(x_complet,tag_noise,1000,rand_initialize)
+    #print("W =",rand_initialize,": W final: ",w,", iteraciones: ",iterate)
+    iterations.append(iterate)
+    
+print('Valor medio de iteraciones necesario para converger (con ruido): {}'.format(np.mean(np.asarray(iterations))))
+
+input("\n--- Pulsar tecla para continuar ---\n")
+
+###############################################################################
+###############################################################################
+###############################################################################
+
+# EJERCICIO 3: REGRESIÓN LOGÍSTICA CON STOCHASTIC GRADIENT DESCENT
+
+def functionLR()
+
+def sgdRL(x,w):
+    t = 0
+
+    return w
+
+w_initial = np.zeros(3)
 
 # #CODIGO DEL ESTUDIANTE
 
