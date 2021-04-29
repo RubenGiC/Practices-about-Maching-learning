@@ -417,21 +417,29 @@ def RL(x,y,w,t,eta):
     delta = 999
     w_old = w
     Ein = 0
+    iterations = 0
+    
+    #while (w(t-1) - wt) >= t
     while(delta >= t):
         
+        #compute the gradient
         for i in np.arange(y.size):
             Ein += gradient(x[i],y[i],w)
         Ein = -(Ein/y.size)
+        
+        #and update the weights (w(t+1))
         w = w - (eta * Ein)
         
-        
+        # w(t-1) - wt
         delta = np.linalg.norm(w_old-w)
         # print("W = ",w)
         # print("W_old = ",w_old)
         # print("delta = ",delta)
         w_old = w
-
-    return w
+        iterations += 1
+        
+    #print(delta," VS ", t)    
+    return w, iterations
 
 w_initial = np.zeros(3)
 
@@ -453,8 +461,30 @@ x_complet = np.array([ones,x[:,0],x[:,1]])
 #swap the axes, for x(x0, x1, x2)
 x_complet=x_complet.swapaxes(0,1)
 
-w = RL(x_complet,tag,w_initial,0.01,0.01)
+w, iterations = RL(x_complet,tag,w_initial,0.01,0.01)
 print(w)
+print("Numero de iteracones con N = 100: ",iterations)
+
+mean_iterations = 0;
+
+for i in np.arange(0,100):
+    w, iterations = RL(x_complet,tag,w_initial,0.01,0.01)
+    mean_iterations += iterations
+    
+mean_iterations = mean_iterations/100
+print("Media del numero de iteracones con N = 1000 ejecutado 100 veces: ",mean_iterations)
+
+#Draw the graph
+fig2b = plt.figure()
+ax2b = fig2b.add_subplot()
+ax2b.scatter(x_test[:,0],x_test[:,1],c=tag_test)
+#calculate the perfect parting line
+X = np.linspace(-50, 50, tag_test.size)
+#solves the function for the variable Y
+#f(x,y) = y - ax -b
+Y = (a*X) + b
+ax2b.plot(X, Y)
+ax2b.set_title('Nube de puntos aleatoria uniforme, ajuste perfecto (100)')
 
 # #CODIGO DEL ESTUDIANTE
 
