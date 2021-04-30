@@ -413,7 +413,9 @@ def gradient(x, y, w):
     #print("result = ",result)
     return result
 
+#function of the logistic regression
 def RL(x,y,w,t,eta):
+    #initialize the variables
     delta = 999
     w_old = w
     Ein = 0
@@ -441,6 +443,17 @@ def RL(x,y,w,t,eta):
     #print(delta," VS ", t)    
     return w, iterations
 
+# Funcion para calcular el error cuadratico medio
+def Err(x,y,w):
+    
+    #(yn - ŷ)²
+    result = np.float64(np.power((x.dot(w) - y), 2))
+    
+    result.dtype = np.float64
+
+    #result/n
+    return result.mean()
+
 w_initial = np.zeros(3)
 
 #simulate point cloud
@@ -457,34 +470,54 @@ for i in np.arange(x_test[:,0].size):
 
     
 #add x0, x1 and x2
-x_complet = np.array([ones,x[:,0],x[:,1]])
+x_complet = np.array([ones,x_test[:,0],x_test[:,1]])
 #swap the axes, for x(x0, x1, x2)
 x_complet=x_complet.swapaxes(0,1)
 
-w, iterations = RL(x_complet,tag,w_initial,0.01,0.01)
+w, iterations = RL(x_complet,tag_test,w_initial,0.01,0.01)
 print(w)
 print("Numero de iteracones con N = 100: ",iterations)
+print("Eout = ",Err(x_complet, tag_test, w))
 
 mean_iterations = 0;
+mean_Eout = 0
 
-for i in np.arange(0,100):
-    w, iterations = RL(x_complet,tag,w_initial,0.01,0.01)
-    mean_iterations += iterations
+
+start_time = time()
+#for i in np.arange(0,100):
     
-mean_iterations = mean_iterations/100
-print("Media del numero de iteracones con N = 1000 ejecutado 100 veces: ",mean_iterations)
+#simulate point cloud
+x_test = simula_unif(1000,2,[-50,50])
 
-#Draw the graph
-fig2b = plt.figure()
-ax2b = fig2b.add_subplot()
-ax2b.scatter(x_test[:,0],x_test[:,1],c=tag_test)
-#calculate the perfect parting line
-X = np.linspace(-50, 50, tag_test.size)
-#solves the function for the variable Y
-#f(x,y) = y - ax -b
-Y = (a*X) + b
-ax2b.plot(X, Y)
-ax2b.set_title('Nube de puntos aleatoria uniforme, ajuste perfecto (100)')
+#generates the a and b values to calculate the tags of each point
+a, b = simula_recta([-50,50])
+
+#generates the tags
+tag_test = np.zeros(x_test[:,0].size)
+for i in np.arange(x_test[:,0].size):
+    tag_test[i] = f(x_test[i,0], x_test[i,1], a, b)
+ #now we have the perfect sample and tags
+
+print(x_test)
+#add x0, x1 and x2
+x_complet2 = np.array([ones,x_test[:,0],x_test[:,1]])
+
+
+
+#swap the axes, for x(x0, x1, x2)
+#x_complet2=x_complet2.swapaxes(0,1)
+
+# w, iterations = RL(x_complet2,tag_test,w_initial,0.01,0.01)
+# mean_iterations += iterations
+# mean_Eout += Err(x_complet2, tag_test, w)
+    
+# mean_iterations = mean_iterations/100
+# mean_Eout = mean_Eout/100
+
+# elapsed_time = time() - start_time
+# print("Regresion Lineal Elapsed time: %0.10f seconds" %elapsed_time)
+# print("Media del numero de iteracones con N = 1000 ejecutado 100 veces: ",mean_iterations)
+# print("Media del Eout con N = 1000 ejecutado 100 veces: ",mean_iterations)
 
 # #CODIGO DEL ESTUDIANTE
 
