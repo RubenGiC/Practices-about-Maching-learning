@@ -498,6 +498,16 @@ print("Eout = ",Err(x_complet, tag_test, w))
 mean_iterations = 0;
 mean_Eout = 0
 
+#Draw the graph
+fig2b1 = plt.figure()
+ax2b1 = fig2b1.add_subplot()
+ax2b1.scatter(x_complet[:,1],x_complet[:,2],c=tag_test)
+#calculate the perfect parting line
+X = np.linspace(0, 2, tag_test.size)
+Y = (a*X) + b
+ax2b1.plot(X, Y)
+ax2b1.set_title('Nube de puntos aleatoria uniforme, 100 elementos')
+
 print("Tarda aproximadamente 30 minutos")
 start_time = time()
 for i in np.arange(0,100):
@@ -526,7 +536,7 @@ for i in np.arange(0,100):
     w, iterations = sgdRL(x_complet2,tag_test,w_initial,0.01,0.01)
     mean_iterations += iterations
     mean_Eout += Err(x_complet2, tag_test, w)
-    print(iterations," vs ", Err(x_complet2, tag_test, w))
+    #print(iterations," vs ", Err(x_complet2, tag_test, w))
     
 #print(mean_iterations," vs ",mean_Eout)
 mean_iterations = mean_iterations/100
@@ -536,6 +546,16 @@ elapsed_time = time() - start_time
 print("Regresion Lineal Elapsed time: %0.10f seconds" %elapsed_time)
 print("Media del numero de iteracones con N = 1000 ejecutado 100 veces: ",mean_iterations)
 print("Media del Eout con N = 1000 ejecutado 100 veces: ",mean_Eout)
+
+#Draw the graph
+fig2b2 = plt.figure()
+ax2b2 = fig2b2.add_subplot()
+ax2b2.scatter(x_complet2[:,1],x_complet2[:,2],c=tag_test)
+#calculate the perfect parting line
+X = np.linspace(0, 2, tag_test.size)
+Y = (a*X) + b
+ax2b2.plot(X, Y)
+ax2b2.set_title('Nube de puntos aleatoria uniforme, 1000 elementos')
 
 
 # input("\n--- Pulsar tecla para continuar ---\n")
