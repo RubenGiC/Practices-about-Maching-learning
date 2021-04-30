@@ -431,7 +431,7 @@ def sgdRL(x,y,w,t,eta):
         #compute the gradient
         for i in RSI:
             #and update the weights (w(t+1))
-            w += w - (eta * gradient(x[i],y[i],w))
+            w = w - (eta * gradient(x[i],y[i],w))
         
         iterations += 1
         
@@ -469,13 +469,14 @@ def Err(x,y,w):
 
 w_initial = np.zeros(3)
 eta = 0.01
+interval = [0,2]
 
 #simulate point cloud
-x_test = simula_unif(100,2,[-50,50])
+x_test = simula_unif(100,2,interval)
 ones = np.ones(int(x_test[:,0].size))
 
 #generates the a and b values to calculate the tags of each point
-a, b = simula_recta([-50,50])
+a, b = simula_recta(interval)
 
 #generates the tags
 tag_test = np.zeros(x_test[:,0].size)
@@ -497,12 +498,12 @@ print("Eout = ",Err(x_complet, tag_test, w))
 mean_iterations = 0;
 mean_Eout = 0
 
-
+print("Tarda aproximadamente 30 minutos")
 start_time = time()
 for i in np.arange(0,100):
     
     #simulate point cloud
-    x_test = simula_unif(1000,2,[-50,50])
+    x_test = simula_unif(1000,2,interval)
     ones = np.ones(int(x_test[:,0].size))
     
     #generates the a and b values to calculate the tags of each point
@@ -537,43 +538,40 @@ print("Media del numero de iteracones con N = 1000 ejecutado 100 veces: ",mean_i
 print("Media del Eout con N = 1000 ejecutado 100 veces: ",mean_Eout)
 
 
-# #CODIGO DEL ESTUDIANTE
-
-
 # input("\n--- Pulsar tecla para continuar ---\n")
 
 
-# ###############################################################################
-# ###############################################################################
-# ###############################################################################
-# #BONUS: Clasificación de Dígitos
+###############################################################################
+###############################################################################
+###############################################################################
+#BONUS: Clasificación de Dígitos
 
 
-# # Funcion para leer los datos
-# def readData(file_x, file_y, digits, labels):
-# 	# Leemos los ficheros	
-# 	datax = np.load(file_x)
-# 	datay = np.load(file_y)
-# 	y = []
-# 	x = []	
-# 	# Solo guardamos los datos cuya clase sea la digits[0] o la digits[1]
-# 	for i in range(0,datay.size):
-# 		if datay[i] == digits[0] or datay[i] == digits[1]:
-# 			if datay[i] == digits[0]:
-# 				y.append(labels[0])
-# 			else:
-# 				y.append(labels[1])
-# 			x.append(np.array([1, datax[i][0], datax[i][1]]))
-# 			
-# 	x = np.array(x, np.float64)
-# 	y = np.array(y, np.float64)
-# 	
-# 	return x, y
+# Funcion para leer los datos
+def readData(file_x, file_y, digits, labels):
+ 	# Leemos los ficheros	
+ 	datax = np.load(file_x)
+ 	datay = np.load(file_y)
+ 	y = []
+ 	x = []	
+ 	# Solo guardamos los datos cuya clase sea la digits[0] o la digits[1]
+ 	for i in range(0,datay.size):
+         if datay[i] == digits[0] or datay[i] == digits[1]:
+             if datay[i] == digits[0]:
+                 y.append(labels[0])
+             else:
+                 y.append(labels[1])
+             x.append(np.array([1, datax[i][0], datax[i][1]]))
+ 			
+ 	x = np.array(x, np.float64)
+ 	y = np.array(y, np.float64)
+ 	
+ 	return x, y
 
-# # Lectura de los datos de entrenamiento
-# x, y = readData('datos/X_train.npy', 'datos/y_train.npy', [4,8], [-1,1])
-# # Lectura de los datos para el test
-# x_test, y_test = readData('datos/X_test.npy', 'datos/y_test.npy', [4,8], [-1,1])
+# Lectura de los datos de entrenamiento
+x, y = readData('datos/X_train.npy', 'datos/y_train.npy', [4,8], [-1,1])
+# Lectura de los datos para el test
+x_test, y_test = readData('datos/X_test.npy', 'datos/y_test.npy', [4,8], [-1,1])
 
 
 # #mostramos los datos
