@@ -426,7 +426,7 @@ def sgdRL(x,y,w,t,eta):
     #while (w(t-1) - wt) >= t
     while(delta >= t):
         
-        RSI = np.random.permutation(x.shape[0])
+        RSI = np.random.permutation(x.shape[0])    
         
         #compute the gradient
         for i in RSI:
@@ -440,9 +440,9 @@ def sgdRL(x,y,w,t,eta):
         delta = np.linalg.norm(w_old-w)
         if(delta < t):
             return w, iterations
-        # print("W = ",w)
+        #print("W = ",w)
         # print("W_old = ",w_old)
-        # print("delta = ",delta)
+        #print("delta = ",delta)
         w_old = np.copy(w)
         
     #print(RSI)
@@ -508,54 +508,55 @@ Y = (-w[0]-w[1]*X)/w[2]
 ax2b1.plot(X, Y)
 ax2b1.set_title('Nube de puntos aleatoria uniforme, 100 elementos')
 
-print("Tarda aproximadamente 30 minutos")
-start_time = time()
-for i in np.arange(0,100):
+#lo tengo comentado porque me tarda 30 minutos aproximadamente
+
+# print("Tarda aproximadamente 30 minutos")
+# start_time = time()
+# for i in np.arange(0,100):
     
-    #simulate point cloud
-    x_test = simula_unif(1000,2,interval)
-    ones = np.ones(int(x_test[:,0].size))
+#     #simulate point cloud
+#     x_test = simula_unif(1000,2,interval)
+#     ones = np.ones(int(x_test[:,0].size))
     
-    #generates the a and b values to calculate the tags of each point
-    #a, b = simula_recta([-50,50])
+#     #generates the tags
+#     tag_test = np.zeros(x_test[:,0].size)
+#     for i in np.arange(x_test[:,0].size):
+#         tag_test[i] = f(x_test[i,0], x_test[i,1], a, b)
+#       #now we have the perfect sample and tags
     
-    #generates the tags
-    tag_test = np.zeros(x_test[:,0].size)
-    for i in np.arange(x_test[:,0].size):
-        tag_test[i] = f(x_test[i,0], x_test[i,1], a, b)
-      #now we have the perfect sample and tags
+#     #add x0, x1 and x2
+#     x_complet2 = np.array([ones,x_test[:,0],x_test[:,1]])
+
+#     #swap the axes, for x(x0, x1, x2)
+#     x_complet2=x_complet2.swapaxes(0,1)
+
+#     start_time2 = time()
+#     w, iterations = sgdRL(x_complet2,tag_test,w_initial,0.01,0.01)
+#     elapsed_time = time() - start_time2
+#     print("Calculo Elapsed time: %0.10f seconds" %elapsed_time)
+#     mean_iterations += iterations
+#     mean_Eout += Err(x_complet2, tag_test, w)
+#     print(iterations," vs ", Err(x_complet2, tag_test, w))
     
-    #add x0, x1 and x2
-    x_complet2 = np.array([ones,x_test[:,0],x_test[:,1]])
-
-
-
-    #swap the axes, for x(x0, x1, x2)
-    x_complet2=x_complet2.swapaxes(0,1)
-
-    w, iterations = sgdRL(x_complet2,tag_test,w_initial,0.01,0.01)
-    mean_iterations += iterations
-    mean_Eout += Err(x_complet2, tag_test, w)
-    #print(iterations," vs ", Err(x_complet2, tag_test, w))
     
-#print(mean_iterations," vs ",mean_Eout)
-mean_iterations = mean_iterations/100
-mean_Eout = mean_Eout/100
+# #print(mean_iterations," vs ",mean_Eout)
+# mean_iterations = mean_iterations/100
+# mean_Eout = mean_Eout/100
 
-elapsed_time = time() - start_time
-print("Regresion Lineal Elapsed time: %0.10f seconds" %elapsed_time)
-print("Media del numero de iteracones con N = 1000 ejecutado 100 veces: ",mean_iterations)
-print("Media del Eout con N = 1000 ejecutado 100 veces: ",mean_Eout)
+# elapsed_time = time() - start_time
+# print("Regresion Logistica Elapsed time: %0.10f seconds" %elapsed_time)
+# print("Media del numero de iteracones con N = 1000 ejecutado 100 veces: ",mean_iterations)
+# print("Media del Eout con N = 1000 ejecutado 100 veces: ",mean_Eout)
 
-#Draw the graph
-fig2b2 = plt.figure()
-ax2b2 = fig2b2.add_subplot()
-ax2b2.scatter(x_complet2[:,1],x_complet2[:,2],c=tag_test)
-#calculate the perfect parting line
-X = np.linspace(0, 2, tag_test.size)
-Y = (-w[0]-w[1]*X)/w[2]
-ax2b2.plot(X, Y)
-ax2b2.set_title('Nube de puntos aleatoria uniforme, 1000 elementos')
+# #Draw the graph
+# fig2b2 = plt.figure()
+# ax2b2 = fig2b2.add_subplot()
+# ax2b2.scatter(x_complet2[:,1],x_complet2[:,2],c=tag_test)
+# #calculate the perfect parting line
+# X = np.linspace(0, 2, tag_test.size)
+# Y = (-w[0]-w[1]*X)/w[2]
+# ax2b2.plot(X, Y)
+# ax2b2.set_title('Nube de puntos aleatoria uniforme, 1000 elementos')
 
 
 # input("\n--- Pulsar tecla para continuar ---\n")
@@ -594,7 +595,7 @@ x, y = readData('datos/X_train.npy', 'datos/y_train.npy', [4,8], [-1,1])
 x_test, y_test = readData('datos/X_test.npy', 'datos/y_test.npy', [4,8], [-1,1])
 
 
-# #mostramos los datos
+#mostramos los datos
 # fig, ax = plt.subplots()
 # ax.plot(np.squeeze(x[np.where(y == -1),1]), np.squeeze(x[np.where(y == -1),2]), 'o', color='red', label='4')
 # ax.plot(np.squeeze(x[np.where(y == 1),1]), np.squeeze(x[np.where(y == 1),2]), 'o', color='blue', label='8')
