@@ -458,6 +458,7 @@ w_initial = np.zeros(3)
 
 #simulate point cloud
 x_test = simula_unif(100,2,[-50,50])
+ones = np.ones(int(x_test[:,0].size))
 
 #generates the a and b values to calculate the tags of each point
 a, b = simula_recta([-50,50])
@@ -484,40 +485,42 @@ mean_Eout = 0
 
 
 start_time = time()
-#for i in np.arange(0,100):
+for i in np.arange(0,100):
     
-#simulate point cloud
-x_test = simula_unif(1000,2,[-50,50])
-
-#generates the a and b values to calculate the tags of each point
-a, b = simula_recta([-50,50])
-
-#generates the tags
-tag_test = np.zeros(x_test[:,0].size)
-for i in np.arange(x_test[:,0].size):
-    tag_test[i] = f(x_test[i,0], x_test[i,1], a, b)
- #now we have the perfect sample and tags
-
-print(x_test)
-#add x0, x1 and x2
-x_complet2 = np.array([ones,x_test[:,0],x_test[:,1]])
-
-
-
-#swap the axes, for x(x0, x1, x2)
-#x_complet2=x_complet2.swapaxes(0,1)
-
-# w, iterations = RL(x_complet2,tag_test,w_initial,0.01,0.01)
-# mean_iterations += iterations
-# mean_Eout += Err(x_complet2, tag_test, w)
+    #simulate point cloud
+    x_test = simula_unif(1000,2,[-50,50])
+    ones = np.ones(int(x_test[:,0].size))
     
-# mean_iterations = mean_iterations/100
-# mean_Eout = mean_Eout/100
+    #generates the a and b values to calculate the tags of each point
+    a, b = simula_recta([-50,50])
+    
+    #generates the tags
+    tag_test = np.zeros(x_test[:,0].size)
+    for i in np.arange(x_test[:,0].size):
+        tag_test[i] = f(x_test[i,0], x_test[i,1], a, b)
+     #now we have the perfect sample and tags
+    
+    #add x0, x1 and x2
+    x_complet2 = np.array([ones,x_test[:,0],x_test[:,1]])
 
-# elapsed_time = time() - start_time
-# print("Regresion Lineal Elapsed time: %0.10f seconds" %elapsed_time)
-# print("Media del numero de iteracones con N = 1000 ejecutado 100 veces: ",mean_iterations)
-# print("Media del Eout con N = 1000 ejecutado 100 veces: ",mean_iterations)
+
+
+    #swap the axes, for x(x0, x1, x2)
+    x_complet2=x_complet2.swapaxes(0,1)
+
+    w, iterations = RL(x_complet2,tag_test,w_initial,0.01,0.01)
+    mean_iterations += iterations
+    mean_Eout += Err(x_complet2, tag_test, w)
+    #print(iterations," vs ", Err(x_complet2, tag_test, w))
+    
+#print(mean_iterations," vs ",mean_Eout)
+mean_iterations = mean_iterations/100
+mean_Eout = mean_Eout/100
+
+elapsed_time = time() - start_time
+print("Regresion Lineal Elapsed time: %0.10f seconds" %elapsed_time)
+print("Media del numero de iteracones con N = 1000 ejecutado 100 veces: ",mean_iterations)
+print("Media del Eout con N = 1000 ejecutado 100 veces: ",mean_Eout)
 
 # #CODIGO DEL ESTUDIANTE
 
