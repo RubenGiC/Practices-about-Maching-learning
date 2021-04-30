@@ -504,7 +504,7 @@ ax2b1 = fig2b1.add_subplot()
 ax2b1.scatter(x_complet[:,1],x_complet[:,2],c=tag_test)
 #calculate the perfect parting line
 X = np.linspace(0, 2, tag_test.size)
-Y = (a*X) + b
+Y = (-w[0]-w[1]*X)/w[2]
 ax2b1.plot(X, Y)
 ax2b1.set_title('Nube de puntos aleatoria uniforme, 100 elementos')
 
@@ -553,7 +553,7 @@ ax2b2 = fig2b2.add_subplot()
 ax2b2.scatter(x_complet2[:,1],x_complet2[:,2],c=tag_test)
 #calculate the perfect parting line
 X = np.linspace(0, 2, tag_test.size)
-Y = (a*X) + b
+Y = (-w[0]-w[1]*X)/w[2]
 ax2b2.plot(X, Y)
 ax2b2.set_title('Nube de puntos aleatoria uniforme, 1000 elementos')
 
