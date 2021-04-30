@@ -400,9 +400,7 @@ w_initial = np.zeros(3)
 ###############################################################################
 
 # EJERCICIO 3: REGRESIÓN LOGÍSTICA CON STOCHASTIC GRADIENT DESCENT
-
-# def functionLR():
-    
+  
 def gradient(x, y, w):
     
     #print("X = ",x)
@@ -411,50 +409,66 @@ def gradient(x, y, w):
     result = 0
     result = y*x/(1+np.exp(y*w.dot(x)))
     #print("result = ",result)
-    return result
+    return -result
 
-#function of the logistic regression
-def RL(x,y,w,t,eta):
+#the SGD Logisti Regression function receives as a parameters:
+#   x: data set
+#   y: the labels
+#   w: the initial weights
+#   t: the threshold
+#   eta: Learning Rate
+def sgdRL(x,y,w,t,eta):
     #initialize the variables
     delta = 999
-    w_old = w
-    Ein = 0
+    w_old = np.copy(w)
     iterations = 0
     
     #while (w(t-1) - wt) >= t
     while(delta >= t):
         
+        RSI = np.random.permutation(x.shape[0])
+        
         #compute the gradient
-        for i in np.arange(y.size):
-            Ein += gradient(x[i],y[i],w)
-        Ein = -(Ein/y.size)
+        for i in RSI:
+            #and update the weights (w(t+1))
+            w += w - (eta * gradient(x[i],y[i],w))
         
-        #and update the weights (w(t+1))
-        w = w - (eta * Ein)
+        iterations += 1
         
-        # w(t-1) - wt
+        # ||w(t-1) - wt|| and normalize the vector
+        # ||x|| = |x|
         delta = np.linalg.norm(w_old-w)
+        if(delta < t):
+            return w, iterations
         # print("W = ",w)
         # print("W_old = ",w_old)
         # print("delta = ",delta)
-        w_old = w
-        iterations += 1
+        w_old = np.copy(w)
         
+    #print(RSI)
     #print(delta," VS ", t)    
     return w, iterations
 
 # Funcion para calcular el error cuadratico medio
 def Err(x,y,w):
     
-    #(yn - ŷ)²
-    result = np.float64(np.power((x.dot(w) - y), 2))
+    #Tema 2 pag 61
+    #Eout = ln(1+e^(-yi*wi*xi))
+    result = np.float64(np.log(1+np.exp(-(x.dot(w) * y))))
     
     result.dtype = np.float64
 
     #result/n
     return result.mean()
 
+
+# input("\n--- Pulsar tecla para continuar ---\n")
+    
+# Usar la muestra de datos etiquetada para encontrar nuestra solución g y estimar Eout
+# usando para ello un número suficientemente grande de nuevas muestras (>999).
+
 w_initial = np.zeros(3)
+eta = 0.01
 
 #simulate point cloud
 x_test = simula_unif(100,2,[-50,50])
@@ -475,7 +489,7 @@ x_complet = np.array([ones,x_test[:,0],x_test[:,1]])
 #swap the axes, for x(x0, x1, x2)
 x_complet=x_complet.swapaxes(0,1)
 
-w, iterations = RL(x_complet,tag_test,w_initial,0.01,0.01)
+w, iterations = sgdRL(x_complet,tag_test,w_initial,0.01,eta)
 print(w)
 print("Numero de iteracones con N = 100: ",iterations)
 print("Eout = ",Err(x_complet, tag_test, w))
@@ -492,13 +506,13 @@ for i in np.arange(0,100):
     ones = np.ones(int(x_test[:,0].size))
     
     #generates the a and b values to calculate the tags of each point
-    a, b = simula_recta([-50,50])
+    #a, b = simula_recta([-50,50])
     
     #generates the tags
     tag_test = np.zeros(x_test[:,0].size)
     for i in np.arange(x_test[:,0].size):
         tag_test[i] = f(x_test[i,0], x_test[i,1], a, b)
-     #now we have the perfect sample and tags
+      #now we have the perfect sample and tags
     
     #add x0, x1 and x2
     x_complet2 = np.array([ones,x_test[:,0],x_test[:,1]])
@@ -508,10 +522,10 @@ for i in np.arange(0,100):
     #swap the axes, for x(x0, x1, x2)
     x_complet2=x_complet2.swapaxes(0,1)
 
-    w, iterations = RL(x_complet2,tag_test,w_initial,0.01,0.01)
+    w, iterations = sgdRL(x_complet2,tag_test,w_initial,0.01,0.01)
     mean_iterations += iterations
     mean_Eout += Err(x_complet2, tag_test, w)
-    #print(iterations," vs ", Err(x_complet2, tag_test, w))
+    print(iterations," vs ", Err(x_complet2, tag_test, w))
     
 #print(mean_iterations," vs ",mean_Eout)
 mean_iterations = mean_iterations/100
@@ -521,15 +535,6 @@ elapsed_time = time() - start_time
 print("Regresion Lineal Elapsed time: %0.10f seconds" %elapsed_time)
 print("Media del numero de iteracones con N = 1000 ejecutado 100 veces: ",mean_iterations)
 print("Media del Eout con N = 1000 ejecutado 100 veces: ",mean_Eout)
-
-# #CODIGO DEL ESTUDIANTE
-
-# input("\n--- Pulsar tecla para continuar ---\n")
-    
-
-
-# # Usar la muestra de datos etiquetada para encontrar nuestra solución g y estimar Eout
-# # usando para ello un número suficientemente grande de nuevas muestras (>999).
 
 
 # #CODIGO DEL ESTUDIANTE
