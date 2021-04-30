@@ -616,7 +616,11 @@ x_test, y_test = readData('datos/X_test.npy', 'datos/y_test.npy', [4,8], [-1,1])
 
 # #LINEAR REGRESSION FOR CLASSIFICATION 
 
-# #CODIGO DEL ESTUDIANTE
+#calculate the error 
+def Error(x,y,w):
+    #(x*w-y)²
+    sumatory = np.power(x.dot(w)-y,2)
+    return sumatory.mean();
 
 
 # input("\n--- Pulsar tecla para continuar ---\n")
