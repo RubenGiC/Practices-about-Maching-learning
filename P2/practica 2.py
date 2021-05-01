@@ -310,13 +310,14 @@ def ajusta_PLA(datos, label, max_iter, vini):
     iterations = 0
     change = 0
 
-    #while w change
+    #while w change or not exceeded the number of iterations
     while(iterations<max_iter and change < label.size):
         #go through the entire sample
         for element in datos:
             
             #if the classification is wrong
-            if(sign(element,label[i],w) <= 0):
+            #if(sign(element,label[i],w) <= 0):
+            if(signo(w.dot(element)) != label[i]):
                 change = 0
                 #update w
                 w = update_w(w,element,label[i])
@@ -623,48 +624,125 @@ def Error(x,y,w):
     sumatory = np.power((x.dot(w)-y),2)
     return sumatory.mean();
 
-#gradient
-def gradientSGD(x,y,w):
-    #sumatory(Xn * (h(Xn) - Yn)*2)/n, where n is the iteration of the mini-batch
-    sumatory = np.dot((x.dot(w)-y),x)*2
-    return sumatory.mean()
+def Error2(x, y, w):
+  """Calcula el error para un modelo de regresión lineal"""
+  wN = np.power(np.linalg.norm(x.dot(w.transpose()) - y),2)
+  return wN/y.size
 
-#function that creates the minibatch
-def minibatch(x,y,N):
-    #choice random N elements
-    RSI = np.random.choice(y.size, N, replace=False)
-    #and create minibatches x (data) and y (labels)
-    y_minib = y[RSI]
-    x_minib = x[RSI,:]
+# Pseudoinversa	
+def pseudoinverse(x,y):
+    #compute the pseudo-inverse with this function (np.linalg.inv)
+    #X' = (X^T*X)^-1 * X^T
+    x_ps_inv = np.float64(np.dot(np.linalg.inv(np.dot(x.T, x)), x.T))
     
-    return x_minib, y_minib
+    #w = X' * y
+    return np.float64(x_ps_inv.dot(y))
 
-#SGD algorithm (stochastic descending gradient)
-def SGD(x,y,eta, maxIter, w, error2get):
-    iterations = 0;
-    # while the error is greater than 10¹⁴ and doesn't exceed the
-    #maximum number of iterations
-    while(Error(x,y,w)>=error2get and iterations < maxIter):
-        #update the w = w - eta * (derivate of square error)
-        w = w - (eta*gradientSGD(x,y,w)) 
-        iterations += 1
+#DATA INVERSE
+
+w_inverse = pseudoinverse(x, y)
+
+print("Pseudoinverse")
+print("w = ",w_inverse)
+print("Ein: ",Error2(x,y,w_inverse))
+print("Eout: ",Error2(x_test,y_test,w_inverse))
+
+#grafica PSEUDOINVERSE
+
+fig, ax = plt.subplots()
+ax.plot(np.squeeze(x[np.where(y == -1),1]), np.squeeze(x[np.where(y == -1),2]), 'o', color='red', label='4')
+ax.plot(np.squeeze(x[np.where(y == 1),1]), np.squeeze(x[np.where(y == 1),2]), 'o', color='blue', label='8')
+ax.set(xlabel='Intensidad promedio', ylabel='Simetria', title='Digitos Manuscritos (TRAINING)')
+ax.set_xlim((0, 1))
+X = np.linspace(0,1,y.size)
+Y = (-w_inverse[0]-w_inverse[1]*X)/w_inverse[2]
+ax.plot(X,Y,color='orange',label='PSEUDOINVERSE')
+plt.legend()
+ax.set_ylim(-9.0,1.0)
+plt.show()
+
+
+# input("\n--- Pulsar tecla para continuar ---\n")
+
+#POCKET ALGORITHM
+  
+#PLA-Pocket setting function
+def settingPLAPocket(x, y, maxIter, vini):
+    w = vini
+    i = 0 #index of each label
+    # iterations = 0
+    # w_old = w
+
+    #while w change or not exceeded the number of iterations
+    #while(iterations<maxIter):
         
-    return w, iterations
+        # #go through the entire sample
+        # for element in x:
+            
+        #     #if the classification is wrong
+        #     if(signo(w.dot(element)) != y[i]):
+        #         #update w
+        #         w = update_w(w,element,y[i])
+        #         #print(w)
+        #     #if w does not change or exceed the maximum number of iterations, ends
+        #     if(iterations>=maxIter or np.all(w_old == w)):
+        #         print(w," vs ",w_old)
+        #         return w, iterations
+        #     i += 1
+        #     iterations += 1 #counts the number of iterations of each element accessed
+        #     w_old = w
+        # i = 0
+     #go through the entire sample
+    for element in x:
+        
+        #if the classification is wrong
+        if(signo(w.dot(element)) != y[i]):
+            #update w
+            w = update_w(w,element,y[i])
 
+        i += 1
+
+    return w
+
+def PLAPocket(x,y,maxIter,w):
+    best_w = w_old = w_now = w.copy()
+    error_best = Error(x,y,best_w)
+    #print("best: ",best_w)
+    iterations = 0
+    for i in range(1, maxIter+1):
+        
+        w_now= settingPLAPocket(x, y, maxIter, w_now)
+
+        #print("w actual = ",w_now)
+        #print("mejor w = ",best_w)
+        error_now = Error(x,y,w_now)
+        #print(error_now," < ",error_best)
+        if(error_now<error_best):
+            best_w = w_now
+            error_best = error_now
+            #print("best: ",best_w)
+            
+        #print(w_old," vs ",w_now)
+        if(np.all(w_now == w_old)):
+            return best_w, i
+        w_old = w_now.copy()
+            
+    return best_w, i
 
 #DATA
 
-x_minib, y_minib = minibatch(x,y,60)
 eta = 0.001
-maxIter = 500
+maxIter = 15000
 error2get = 1e-14
-w, iterations = SGD(x_minib, y_minib,eta, maxIter,w_initial,error2get)
+w, iterations = PLAPocket(x, y, maxIter, w_inverse)
 
+print("PLA Pocket:")
 print("w = ",w)
 print("Number of iterations: ",iterations)
-print("Error: ",Error(x_minib,y_minib,w))
+print("Ein: ",Error2(x,y,w))
+print("Eout: ",Error2(x_test,y_test,w))
 
-#grafica SGD
+# #grafica PLA Pocket
 
 fig, ax = plt.subplots()
 ax.plot(np.squeeze(x[np.where(y == -1),1]), np.squeeze(x[np.where(y == -1),2]), 'o', color='red', label='4')
@@ -673,27 +751,14 @@ ax.set(xlabel='Intensidad promedio', ylabel='Simetria', title='Digitos Manuscrit
 ax.set_xlim((0, 1))
 X = np.linspace(0,1,y.size)
 Y = (-w[0]-w[1]*X)/w[2]
-ax.plot(X,Y,color='orange',label='SGD')
-#ax.plot([0,1], [-w[0]/w[2], -w[0]/w[2]-w[1]/w[2]])
+ax.plot(X,Y,color='green',label='PLA Pocket')
 plt.legend()
+ax.set_ylim(-9.0,1.0)
 plt.show()
-
-
-
-# input("\n--- Pulsar tecla para continuar ---\n")
-
-
-
-# #POCKET ALGORITHM
-  
-# #CODIGO DEL ESTUDIANTE
-
-
-
 
 # input("\n--- Pulsar tecla para continuar ---\n")
 
 
 #COTA SOBRE EL ERROR
 
-# CODIGO DEL ESTUDIANTE
+
