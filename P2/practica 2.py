@@ -401,7 +401,8 @@ w_initial = np.zeros(3)
 
 # EJERCICIO 3: REGRESIÓN LOGÍSTICA CON STOCHASTIC GRADIENT DESCENT
   
-def gradient(x, y, w):
+#gradient
+def gradientRL(x, y, w):
     
     #print("X = ",x)
     #print("Y = ",y)
@@ -431,7 +432,7 @@ def sgdRL(x,y,w,t,eta):
         #compute the gradient
         for i in RSI:
             #and update the weights (w(t+1))
-            w = w - (eta * gradient(x[i],y[i],w))
+            w = w - (eta * gradientRL(x[i],y[i],w))
         
         iterations += 1
         
@@ -618,9 +619,35 @@ x_test, y_test = readData('datos/X_test.npy', 'datos/y_test.npy', [4,8], [-1,1])
 
 #calculate the error 
 def Error(x,y,w):
-    #(x*w-y)²
+    #Sumatory((x*w-y)²)/N
     sumatory = np.power(x.dot(w)-y,2)
     return sumatory.mean();
+
+#gradient
+def gradientSGD(x,y,w):
+    #sumatory(Xn * (h(Xn) - Yn)*2)/n, where n is the iteration of the mini-batch
+    sumatory = np.dot((x.dot(w)-y),x)*2
+    return sumatory.mean();
+
+#SGD algorithm (stochastic descending gradient)
+def SGD(x,y,eta, maxIter, w, error2get):
+    iterations = 0;
+    while(Error(x,y,w)>=error2get and iterations < maxIter):
+        #update the w = w - eta * (derivate of square error)
+        w = w - (eta*gradientSGD(x,y,w)) 
+        iterations += 1
+        
+    return w, iterations
+
+#function that creates the minibatch
+def minibatch(x,y,N):
+    #choice random N elements
+    RSI = np.random.choice(y.size, N, replace=False)
+    #and create minibatches x (data) and y (labels)
+    y_minib = y[RSI]
+    x_minib = x[RSI,:]
+    
+    return x_minib, y_minib
 
 
 # input("\n--- Pulsar tecla para continuar ---\n")
