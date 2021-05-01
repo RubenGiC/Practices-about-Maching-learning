@@ -624,11 +624,6 @@ def Error(x,y,w):
     sumatory = np.power((x.dot(w)-y),2)
     return sumatory.mean();
 
-def Error2(x, y, w):
-  """Calcula el error para un modelo de regresión lineal"""
-  wN = np.power(np.linalg.norm(x.dot(w.transpose()) - y),2)
-  return wN/y.size
-
 # Pseudoinversa	
 def pseudoinverse(x,y):
     #compute the pseudo-inverse with this function (np.linalg.inv)
@@ -644,8 +639,8 @@ w_inverse = pseudoinverse(x, y)
 
 print("Pseudoinverse")
 print("w = ",w_inverse)
-print("Ein: ",Error2(x,y,w_inverse))
-print("Eout: ",Error2(x_test,y_test,w_inverse))
+print("Ein: ",Error(x,y,w_inverse))
+print("Eout: ",Error(x_test,y_test,w_inverse))
 
 #grafica PSEUDOINVERSE
 
@@ -662,7 +657,7 @@ ax.set_ylim(-9.0,1.0)
 plt.show()
 
 
-# input("\n--- Pulsar tecla para continuar ---\n")
+input("\n--- Pulsar tecla para continuar ---\n")
 
 #POCKET ALGORITHM
   
@@ -708,7 +703,7 @@ def PLAPocket(x,y,maxIter,w):
     best_w = w_old = w_now = w.copy()
     error_best = Error(x,y,best_w)
     #print("best: ",best_w)
-    iterations = 0
+
     for i in range(1, maxIter+1):
         
         w_now= settingPLAPocket(x, y, maxIter, w_now)
@@ -731,16 +726,14 @@ def PLAPocket(x,y,maxIter,w):
 
 #DATA
 
-eta = 0.001
-maxIter = 15000
-error2get = 1e-14
+maxIter = 100
 w, iterations = PLAPocket(x, y, maxIter, w_inverse)
 
 print("PLA Pocket:")
 print("w = ",w)
 print("Number of iterations: ",iterations)
-print("Ein: ",Error2(x,y,w))
-print("Eout: ",Error2(x_test,y_test,w))
+print("Ein: ",Error(x,y,w))
+print("Eout: ",Error(x_test,y_test,w))
 
 # #grafica PLA Pocket
 
@@ -755,10 +748,4 @@ ax.plot(X,Y,color='green',label='PLA Pocket')
 plt.legend()
 ax.set_ylim(-9.0,1.0)
 plt.show()
-
-# input("\n--- Pulsar tecla para continuar ---\n")
-
-
-#COTA SOBRE EL ERROR
-
 
