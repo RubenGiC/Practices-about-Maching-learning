@@ -491,23 +491,23 @@ x_complet = np.array([ones,x_test[:,0],x_test[:,1]])
 #swap the axes, for x(x0, x1, x2)
 x_complet=x_complet.swapaxes(0,1)
 
-w, iterations = sgdRL(x_complet,tag_test,w_initial,0.01,eta)
-print(w)
-print("Numero de iteracones con N = 100: ",iterations)
-print("Eout = ",Err(x_complet, tag_test, w))
+# w, iterations = sgdRL(x_complet,tag_test,w_initial,0.01,eta)
+# print(w)
+# print("Numero de iteracones con N = 100: ",iterations)
+# print("Eout = ",Err(x_complet, tag_test, w))
 
 mean_iterations = 0;
 mean_Eout = 0
 
 #Draw the graph
-fig2b1 = plt.figure()
-ax2b1 = fig2b1.add_subplot()
-ax2b1.scatter(x_complet[:,1],x_complet[:,2],c=tag_test)
-#calculate the perfect parting line
-X = np.linspace(0, 2, tag_test.size)
-Y = (-w[0]-w[1]*X)/w[2]
-ax2b1.plot(X, Y)
-ax2b1.set_title('Nube de puntos aleatoria uniforme, 100 elementos')
+# fig2b1 = plt.figure()
+# ax2b1 = fig2b1.add_subplot()
+# ax2b1.scatter(x_complet[:,1],x_complet[:,2],c=tag_test)
+# #calculate the perfect parting line
+# X = np.linspace(0, 2, tag_test.size)
+# Y = (-w[0]-w[1]*X)/w[2]
+# ax2b1.plot(X, Y)
+# ax2b1.set_title('Nube de puntos aleatoria uniforme, 100 elementos')
 
 #lo tengo comentado porque me tarda 30 minutos aproximadamente
 
@@ -620,24 +620,14 @@ x_test, y_test = readData('datos/X_test.npy', 'datos/y_test.npy', [4,8], [-1,1])
 #calculate the error 
 def Error(x,y,w):
     #Sumatory((x*w-y)²)/N
-    sumatory = np.power(x.dot(w)-y,2)
+    sumatory = np.power((x.dot(w)-y),2)
     return sumatory.mean();
 
 #gradient
 def gradientSGD(x,y,w):
     #sumatory(Xn * (h(Xn) - Yn)*2)/n, where n is the iteration of the mini-batch
     sumatory = np.dot((x.dot(w)-y),x)*2
-    return sumatory.mean();
-
-#SGD algorithm (stochastic descending gradient)
-def SGD(x,y,eta, maxIter, w, error2get):
-    iterations = 0;
-    while(Error(x,y,w)>=error2get and iterations < maxIter):
-        #update the w = w - eta * (derivate of square error)
-        w = w - (eta*gradientSGD(x,y,w)) 
-        iterations += 1
-        
-    return w, iterations
+    return sumatory.mean()
 
 #function that creates the minibatch
 def minibatch(x,y,N):
@@ -648,6 +638,46 @@ def minibatch(x,y,N):
     x_minib = x[RSI,:]
     
     return x_minib, y_minib
+
+#SGD algorithm (stochastic descending gradient)
+def SGD(x,y,eta, maxIter, w, error2get):
+    iterations = 0;
+    # while the error is greater than 10¹⁴ and doesn't exceed the
+    #maximum number of iterations
+    while(Error(x,y,w)>=error2get and iterations < maxIter):
+        #update the w = w - eta * (derivate of square error)
+        w = w - (eta*gradientSGD(x,y,w)) 
+        iterations += 1
+        
+    return w, iterations
+
+
+#DATA
+
+x_minib, y_minib = minibatch(x,y,60)
+eta = 0.001
+maxIter = 500
+error2get = 1e-14
+w, iterations = SGD(x_minib, y_minib,eta, maxIter,w_initial,error2get)
+
+print("w = ",w)
+print("Number of iterations: ",iterations)
+print("Error: ",Error(x_minib,y_minib,w))
+
+#grafica SGD
+
+fig, ax = plt.subplots()
+ax.plot(np.squeeze(x[np.where(y == -1),1]), np.squeeze(x[np.where(y == -1),2]), 'o', color='red', label='4')
+ax.plot(np.squeeze(x[np.where(y == 1),1]), np.squeeze(x[np.where(y == 1),2]), 'o', color='blue', label='8')
+ax.set(xlabel='Intensidad promedio', ylabel='Simetria', title='Digitos Manuscritos (TRAINING)')
+ax.set_xlim((0, 1))
+X = np.linspace(0,1,y.size)
+Y = (-w[0]-w[1]*X)/w[2]
+ax.plot(X,Y,color='orange',label='SGD')
+#ax.plot([0,1], [-w[0]/w[2], -w[0]/w[2]-w[1]/w[2]])
+plt.legend()
+plt.show()
+
 
 
 # input("\n--- Pulsar tecla para continuar ---\n")
