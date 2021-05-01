@@ -53,17 +53,18 @@ x = simula_unif(50, 2, [-50,50])
 x_gaus = simula_gaus(50, 2, np.array([5,7]))
 
 #Draw the graph
-# fig1a = plt.figure()
-# ax1a = fig1a.add_subplot()
-# ax1a.scatter(x[:,0],x[:,1])
-# ax1a.set_title('Nube de puntos aleatoria uniforme')
+fig1a = plt.figure()
+ax1a = fig1a.add_subplot()
+ax1a.scatter(x[:,0],x[:,1])
+ax1a.set_title('Nube de puntos aleatoria uniforme')
 
-# fig1b = plt.figure()
-# ax1b = fig1b.add_subplot()
-# ax1b.scatter(x_gaus[:,0],x_gaus[:,1])
-# ax1b.set_title('Nube de puntos aleatoria Gaussiana')
+fig1b = plt.figure()
+ax1b = fig1b.add_subplot()
+ax1b.scatter(x_gaus[:,0],x_gaus[:,1])
+ax1b.set_title('Nube de puntos aleatoria Gaussiana')
+plt.show()
 
-# input("\n--- Pulsar tecla para continuar ---\n")
+input("\n--- Pulsar tecla para continuar ---\n")
 
 
 ###############################################################################
@@ -102,23 +103,24 @@ for i in np.arange(x[:,0].size):
     tag[i] = f(x[i,0], x[i,1], a, b)
     
     
-# print("Porcentaje de error de clasificación (sin ruido): ",missClasificationRate(tag,tag),"%")
+print("Porcentaje de error de clasificación (sin ruido): ",missClasificationRate(tag,tag),"%")
     
 
-# #Draw the graph
-# fig2a = plt.figure()
-# ax2a = fig2a.add_subplot()
-# ax2a.scatter(x[:,0],x[:,1],c=tag)
-# #calculate the perfect parting line
-# X = np.linspace(-50, 50, tag.size)
-# #solves the function for the variable Y
-# #f(x,y) = y - ax -b
-# Y = (a*X) + b
-# ax2a.plot(X, Y)
-# ax2a.set_title('Nube de puntos aleatoria uniforme, ajuste perfecto (100)')
+#Draw the graph
+fig2a = plt.figure()
+ax2a = fig2a.add_subplot()
+ax2a.scatter(x[:,0],x[:,1],c=tag)
+#calculate the perfect parting line
+X = np.linspace(-50, 50, tag.size)
+#solves the function for the variable Y
+#f(x,y) = y - ax -b
+Y = (a*X) + b
+ax2a.plot(X, Y)
+ax2a.set_title('Nube de puntos aleatoria uniforme, ajuste perfecto (100)')
+plt.show()
 
 
-# input("\n--- Pulsar tecla para continuar ---\n")
+input("\n--- Pulsar tecla para continuar ---\n")
 
 # 1.2.b. Dibujar una gráfica donde los puntos muestren el resultado de su etiqueta, junto con la recta usada para ello
 # Array con 10% de indices aleatorios para introducir ruido
@@ -176,21 +178,22 @@ def noise(tags,percent):
 #add 10% noise to the positive points and another 10% noise for the negative points
 tag_noise = noise(tag,0.1)
 
-# print("Porcentaje de error de clasificación (con ruido): ",missClasificationRate(tag_noise,tag),"%")
+print("Porcentaje de error de clasificación (con ruido): ",missClasificationRate(tag_noise,tag),"%")
 
-# #Draw the graph
-# fig2a = plt.figure()
-# ax2a = fig2a.add_subplot()
-# ax2a.scatter(x[:,0],x[:,1],c=tag_noise)
-# #calculate the perfect parting line
-# X = np.linspace(-50, 50, tag_noise.size)
-# #solves the function for the variable Y
-# #f(x,y) = y - ax -b
-# Y = (a*X) + b
-# ax2a.plot(X, Y)
-# ax2a.set_title('Nube de puntos aleatoria uniforme, con 10% de ruido para los puntos positivos y negativos')
+#Draw the graph
+fig2a = plt.figure()
+ax2a = fig2a.add_subplot()
+ax2a.scatter(x[:,0],x[:,1],c=tag_noise)
+#calculate the perfect parting line
+X = np.linspace(-50, 50, tag_noise.size)
+#solves the function for the variable Y
+#f(x,y) = y - ax -b
+Y = (a*X) + b
+ax2a.plot(X, Y)
+ax2a.set_title('Nube de puntos aleatoria uniforme, con 10% de ruido para los puntos positivos y negativos')
+plt.show()
 
-# input("\n--- Pulsar tecla para continuar ---\n")
+input("\n--- Pulsar tecla para continuar ---\n")
 
 ###############################################################################
 ###############################################################################
@@ -267,20 +270,20 @@ def missClasificationRate2(y_training,y_test):
     return (error/y_test.size)*100
 
 #calculate and show
-# y1 = f1(x)    
-# print("Porcentaje de error de clasificación (función 1): ",missClasificationRate2(y1,tag),"%")
-# plot_datos_cuad(x, y1, f1,'f(x,y) = (x-10)² + (y-20)² - 400, with 20% noise')
-# y2 = f2(x)
-# print("Porcentaje de error de clasificación (función 2): ",missClasificationRate2(y2,tag),"%")
-# plot_datos_cuad(x, y2, f2,'f(x,y) = 0.5*(x+10)² + (y-20)² - 400, with 20% noise')
-# y3 = f3(x)
-# print("Porcentaje de error de clasificación (función 3): ",missClasificationRate2(y3,tag),"%")
-# plot_datos_cuad(x, y3, f3,'f(x,y) = 0.5*(x-10)² - (y+20)² - 400, with 20% noise')
-# y4 = f4(x)
-# print("Porcentaje de error de clasificación (función 4): ",missClasificationRate2(y4,tag),"%")
-# plot_datos_cuad(x, y4, f4,'f(x,y) = y - 20*x² - 5*x + 3, with 20% noise')
+y1 = f1(x)    
+print("Porcentaje de error de clasificación (función 1): ",missClasificationRate2(y1,tag),"%")
+plot_datos_cuad(x, y1, f1,'f(x,y) = (x-10)² + (y-20)² - 400, with 20% noise')
+y2 = f2(x)
+print("Porcentaje de error de clasificación (función 2): ",missClasificationRate2(y2,tag),"%")
+plot_datos_cuad(x, y2, f2,'f(x,y) = 0.5*(x+10)² + (y-20)² - 400, with 20% noise')
+y3 = f3(x)
+print("Porcentaje de error de clasificación (función 3): ",missClasificationRate2(y3,tag),"%")
+plot_datos_cuad(x, y3, f3,'f(x,y) = 0.5*(x-10)² - (y+20)² - 400, with 20% noise')
+y4 = f4(x)
+print("Porcentaje de error de clasificación (función 4): ",missClasificationRate2(y4,tag),"%")
+plot_datos_cuad(x, y4, f4,'f(x,y) = y - 20*x² - 5*x + 3, with 20% noise')
 
-# input("\n--- Pulsar tecla para continuar ---\n")
+input("\n--- Pulsar tecla para continuar ---\n")
 
 # ###############################################################################
 # ###############################################################################
@@ -356,45 +359,47 @@ w_initial = np.zeros(3)
 
 #without noise
 
-# start = time()
-# w, iterations = ajusta_PLA(x_complet,tag,10000,w_initial)
-# elapsed = time() - start
-# print("Elapsed time",elapsed)
-# print("W = ",w_initial,": W final: ",w,", iteraciones: ",iterations)
+start = time()
+w, iterations = ajusta_PLA(x_complet,tag,10000,w_initial)
+elapsed = time() - start
+print("PLA (sin ruido): ")
+print("Elapsed time",elapsed)
+print("W = ",w_initial,": W final: ",w,", iteraciones: ",iterations)
 
-# # Random initializations
-# iterations = []
-# for i in range(0,10):
-#     rand_initialize = np.random.uniform(0,1.000000000000000001,3)
-#     w, iterate = ajusta_PLA(x_complet,tag,100000,rand_initialize)
-#     #print("W =",rand_initialize,": W final: ",w,", iteraciones: ",iterate)
-#     iterations.append(iterate)
+# Random initializations
+iterations = []
+for i in range(0,10):
+    rand_initialize = np.random.uniform(0,1.000000000000000001,3)
+    w, iterate = ajusta_PLA(x_complet,tag,100000,rand_initialize)
+    #print("W =",rand_initialize,": W final: ",w,", iteraciones: ",iterate)
+    iterations.append(iterate)
     
-# print('Valor medio de iteraciones necesario para converger: {}'.format(np.mean(np.asarray(iterations))))
+print('Valor medio de iteraciones necesario para converger: {}'.format(np.mean(np.asarray(iterations))))
 
-# input("\n--- Pulsar tecla para continuar ---\n")
+input("\n--- Pulsar tecla para continuar ---\n")
 
-# # Ahora con los datos del ejercicio 1.2.b
-# #with 10% of noise
-# tag_noise = noise(tag, 0.1)
+# Ahora con los datos del ejercicio 1.2.b
+#with 10% of noise
+tag_noise = noise(tag, 0.1)
 
-# start = time()
-# w, iterations = ajusta_PLA(x_complet,tag_noise,100000,w_initial)
-# elapsed = time() - start
-# print("Elapsed time",elapsed)
-# print("W = ",w_initial,": W final: ",w,", iteraciones: ",iterations)
+start = time()
+w, iterations = ajusta_PLA(x_complet,tag_noise,100000,w_initial)
+elapsed = time() - start
+print("PLA (con ruido): ")
+print("Elapsed time",elapsed)
+print("W = ",w_initial,": W final: ",w,", iteraciones: ",iterations)
 
 
-# iterations = []
-# for i in range(0,10):
-#     rand_initialize = np.random.uniform(0,1.000000000000000001,3)
-#     w, iterate = ajusta_PLA(x_complet,tag_noise,100000,rand_initialize)
-#     #print("W =",rand_initialize,": W final: ",w,", iteraciones: ",iterate)
-#     iterations.append(iterate)
+iterations = []
+for i in range(0,10):
+    rand_initialize = np.random.uniform(0,1.000000000000000001,3)
+    w, iterate = ajusta_PLA(x_complet,tag_noise,100000,rand_initialize)
+    #print("W =",rand_initialize,": W final: ",w,", iteraciones: ",iterate)
+    iterations.append(iterate)
     
-# print('Valor medio de iteraciones necesario para converger (con ruido): {}'.format(np.mean(np.asarray(iterations))))
+print('Valor medio de iteraciones necesario para converger (con ruido): {}'.format(np.mean(np.asarray(iterations))))
 
-# input("\n--- Pulsar tecla para continuar ---\n")
+input("\n--- Pulsar tecla para continuar ---\n")
 
 ###############################################################################
 ###############################################################################
@@ -464,7 +469,7 @@ def Err(x,y,w):
     return result.mean()
 
 
-# input("\n--- Pulsar tecla para continuar ---\n")
+input("\n--- Pulsar tecla para continuar ---\n")
     
 # Usar la muestra de datos etiquetada para encontrar nuestra solución g y estimar Eout
 # usando para ello un número suficientemente grande de nuevas muestras (>999).
@@ -492,23 +497,25 @@ x_complet = np.array([ones,x_test[:,0],x_test[:,1]])
 #swap the axes, for x(x0, x1, x2)
 x_complet=x_complet.swapaxes(0,1)
 
-# w, iterations = sgdRL(x_complet,tag_test,w_initial,0.01,eta)
-# print(w)
-# print("Numero de iteracones con N = 100: ",iterations)
-# print("Eout = ",Err(x_complet, tag_test, w))
+w, iterations = sgdRL(x_complet,tag_test,w_initial,0.01,eta)
+print("SGD: ")
+print("Numero de iteracones con N = 100: ",iterations)
+print("Eout = ",Err(x_complet, tag_test, w))
 
 mean_iterations = 0;
 mean_Eout = 0
 
 #Draw the graph
-# fig2b1 = plt.figure()
-# ax2b1 = fig2b1.add_subplot()
-# ax2b1.scatter(x_complet[:,1],x_complet[:,2],c=tag_test)
-# #calculate the perfect parting line
-# X = np.linspace(0, 2, tag_test.size)
-# Y = (-w[0]-w[1]*X)/w[2]
-# ax2b1.plot(X, Y)
-# ax2b1.set_title('Nube de puntos aleatoria uniforme, 100 elementos')
+fig2b1 = plt.figure()
+ax2b1 = fig2b1.add_subplot()
+ax2b1.scatter(x_complet[:,1],x_complet[:,2],c=tag_test)
+#calculate the perfect parting line
+X = np.linspace(0, 2, tag_test.size)
+Y = (-w[0]-w[1]*X)/w[2]
+ax2b1.plot(X, Y)
+ax2b1.set_title('Nube de puntos aleatoria uniforme SGD, 100 elementos')
+ax2b1.set_ylim((-0.5, 2.5))
+plt.show()
 
 #lo tengo comentado porque me tarda 30 minutos aproximadamente
 
@@ -561,7 +568,7 @@ mean_Eout = 0
 # ax2b2.set_title('Nube de puntos aleatoria uniforme, 1000 elementos')
 
 
-# input("\n--- Pulsar tecla para continuar ---\n")
+input("\n--- Pulsar tecla para continuar ---\n")
 
 
 ###############################################################################
@@ -598,25 +605,25 @@ x_test, y_test = readData('datos/X_test.npy', 'datos/y_test.npy', [4,8], [-1,1])
 
 
 #mostramos los datos
-# fig, ax = plt.subplots()
-# ax.plot(np.squeeze(x[np.where(y == -1),1]), np.squeeze(x[np.where(y == -1),2]), 'o', color='red', label='4')
-# ax.plot(np.squeeze(x[np.where(y == 1),1]), np.squeeze(x[np.where(y == 1),2]), 'o', color='blue', label='8')
-# ax.set(xlabel='Intensidad promedio', ylabel='Simetria', title='Digitos Manuscritos (TRAINING)')
-# ax.set_xlim((0, 1))
-# plt.legend()
-# plt.show()
+fig, ax = plt.subplots()
+ax.plot(np.squeeze(x[np.where(y == -1),1]), np.squeeze(x[np.where(y == -1),2]), 'o', color='red', label='4')
+ax.plot(np.squeeze(x[np.where(y == 1),1]), np.squeeze(x[np.where(y == 1),2]), 'o', color='blue', label='8')
+ax.set(xlabel='Intensidad promedio', ylabel='Simetria', title='Digitos Manuscritos (TRAINING)')
+ax.set_xlim((0, 1))
+plt.legend()
+plt.show()
 
-# fig, ax = plt.subplots()
-# ax.plot(np.squeeze(x_test[np.where(y_test == -1),1]), np.squeeze(x_test[np.where(y_test == -1),2]), 'o', color='red', label='4')
-# ax.plot(np.squeeze(x_test[np.where(y_test == 1),1]), np.squeeze(x_test[np.where(y_test == 1),2]), 'o', color='blue', label='8')
-# ax.set(xlabel='Intensidad promedio', ylabel='Simetria', title='Digitos Manuscritos (TEST)')
-# ax.set_xlim((0, 1))
-# plt.legend()
-# plt.show()
+fig, ax = plt.subplots()
+ax.plot(np.squeeze(x_test[np.where(y_test == -1),1]), np.squeeze(x_test[np.where(y_test == -1),2]), 'o', color='red', label='4')
+ax.plot(np.squeeze(x_test[np.where(y_test == 1),1]), np.squeeze(x_test[np.where(y_test == 1),2]), 'o', color='blue', label='8')
+ax.set(xlabel='Intensidad promedio', ylabel='Simetria', title='Digitos Manuscritos (TEST)')
+ax.set_xlim((0, 1))
+plt.legend()
+plt.show()
 
-# input("\n--- Pulsar tecla para continuar ---\n")
+input("\n--- Pulsar tecla para continuar ---\n")
 
-# #LINEAR REGRESSION FOR CLASSIFICATION 
+#LINEAR REGRESSION FOR CLASSIFICATION 
 
 #calculate the error 
 def Error(x,y,w):
