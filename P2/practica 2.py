@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 TRABAJO 2
-Nombre Estudiante: 
+Nombre Estudiante: Ruben Girela Castellón
 """
 import numpy as np
 import matplotlib.pyplot as plt
