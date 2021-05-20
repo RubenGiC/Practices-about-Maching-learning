@@ -52,7 +52,7 @@ def readData(archivo, tipo):
             datos = normalizer.transform(datos)
             
             #Y separamos los datos de las etiquetas
-            x = datos[:, :-1]
+            x = datos
             y = np.array(y, dtype='f4') #datos[:, datos.shape[1]-1:datos.shape[1]]
             
         #read file csv
@@ -85,8 +85,8 @@ def readData(archivo, tipo):
 x_class,y_class = readData('datos/clasificacion/Sensorless_drive_diagnosis.txt','txt')
 x_reg,y_reg = readData('datos/regresion/train.csv','csv')
 
-print(y_class.size, " - ", x_class[:,1].size)
-print(y_class)
+# print(y_class.size, " - ", x_class[1,:].size)
+# print(y_class)
 
 #MOSTAR GRAFICA 2D de los datos de la clasificación
 #transformamos los datos de kd a 2d
