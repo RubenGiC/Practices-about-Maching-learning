@@ -231,7 +231,7 @@ print("Numero de datos para el test (regresion): ",y_test_reg.size)
 
 #Regresión Logistica
 #creamos nuestro modelo
-logistic = LogisticRegression().fit(x_training_class, y_training_class)
+logistic = LogisticRegression(max_iter=100000).fit(x_training_class, y_training_class.ravel())
 #clasificamos el conjunto test con nuestro modelo
 predicted = logistic.predict(x_test_class)
 #y comprobamos como de buenos son los resultados
@@ -246,7 +246,7 @@ print("\tPrecisión media training: ",logistic.score(x_training_class,y_training
 print("\tPrecisión media test: ",logistic.score(x_test_class,y_test_class))
 print("\t Tabla resultados:\n",result)
 
-input("\n--- Pulsar tecla para continuar ---\n")
+# input("\n--- Pulsar tecla para continuar ---\n")
 
 
 
