@@ -172,12 +172,6 @@ principalYlabel = pd.DataFrame(data = y_training_class, columns = ['target'])
 #concatenamos los datos y las etiquetas
 finalDf = pd.concat([principalXlabel, principalYlabel], axis=1)
 
-# print('DATOS PARA LA CLASIFICACIÓN CON ANOMALIAS')
-# #print(finalDf)
-
-# for i in finalDf['componente 1']:
-#     if(i>8):
-#         print(i)
 
 #Visualización grafica,
 # fig = plt.figure(figsize=(8,8))
@@ -190,6 +184,7 @@ finalDf = pd.concat([principalXlabel, principalYlabel], axis=1)
 
 
 #Eliminamos los datos que son mayores de 8 en la componente 1
+#ya que se consideran datos ruidosos
 for i in np.arange(finalDf['componente 1'].size):
     if(finalDf['componente 1'][i]>8):
         np.delete(x_training_class,i,axis=0)
@@ -198,7 +193,7 @@ for i in np.arange(finalDf['componente 1'].size):
 #tambien lo elimino del dataFrame para la visualización correcta de los datos
 finalDf = finalDf.drop(finalDf[finalDf['componente 1']>8].index)
 
-# #Visualización grafica,
+#Visualización grafica,
 # fig = plt.figure(figsize=(8,8))
 # ax = fig.add_subplot(1,1,1)
 # ax.set_xlabel('componente 1')
@@ -207,31 +202,52 @@ finalDf = finalDf.drop(finalDf[finalDf['componente 1']>8].index)
 # ax.scatter(finalDf['componente 1'],finalDf['componente 2'],c=finalDf['target'])
 # fig.show()
 
+# input("\n--- Pulsar tecla para continuar ---\n")
 
-# #MOSTAR GRAFICA 2D de los datos para la regresión
-# #transformamos los datos de kd a 2d
-# pca = PCA(n_components=2)#indicamos la dimensionalidad
-# #transformamos los datos
-# principalComponents = pca.fit_transform(x_training_reg)
-# #creamos la estructura para una visualización correcta de los datos en 2D
-# principalXlabel = pd.DataFrame(data = principalComponents, columns = ['componente 1', 'componente 2'])
-# #esto es para la etiqueta
-# pca = PCA(n_components=1)#indicamos la dimensionalidad
-# #y creamos la estructura con el mismo formato
-# principalYlabel = pd.DataFrame(data = y_training_reg, columns = ['target'])
 
-# #concatenamos los datos y las etiquetas
-# finalDf = pd.concat([principalXlabel, principalYlabel], axis=1)
+#MOSTAR GRAFICA 2D de los datos para la regresión
+#transformamos los datos de kd a 2d
+pca = PCA(n_components=2)#indicamos la dimensionalidad
+#transformamos los datos
+principalComponents2 = pca.fit_transform(x_training_reg)
+#creamos la estructura para una visualización correcta de los datos en 2D
+principalXlabel2 = pd.DataFrame(data = principalComponents2, columns = ['componente 1', 'componente 2'])
+#esto es para la etiqueta
+pca = PCA(n_components=1)#indicamos la dimensionalidad
+#y creamos la estructura con el mismo formato
+principalYlabel2 = pd.DataFrame(data = y_training_reg, columns = ['target'])
+
+#concatenamos los datos y las etiquetas
+finalDf2 = pd.concat([principalXlabel2, principalYlabel2], axis=1)
 # print('DATOS PARA LA REGRESIÓN')
-# print(finalDf)
+# print(finalDf2)
 
-# #Visualización grafica,
+#Visualización grafica,
 # fig = plt.figure(figsize=(8,8))
 # ax = fig.add_subplot(1,1,1)
 # ax.set_xlabel('componente 1')
 # ax.set_ylabel('componente 2')
-# ax.set_title('Datos Training para la Regresión')
-# ax.scatter(finalDf['componente 1'],finalDf['componente 2'],c=finalDf['target'])
+# ax.set_title('Datos Training para la Regresión con anomalias')
+# ax.scatter(finalDf2['componente 1'],finalDf2['componente 2'],c=finalDf2['target'])
+# fig.show()
+
+#Eliminamos los datos que son mayores de 15 en la componente 1
+#ya que se consideran datos ruidosos
+for i in np.arange(finalDf2['componente 2'].size):
+    if(finalDf2['componente 2'][i]>15):
+        np.delete(x_training_class,i,axis=0)
+        np.delete(y_training_class,i)
+        
+#tambien lo elimino del dataFrame para la visualización correcta de los datos
+finalDf2 = finalDf2.drop(finalDf2[finalDf2['componente 2']>15].index)
+
+#Visualización grafica,
+# fig = plt.figure(figsize=(8,8))
+# ax = fig.add_subplot(1,1,1)
+# ax.set_xlabel('componente 1')
+# ax.set_ylabel('componente 2')
+# ax.set_title('Datos Training para la Regresión sin anomalias aparentemente')
+# ax.scatter(finalDf2['componente 1'],finalDf2['componente 2'],c=finalDf2['target'])
 # fig.show()
 
 # input("\n--- Pulsar tecla para continuar ---\n")
