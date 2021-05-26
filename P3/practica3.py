@@ -24,6 +24,7 @@ from sklearn.linear_model import SGDClassifier
 #para medir como de buena es la predicción
 from sklearn.metrics import classification_report
 from sklearn.metrics import accuracy_score
+from sklearn.model_selection import cross_val_score
 
 
 #cargo los datos de los archivos
@@ -89,6 +90,8 @@ x_reg,y_reg = readData('datos/regresion/train.csv','csv')
 #divido la muestra total en 2 muestras una para el training y otra para el test
 #Para ello crearemos 2 listas de indices que se barajaran y en principio 
 #seleccionaremos el 80% de la muestra para el training
+#fijo una semilla para que me de siempre los mismos resultados
+np.random.seed(30)#la semilla se ha elegido aleatoriamente
 IS_class = np.random.permutation(x_class.shape[0])
 IS_reg = np.random.permutation(x_reg.shape[0])
 
@@ -142,11 +145,17 @@ y_test_reg = np.array(y_test_reg)
 
 scaler = StandardScaler()
 
+#normalizamos los datos del training y test de clasificación
 x_training_class = scaler.fit_transform(x_training_class)
 x_test_class = scaler.fit_transform(x_test_class)
 
+#normalizamos los datos del training y test de regresión
 x_training_reg = scaler.fit_transform(x_training_reg)
 x_test_reg = scaler.fit_transform(x_test_reg)
+
+#normalizamos todos los datos para posteriormente calcular el Eout
+x_class = scaler.fit_transform(x_class)
+x_reg = scaler.fit_transform(x_reg)
 
 
 print("Numero de datos para el training (clasificacion): ",y_training_class.size)
@@ -255,8 +264,13 @@ finalDf2 = finalDf2.drop(finalDf2[finalDf2['componente 2']>15].index)
 
 
 #RidgeClassifier
+
+rc = RidgeClassifier()
+#aplicamos cross validation con 5 fold
+scores = cross_val_score(rc, x_training_class, y_training_class, cv=5)
+
 #creamos nuestro modelo
-logistic = RidgeClassifier().fit(x_training_class, y_training_class)
+logistic = rc.fit(x_training_class, y_training_class)
 #lo probamos con el conjunto de test
 predicted = logistic.predict(x_test_class)
 #y comprobamos como de buenos son los resultados
@@ -264,12 +278,14 @@ result = classification_report(y_test_class,predicted)
 
 #Mostrarmos los resultados
 print("RidgeClassifier:")
+print("\tTabla resultados:\n",result)
+print("\tEcvs:\n\t\tEcv1: ",scores[0],"\n\t\tEcv2: ",scores[1])
+print("\t\tEcv3: ",scores[2],"\n\t\tEcv4: ",scores[3],"\n\t\tEcv5: ",scores[4])
+print("\tEcv media: ",(np.mean(scores)))
 print("\tEin: ",accuracy_score(y_training_class, logistic.predict(x_training_class)))
 print("\tEtest: ",accuracy_score(y_test_class, logistic.predict(x_test_class)))
 print("\tEout: ",accuracy_score(y_class, logistic.predict(x_class)))
-print("\tPrecisión media training: ",logistic.score(x_training_class,y_training_class))
-print("\tPrecisión media test: ",logistic.score(x_test_class,y_test_class))
-print("\tTabla resultados:\n",result)
+
 
 # input("\n--- Pulsar tecla para continuar ---\n")
 
