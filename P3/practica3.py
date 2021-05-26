@@ -269,15 +269,41 @@ rc = RidgeClassifier()
 #aplicamos cross validation con 5 fold
 scores = cross_val_score(rc, x_training_class, y_training_class, cv=5)
 
+# #creamos nuestro modelo
+# logistic = rc.fit(x_training_class, y_training_class)
+# #lo probamos con el conjunto de test
+# predicted = logistic.predict(x_test_class)
+# #y comprobamos como de buenos son los resultados
+# result = classification_report(y_test_class,predicted)
+
+# #Mostrarmos los resultados
+# print("RidgeClassifier:")
+# print("\tTabla resultados:\n",result)
+# print("\tEcvs:\n\t\tEcv1: ",scores[0],"\n\t\tEcv2: ",scores[1])
+# print("\t\tEcv3: ",scores[2],"\n\t\tEcv4: ",scores[3],"\n\t\tEcv5: ",scores[4])
+# print("\tEcv media: ",(np.mean(scores)))
+# print("\tEin: ",accuracy_score(y_training_class, logistic.predict(x_training_class)))
+# print("\tEtest: ",accuracy_score(y_test_class, logistic.predict(x_test_class)))
+# print("\tEout: ",accuracy_score(y_class, logistic.predict(x_class)))
+
+
+# input("\n--- Pulsar tecla para continuar ---\n")
+
+
+#Regresión Logistica
+lr = LogisticRegression(max_iter=600)
+#aplicamos cross validation con 5 fold
+scores = cross_val_score(lr, x_training_class, y_training_class, cv=5)
+
 #creamos nuestro modelo
-logistic = rc.fit(x_training_class, y_training_class)
-#lo probamos con el conjunto de test
+logistic = lr.fit(x_training_class, y_training_class.ravel())
+#clasificamos el conjunto test con nuestro modelo
 predicted = logistic.predict(x_test_class)
 #y comprobamos como de buenos son los resultados
 result = classification_report(y_test_class,predicted)
 
 #Mostrarmos los resultados
-print("RidgeClassifier:")
+print("LogisticRegression:")
 print("\tTabla resultados:\n",result)
 print("\tEcvs:\n\t\tEcv1: ",scores[0],"\n\t\tEcv2: ",scores[1])
 print("\t\tEcv3: ",scores[2],"\n\t\tEcv4: ",scores[3],"\n\t\tEcv5: ",scores[4])
@@ -285,27 +311,6 @@ print("\tEcv media: ",(np.mean(scores)))
 print("\tEin: ",accuracy_score(y_training_class, logistic.predict(x_training_class)))
 print("\tEtest: ",accuracy_score(y_test_class, logistic.predict(x_test_class)))
 print("\tEout: ",accuracy_score(y_class, logistic.predict(x_class)))
-
-
-# input("\n--- Pulsar tecla para continuar ---\n")
-
-
-# #Regresión Logistica
-# #creamos nuestro modelo
-# logistic = LogisticRegression(max_iter=100000).fit(x_training_class, y_training_class.ravel())
-# #clasificamos el conjunto test con nuestro modelo
-# predicted = logistic.predict(x_test_class)
-# #y comprobamos como de buenos son los resultados
-# result = classification_report(y_test_class,predicted)
-
-# #Mostrarmos los resultados
-# print("Regresion Logistica:")
-# print("\tEin: ",accuracy_score(y_training_class, logistic.predict(x_training_class)))
-# print("\tEtest: ",accuracy_score(y_test_class, logistic.predict(x_test_class)))
-# print("\tEout: ",accuracy_score(y_class, logistic.predict(x_class)))
-# print("\tPrecisión media training: ",logistic.score(x_training_class,y_training_class))
-# print("\tPrecisión media test: ",logistic.score(x_test_class,y_test_class))
-# print("\tTabla resultados:\n",result)
 
 # input("\n--- Pulsar tecla para continuar ---\n")
 
