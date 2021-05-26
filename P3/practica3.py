@@ -25,9 +25,6 @@ from sklearn.linear_model import SGDClassifier
 from sklearn.metrics import classification_report
 from sklearn.metrics import accuracy_score
 
-#para eliminar las anomalias de los datos para la clasificación
-from sklearn.neighbors import LocalOutlierFactor
-
 
 #cargo los datos de los archivos
 def readData(archivo, tipo):
@@ -175,55 +172,38 @@ principalYlabel = pd.DataFrame(data = y_training_class, columns = ['target'])
 #concatenamos los datos y las etiquetas
 finalDf = pd.concat([principalXlabel, principalYlabel], axis=1)
 
-print('DATOS PARA LA CLASIFICACIÓN CON ANOMALIAS')
-#print(finalDf)
-
-for i in finalDf['componente 1']:
-    if(i>20):
-        print(i)
-
-#Visualización grafica,
-fig = plt.figure(figsize=(8,8))
-ax = fig.add_subplot(1,1,1)
-ax.set_xlabel('componente 1')
-ax.set_ylabel('componente 2')
-ax.set_title('Datos Training para la Clasificación')
-ax.scatter(finalDf['componente 1'],finalDf['componente 2'],c=finalDf['target'])
-fig.show()
-
-
-#------> APLICAR LocalOutlierFactor PARA QUITAR ESAS ANOMALIAS
-
-clf = LocalOutlierFactor()
-
-# #MOSTAR GRAFICA 2D de los datos de la clasificación
-# #transformamos los datos de kd a 2d
-# pca = PCA(n_components=2)#indicamos la dimensionalidad
-# #transformamos los datos
-# principalComponents = pca.fit_transform(x_training_class)
-# #creamos la estructura para una visualización correcta de los datos en 2D
-# principalXlabel = pd.DataFrame(data = principalComponents, columns = ['componente 1', 'componente 2'])
-# #esto es para la etiqueta
-# pca = PCA(n_components=1)#indicamos la dimensionalidad
-# #y creamos la estructura con el mismo formato
-# principalYlabel = pd.DataFrame(data = y_training_class, columns = ['target'])
-
-# #concatenamos los datos y las etiquetas
-# finalDf = pd.concat([principalXlabel, principalYlabel], axis=1)
-
 # print('DATOS PARA LA CLASIFICACIÓN CON ANOMALIAS')
 # #print(finalDf)
 
 # for i in finalDf['componente 1']:
-#     if(i>20):
+#     if(i>8):
 #         print(i)
+
+#Visualización grafica,
+# fig = plt.figure(figsize=(8,8))
+# ax = fig.add_subplot(1,1,1)
+# ax.set_xlabel('componente 1')
+# ax.set_ylabel('componente 2')
+# ax.set_title('Datos Training para la Clasificación con anomalias')
+# ax.scatter(finalDf['componente 1'],finalDf['componente 2'],c=finalDf['target'])
+# fig.show()
+
+
+#Eliminamos los datos que son mayores de 8 en la componente 1
+for i in np.arange(finalDf['componente 1'].size):
+    if(finalDf['componente 1'][i]>8):
+        np.delete(x_training_class,i,axis=0)
+        np.delete(y_training_class,i)
+
+#tambien lo elimino del dataFrame para la visualización correcta de los datos
+finalDf = finalDf.drop(finalDf[finalDf['componente 1']>8].index)
 
 # #Visualización grafica,
 # fig = plt.figure(figsize=(8,8))
 # ax = fig.add_subplot(1,1,1)
 # ax.set_xlabel('componente 1')
 # ax.set_ylabel('componente 2')
-# ax.set_title('Datos Training para la Clasificación')
+# ax.set_title('Datos Training para la Clasificación sin anomalias aparentemente')
 # ax.scatter(finalDf['componente 1'],finalDf['componente 2'],c=finalDf['target'])
 # fig.show()
 
