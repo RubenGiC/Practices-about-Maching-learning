@@ -26,6 +26,9 @@ from sklearn.metrics import classification_report
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import cross_val_score
 
+#para medir el tiempo que tarda cada modelo
+from time import time
+
 
 #cargo los datos de los archivos
 def readData(archivo, tipo):
@@ -265,9 +268,10 @@ finalDf2 = finalDf2.drop(finalDf2[finalDf2['componente 2']>15].index)
 
 #RidgeClassifier
 
-rc = RidgeClassifier()
-#aplicamos cross validation con 5 fold
-scores = cross_val_score(rc, x_training_class, y_training_class, cv=5)
+# start_time = time()
+# rc = RidgeClassifier()
+# #aplicamos cross validation con 5 fold
+# scores = cross_val_score(rc, x_training_class, y_training_class, cv=5)
 
 # #creamos nuestro modelo
 # logistic = rc.fit(x_training_class, y_training_class)
@@ -276,8 +280,13 @@ scores = cross_val_score(rc, x_training_class, y_training_class, cv=5)
 # #y comprobamos como de buenos son los resultados
 # result = classification_report(y_test_class,predicted)
 
+# elapsed_time = time() - start_time
+
+
+
 # #Mostrarmos los resultados
 # print("RidgeClassifier:")
+# print("Calculo Elapsed time: %0.10f seconds" %elapsed_time)
 # print("\tTabla resultados:\n",result)
 # print("\tEcvs:\n\t\tEcv1: ",scores[0],"\n\t\tEcv2: ",scores[1])
 # print("\t\tEcv3: ",scores[2],"\n\t\tEcv4: ",scores[3],"\n\t\tEcv5: ",scores[4])
@@ -291,7 +300,8 @@ scores = cross_val_score(rc, x_training_class, y_training_class, cv=5)
 
 
 #Regresión Logistica
-lr = LogisticRegression(max_iter=600)
+start_time = time()
+lr = LogisticRegression(max_iter=600, penalty='l2')
 #aplicamos cross validation con 5 fold
 scores = cross_val_score(lr, x_training_class, y_training_class, cv=5)
 
@@ -301,9 +311,11 @@ logistic = lr.fit(x_training_class, y_training_class.ravel())
 predicted = logistic.predict(x_test_class)
 #y comprobamos como de buenos son los resultados
 result = classification_report(y_test_class,predicted)
+elapsed_time = time() - start_time
 
 #Mostrarmos los resultados
 print("LogisticRegression:")
+print("Calculo Elapsed time: %0.10f seconds" %elapsed_time)
 print("\tTabla resultados:\n",result)
 print("\tEcvs:\n\t\tEcv1: ",scores[0],"\n\t\tEcv2: ",scores[1])
 print("\t\tEcv3: ",scores[2],"\n\t\tEcv4: ",scores[3],"\n\t\tEcv5: ",scores[4])
@@ -314,22 +326,30 @@ print("\tEout: ",accuracy_score(y_class, logistic.predict(x_class)))
 
 # input("\n--- Pulsar tecla para continuar ---\n")
 
-# #Perceptron
+#Perceptron
+# start_time = time()
+# per = Perceptron()
+# #aplicamos cross validation con 5 fold
+# scores = cross_val_score(per, x_training_class, y_training_class, cv=5)
+
 # #creamos nuestro modelo
-# logistic = Perceptron().fit(x_training_class, y_training_class.ravel())
+# logistic = per.fit(x_training_class, y_training_class.ravel())
 # #clasificamos el conjunto test con nuestro modelo
 # predicted = logistic.predict(x_test_class)
 # #y comprobamos como de buenos son los resultados
 # result = classification_report(y_test_class,predicted)
+# elapsed_time = time() - start_time
 
 # #Mostrarmos los resultados
 # print("Perceptron:")
+# print("Calculo Elapsed time: %0.10f seconds" %elapsed_time)
+# print("\tTabla resultados:\n",result)
+# print("\tEcvs:\n\t\tEcv1: ",scores[0],"\n\t\tEcv2: ",scores[1])
+# print("\t\tEcv3: ",scores[2],"\n\t\tEcv4: ",scores[3],"\n\t\tEcv5: ",scores[4])
+# print("\tEcv media: ",(np.mean(scores)))
 # print("\tEin: ",accuracy_score(y_training_class, logistic.predict(x_training_class)))
 # print("\tEtest: ",accuracy_score(y_test_class, logistic.predict(x_test_class)))
 # print("\tEout: ",accuracy_score(y_class, logistic.predict(x_class)))
-# print("\tPrecisión media training: ",logistic.score(x_training_class,y_training_class))
-# print("\tPrecisión media test: ",logistic.score(x_test_class,y_test_class))
-# print("\tTabla resultados:\n",result)
 
 # input("\n--- Pulsar tecla para continuar ---\n")
 
