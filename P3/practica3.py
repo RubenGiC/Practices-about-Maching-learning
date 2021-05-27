@@ -20,6 +20,7 @@ from sklearn.linear_model import RidgeClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.linear_model import Perceptron
 from sklearn.linear_model import SGDClassifier
+from sklearn.svm import LinearSVC
 
 #para medir como de buena es la predicción
 from sklearn.metrics import classification_report
@@ -268,17 +269,17 @@ finalDf2 = finalDf2.drop(finalDf2[finalDf2['componente 2']>15].index)
 
 #RidgeClassifier
 
-# start_time = time()
-# rc = RidgeClassifier()
-# #aplicamos cross validation con 5 fold
-# scores = cross_val_score(rc, x_training_class, y_training_class, cv=5)
+start_time = time()
+rc = RidgeClassifier()
+#aplicamos cross validation con 5 fold
+scores = cross_val_score(rc, x_training_class, y_training_class, cv=5)
 
-# #creamos nuestro modelo
-# logistic = rc.fit(x_training_class, y_training_class)
-# #lo probamos con el conjunto de test
-# predicted = logistic.predict(x_test_class)
+#creamos nuestro modelo
+logistic = rc.fit(x_training_class, y_training_class)
+#lo probamos con el conjunto de test
+predicted = logistic.predict(x_test_class)
 
-# elapsed_time = time() - start_time
+elapsed_time = time() - start_time
 
 
 
@@ -297,16 +298,16 @@ finalDf2 = finalDf2.drop(finalDf2[finalDf2['componente 2']>15].index)
 
 
 #Regresión Logistica
-# start_time = time()
-# lr = LogisticRegression(max_iter=1000, C=0.00000001, tol=1e-14)
-# #aplicamos cross validation con 5 fold
-# scores = cross_val_score(lr, x_training_class, y_training_class, cv=5)
+start_time = time()
+lr = LogisticRegression(max_iter=1000, C=0.00000001, tol=1e-14)
+#aplicamos cross validation con 5 fold
+scores = cross_val_score(lr, x_training_class, y_training_class, cv=5)
 
-# #creamos nuestro modelo
-# logistic = lr.fit(x_training_class, y_training_class.ravel())
-# #clasificamos el conjunto test con nuestro modelo
-# predicted = logistic.predict(x_test_class)
-# elapsed_time = time() - start_time
+#creamos nuestro modelo
+logistic = lr.fit(x_training_class, y_training_class.ravel())
+#clasificamos el conjunto test con nuestro modelo
+predicted = logistic.predict(x_test_class)
+elapsed_time = time() - start_time
 
 # #Mostrarmos los resultados
 # print("LogisticRegression:")
@@ -321,16 +322,16 @@ finalDf2 = finalDf2.drop(finalDf2[finalDf2['componente 2']>15].index)
 # input("\n--- Pulsar tecla para continuar ---\n")
 
 #Perceptron
-# start_time = time()
-# per = Perceptron(penalty='l2')
-# #aplicamos cross validation con 5 fold
-# scores = cross_val_score(per, x_training_class, y_training_class, cv=5)
+start_time = time()
+per = Perceptron(penalty='l2')
+#aplicamos cross validation con 5 fold
+scores = cross_val_score(per, x_training_class, y_training_class, cv=5)
 
-# #creamos nuestro modelo
-# logistic = per.fit(x_training_class, y_training_class.ravel())
-# #clasificamos el conjunto test con nuestro modelo
-# predicted = logistic.predict(x_test_class)
-# elapsed_time = time() - start_time
+#creamos nuestro modelo
+logistic = per.fit(x_training_class, y_training_class.ravel())
+#clasificamos el conjunto test con nuestro modelo
+predicted = logistic.predict(x_test_class)
+elapsed_time = time() - start_time
 
 # #Mostrarmos los resultados
 # print("Perceptron:")
@@ -345,123 +346,6 @@ finalDf2 = finalDf2.drop(finalDf2[finalDf2['componente 2']>15].index)
 # input("\n--- Pulsar tecla para continuar ---\n")
 
 #SGD (STOCHASTIC GRADIENT DESCENT)
-
-#SQUARED LOSS (con alpha 1e-5)
-start_time = time()
-sgd = SGDClassifier(loss='squared_loss', alpha=0.00001)
-#aplicamos cross validation con 5 fold
-scores = cross_val_score(sgd, x_training_class, y_training_class, cv=5)
-#creamos nuestro modelo
-logistic = sgd.fit(x_training_class, y_training_class.ravel())
-#clasificamos el conjunto test con nuestro modelo
-predicted = logistic.predict(x_test_class)
-elapsed_time = time() - start_time
-
-
-#Mostrarmos los resultados
-print("SGD (Gradiente Descendiente Estocástico) con la función de error squared loss (con alpha = 1e-5):")
-print("Calculo Elapsed time: %0.10f seconds" %elapsed_time)
-print("\tEcvs:\n\t\tEcv1: ",scores[0],"\n\t\tEcv2: ",scores[1])
-print("\t\tEcv3: ",scores[2],"\n\t\tEcv4: ",scores[3],"\n\t\tEcv5: ",scores[4])
-print("\tEcv media: ",(np.mean(scores)))
-print("\tEin: ",accuracy_score(y_training_class, logistic.predict(x_training_class)))
-print("\tEtest: ",accuracy_score(y_test_class, logistic.predict(x_test_class)))
-print("\tEout: ",accuracy_score(y_class, logistic.predict(x_class)))
-
-# input("\n--- Pulsar tecla para continuar ---\n")
-
-#HINGE (DEFAULT)
-start_time = time()
-sgd = SGDClassifier()
-#aplicamos cross validation con 5 fold
-scores = cross_val_score(sgd, x_training_class, y_training_class, cv=5)
-#creamos nuestro modelo
-logistic = sgd.fit(x_training_class, y_training_class.ravel())
-#clasificamos el conjunto test con nuestro modelo
-predicted = logistic.predict(x_test_class)
-elapsed_time = time() - start_time
-
-
-#Mostrarmos los resultados
-print("SGD (Gradiente Descendiente Estocástico) con la función de error hinge (default):")
-print("Calculo Elapsed time: %0.10f seconds" %elapsed_time)
-print("\tEcvs:\n\t\tEcv1: ",scores[0],"\n\t\tEcv2: ",scores[1])
-print("\t\tEcv3: ",scores[2],"\n\t\tEcv4: ",scores[3],"\n\t\tEcv5: ",scores[4])
-print("\tEcv media: ",(np.mean(scores)))
-print("\tEin: ",accuracy_score(y_training_class, logistic.predict(x_training_class)))
-print("\tEtest: ",accuracy_score(y_test_class, logistic.predict(x_test_class)))
-print("\tEout: ",accuracy_score(y_class, logistic.predict(x_class)))
-
-# input("\n--- Pulsar tecla para continuar ---\n")
-
-#PERCEPTRON
-start_time = time()
-sgd = SGDClassifier(loss='perceptron')
-#aplicamos cross validation con 5 fold
-scores = cross_val_score(sgd, x_training_class, y_training_class, cv=5)
-#creamos nuestro modelo
-logistic = sgd.fit(x_training_class, y_training_class.ravel())
-#clasificamos el conjunto test con nuestro modelo
-predicted = logistic.predict(x_test_class)
-elapsed_time = time() - start_time
-
-#Mostrarmos los resultados
-print("SGD (Gradiente Descendiente Estocástico) con la función de error perceptron:")
-print("Calculo Elapsed time: %0.10f seconds" %elapsed_time)
-print("\tEcvs:\n\t\tEcv1: ",scores[0],"\n\t\tEcv2: ",scores[1])
-print("\t\tEcv3: ",scores[2],"\n\t\tEcv4: ",scores[3],"\n\t\tEcv5: ",scores[4])
-print("\tEcv media: ",(np.mean(scores)))
-print("\tEin: ",accuracy_score(y_training_class, logistic.predict(x_training_class)))
-print("\tEtest: ",accuracy_score(y_test_class, logistic.predict(x_test_class)))
-print("\tEout: ",accuracy_score(y_class, logistic.predict(x_class)))
-
-# input("\n--- Pulsar tecla para continuar ---\n")
-
-#huber
-start_time = time()
-sgd = SGDClassifier(loss='huber')
-#aplicamos cross validation con 5 fold
-scores = cross_val_score(sgd, x_training_class, y_training_class, cv=5)
-#creamos nuestro modelo
-logistic = sgd.fit(x_training_class, y_training_class.ravel())
-#clasificamos el conjunto test con nuestro modelo
-predicted = logistic.predict(x_test_class)
-elapsed_time = time() - start_time
-
-
-#Mostrarmos los resultados
-print("SGD (Gradiente Descendiente Estocástico) con la función de error huber:")
-print("Calculo Elapsed time: %0.10f seconds" %elapsed_time)
-print("\tEcvs:\n\t\tEcv1: ",scores[0],"\n\t\tEcv2: ",scores[1])
-print("\t\tEcv3: ",scores[2],"\n\t\tEcv4: ",scores[3],"\n\t\tEcv5: ",scores[4])
-print("\tEcv media: ",(np.mean(scores)))
-print("\tEin: ",accuracy_score(y_training_class, logistic.predict(x_training_class)))
-print("\tEtest: ",accuracy_score(y_test_class, logistic.predict(x_test_class)))
-print("\tEout: ",accuracy_score(y_class, logistic.predict(x_class)))
-
-# input("\n--- Pulsar tecla para continuar ---\n")
-
-#SQUARED EPSILON INSENSITIVE
-start_time = time()
-sgd = SGDClassifier(loss='squared_epsilon_insensitive')
-#aplicamos cross validation con 5 fold
-scores = cross_val_score(sgd, x_training_class, y_training_class, cv=5)
-#creamos nuestro modelo
-logistic = sgd.fit(x_training_class, y_training_class.ravel())
-#clasificamos el conjunto test con nuestro modelo
-predicted = logistic.predict(x_test_class)
-elapsed_time = time() - start_time
-
-
-#Mostrarmos los resultados
-print("SGD (Gradiente Descendiente Estocástico) con la función de error squared epsilon insensitive:")
-print("Calculo Elapsed time: %0.10f seconds" %elapsed_time)
-print("\tEcvs:\n\t\tEcv1: ",scores[0],"\n\t\tEcv2: ",scores[1])
-print("\t\tEcv3: ",scores[2],"\n\t\tEcv4: ",scores[3],"\n\t\tEcv5: ",scores[4])
-print("\tEcv media: ",(np.mean(scores)))
-print("\tEin: ",accuracy_score(y_training_class, logistic.predict(x_training_class)))
-print("\tEtest: ",accuracy_score(y_test_class, logistic.predict(x_test_class)))
-print("\tEout: ",accuracy_score(y_class, logistic.predict(x_class)))
 
 # input("\n--- Pulsar tecla para continuar ---\n")
 
@@ -478,7 +362,129 @@ elapsed_time = time() - start_time
 
 
 #Mostrarmos los resultados
-print("SGD (Gradiente Descendiente Estocástico) con la función de error squared loss:")
+# print("SGD (Gradiente Descendiente Estocástico) con la función de error squared loss:")
+# print("Calculo Elapsed time: %0.10f seconds" %elapsed_time)
+# print("\tEcvs:\n\t\tEcv1: ",scores[0],"\n\t\tEcv2: ",scores[1])
+# print("\t\tEcv3: ",scores[2],"\n\t\tEcv4: ",scores[3],"\n\t\tEcv5: ",scores[4])
+# print("\tEcv media: ",(np.mean(scores)))
+# print("\tEin: ",accuracy_score(y_training_class, logistic.predict(x_training_class)))
+# print("\tEtest: ",accuracy_score(y_test_class, logistic.predict(x_test_class)))
+# print("\tEout: ",accuracy_score(y_class, logistic.predict(x_class)))
+
+
+# input("\n--- Pulsar tecla para continuar ---\n")
+
+#HINGE (DEFAULT)
+start_time = time()
+sgd = SGDClassifier()
+#aplicamos cross validation con 5 fold
+scores = cross_val_score(sgd, x_training_class, y_training_class, cv=5)
+#creamos nuestro modelo
+logistic = sgd.fit(x_training_class, y_training_class.ravel())
+#clasificamos el conjunto test con nuestro modelo
+predicted = logistic.predict(x_test_class)
+elapsed_time = time() - start_time
+
+
+#Mostrarmos los resultados
+# print("SGD (Gradiente Descendiente Estocástico) con la función de error hinge (default):")
+# print("Calculo Elapsed time: %0.10f seconds" %elapsed_time)
+# print("\tEcvs:\n\t\tEcv1: ",scores[0],"\n\t\tEcv2: ",scores[1])
+# print("\t\tEcv3: ",scores[2],"\n\t\tEcv4: ",scores[3],"\n\t\tEcv5: ",scores[4])
+# print("\tEcv media: ",(np.mean(scores)))
+# print("\tEin: ",accuracy_score(y_training_class, logistic.predict(x_training_class)))
+# print("\tEtest: ",accuracy_score(y_test_class, logistic.predict(x_test_class)))
+# print("\tEout: ",accuracy_score(y_class, logistic.predict(x_class)))
+
+# input("\n--- Pulsar tecla para continuar ---\n")
+
+#PERCEPTRON
+start_time = time()
+sgd = SGDClassifier(loss='perceptron')
+#aplicamos cross validation con 5 fold
+scores = cross_val_score(sgd, x_training_class, y_training_class, cv=5)
+#creamos nuestro modelo
+logistic = sgd.fit(x_training_class, y_training_class.ravel())
+#clasificamos el conjunto test con nuestro modelo
+predicted = logistic.predict(x_test_class)
+elapsed_time = time() - start_time
+
+#Mostrarmos los resultados
+# print("SGD (Gradiente Descendiente Estocástico) con la función de error perceptron:")
+# print("Calculo Elapsed time: %0.10f seconds" %elapsed_time)
+# print("\tEcvs:\n\t\tEcv1: ",scores[0],"\n\t\tEcv2: ",scores[1])
+# print("\t\tEcv3: ",scores[2],"\n\t\tEcv4: ",scores[3],"\n\t\tEcv5: ",scores[4])
+# print("\tEcv media: ",(np.mean(scores)))
+# print("\tEin: ",accuracy_score(y_training_class, logistic.predict(x_training_class)))
+# print("\tEtest: ",accuracy_score(y_test_class, logistic.predict(x_test_class)))
+# print("\tEout: ",accuracy_score(y_class, logistic.predict(x_class)))
+
+# input("\n--- Pulsar tecla para continuar ---\n")
+
+#huber
+start_time = time()
+sgd = SGDClassifier(loss='huber')
+#aplicamos cross validation con 5 fold
+scores = cross_val_score(sgd, x_training_class, y_training_class, cv=5)
+#creamos nuestro modelo
+logistic = sgd.fit(x_training_class, y_training_class.ravel())
+#clasificamos el conjunto test con nuestro modelo
+predicted = logistic.predict(x_test_class)
+elapsed_time = time() - start_time
+
+
+#Mostrarmos los resultados
+# print("SGD (Gradiente Descendiente Estocástico) con la función de error huber:")
+# print("Calculo Elapsed time: %0.10f seconds" %elapsed_time)
+# print("\tEcvs:\n\t\tEcv1: ",scores[0],"\n\t\tEcv2: ",scores[1])
+# print("\t\tEcv3: ",scores[2],"\n\t\tEcv4: ",scores[3],"\n\t\tEcv5: ",scores[4])
+# print("\tEcv media: ",(np.mean(scores)))
+# print("\tEin: ",accuracy_score(y_training_class, logistic.predict(x_training_class)))
+# print("\tEtest: ",accuracy_score(y_test_class, logistic.predict(x_test_class)))
+# print("\tEout: ",accuracy_score(y_class, logistic.predict(x_class)))
+
+# input("\n--- Pulsar tecla para continuar ---\n")
+
+#SQUARED EPSILON INSENSITIVE
+start_time = time()
+sgd = SGDClassifier(loss='squared_epsilon_insensitive')
+#aplicamos cross validation con 5 fold
+scores = cross_val_score(sgd, x_training_class, y_training_class, cv=5)
+#creamos nuestro modelo
+logistic = sgd.fit(x_training_class, y_training_class.ravel())
+#clasificamos el conjunto test con nuestro modelo
+predicted = logistic.predict(x_test_class)
+elapsed_time = time() - start_time
+
+
+#Mostrarmos los resultados
+# print("SGD (Gradiente Descendiente Estocástico) con la función de error squared epsilon insensitive:")
+# print("Calculo Elapsed time: %0.10f seconds" %elapsed_time)
+# print("\tEcvs:\n\t\tEcv1: ",scores[0],"\n\t\tEcv2: ",scores[1])
+# print("\t\tEcv3: ",scores[2],"\n\t\tEcv4: ",scores[3],"\n\t\tEcv5: ",scores[4])
+# print("\tEcv media: ",(np.mean(scores)))
+# print("\tEin: ",accuracy_score(y_training_class, logistic.predict(x_training_class)))
+# print("\tEtest: ",accuracy_score(y_test_class, logistic.predict(x_test_class)))
+# print("\tEout: ",accuracy_score(y_class, logistic.predict(x_class)))
+
+# input("\n--- Pulsar tecla para continuar ---\n")
+
+
+#Linear SVC
+
+start_time = time()
+lsvc = LinearSVC(max_iter=10000)
+#aplicamos cross validation con 5 fold
+scores = cross_val_score(lsvc, x_training_class, y_training_class, cv=5)
+#creamos nuestro modelo
+logistic = lsvc.fit(x_training_class, y_training_class.ravel())
+#clasificamos el conjunto test con nuestro modelo
+predicted = logistic.predict(x_test_class)
+elapsed_time = time() - start_time
+
+
+#Mostrarmos los resultados
+print("Linear SVC:")
 print("Calculo Elapsed time: %0.10f seconds" %elapsed_time)
 print("\tEcvs:\n\t\tEcv1: ",scores[0],"\n\t\tEcv2: ",scores[1])
 print("\t\tEcv3: ",scores[2],"\n\t\tEcv4: ",scores[3],"\n\t\tEcv5: ",scores[4])
@@ -487,12 +493,7 @@ print("\tEin: ",accuracy_score(y_training_class, logistic.predict(x_training_cla
 print("\tEtest: ",accuracy_score(y_test_class, logistic.predict(x_test_class)))
 print("\tEout: ",accuracy_score(y_class, logistic.predict(x_class)))
 
-
-
 # input("\n--- Pulsar tecla para continuar ---\n")
-
-
-
 
 
 
