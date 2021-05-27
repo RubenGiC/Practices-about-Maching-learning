@@ -470,28 +470,6 @@ elapsed_time = time() - start_time
 # input("\n--- Pulsar tecla para continuar ---\n")
 
 
-#Linear SVC
-
-start_time = time()
-lsvc = LinearSVC(max_iter=10000)
-#aplicamos cross validation con 5 fold
-scores = cross_val_score(lsvc, x_training_class, y_training_class, cv=5)
-#creamos nuestro modelo
-logistic = lsvc.fit(x_training_class, y_training_class.ravel())
-#clasificamos el conjunto test con nuestro modelo
-predicted = logistic.predict(x_test_class)
-elapsed_time = time() - start_time
-
-
-#Mostrarmos los resultados
-print("Linear SVC:")
-print("Calculo Elapsed time: %0.10f seconds" %elapsed_time)
-print("\tEcvs:\n\t\tEcv1: ",scores[0],"\n\t\tEcv2: ",scores[1])
-print("\t\tEcv3: ",scores[2],"\n\t\tEcv4: ",scores[3],"\n\t\tEcv5: ",scores[4])
-print("\tEcv media: ",(np.mean(scores)))
-print("\tEin: ",accuracy_score(y_training_class, logistic.predict(x_training_class)))
-print("\tEtest: ",accuracy_score(y_test_class, logistic.predict(x_test_class)))
-print("\tEout: ",accuracy_score(y_class, logistic.predict(x_class)))
 
 # input("\n--- Pulsar tecla para continuar ---\n")
 
