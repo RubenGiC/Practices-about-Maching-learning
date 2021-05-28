@@ -20,9 +20,9 @@ from sklearn.linear_model import RidgeClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.linear_model import Perceptron
 from sklearn.linear_model import SGDClassifier
-from sklearn.svm import LinearSVC
 #modelos de regresión
 from sklearn.linear_model import Lasso
+from sklearn.linear_model import LassoCV
 from sklearn.linear_model import Ridge
 from sklearn.linear_model import LinearRegression
 from sklearn.linear_model import SGDRegressor
@@ -33,6 +33,7 @@ from sklearn.metrics import classification_report
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import median_absolute_error
 from sklearn.model_selection import cross_val_score
+from sklearn.metrics import mean_squared_error
 
 #para medir el tiempo que tarda cada modelo
 from time import time
@@ -482,7 +483,7 @@ elapsed_time = time() - start_time
 print("REGRESIÓN-------------------------------------------------------------")
 
 start_time = time()
-lasso = Lasso(alpha=0)
+lasso = Lasso(selection='random', tol=1e-14, max_iter=10000)
 #aplicamos cross validation con 5 fold
 scores = cross_val_score(lasso, x_training_reg, y_training_reg, cv=5)
 #creamos nuestro modelo
@@ -492,6 +493,8 @@ predicted = logistic.predict(x_test_reg)
 elapsed_time = time() - start_time
 
 
+print(np.sqrt(mean_squared_error(y_test_reg,predicted)))
+print(np.square(np.subtract(y_test_reg,predicted)).mean())
 # #Mostrarmos los resultados
 print("Lasso:")
 print("Calculo Elapsed time: %0.10f seconds" %elapsed_time)
@@ -504,9 +507,6 @@ print("\tEout: ",median_absolute_error(y_reg, logistic.predict(x_reg)))
 
 
 # input("\n--- Pulsar tecla para continuar ---\n")
-
-
-
 
 
 
