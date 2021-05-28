@@ -21,10 +21,17 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.linear_model import Perceptron
 from sklearn.linear_model import SGDClassifier
 from sklearn.svm import LinearSVC
+#modelos de regresión
+from sklearn.linear_model import Lasso
+from sklearn.linear_model import Ridge
+from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import SGDRegressor
+from sklearn.svm import SVR
 
 #para medir como de buena es la predicción
 from sklearn.metrics import classification_report
 from sklearn.metrics import accuracy_score
+from sklearn.metrics import median_absolute_error
 from sklearn.model_selection import cross_val_score
 
 #para medir el tiempo que tarda cada modelo
@@ -84,7 +91,11 @@ def readData(archivo, tipo):
             
             #Y separamos los datos de las etiquetas
             x = datos[:, :-1]
-            y = datos[:, datos.shape[1]-1:datos.shape[1]]
+            old_y = datos[:, datos.shape[1]-1:datos.shape[1]]
+            
+            
+            for i in old_y:
+                y.append(i[0])
         
     return x, y
 
@@ -160,7 +171,6 @@ x_test_reg = scaler.fit_transform(x_test_reg)
 #normalizamos todos los datos para posteriormente calcular el Eout
 x_class = scaler.fit_transform(x_class)
 x_reg = scaler.fit_transform(x_reg)
-
 
 print("Numero de datos para el training (clasificacion): ",y_training_class.size)
 print("Numero de datos para el test (clasificacion): ",y_test_class.size)
@@ -248,8 +258,8 @@ finalDf2 = pd.concat([principalXlabel2, principalYlabel2], axis=1)
 #ya que se consideran datos ruidosos
 for i in np.arange(finalDf2['componente 2'].size):
     if(finalDf2['componente 2'][i]>15):
-        np.delete(x_training_class,i,axis=0)
-        np.delete(y_training_class,i)
+        np.delete(x_training_reg,i,axis=0)
+        np.delete(y_training_reg,i)
         
 #tambien lo elimino del dataFrame para la visualización correcta de los datos
 finalDf2 = finalDf2.drop(finalDf2[finalDf2['componente 2']>15].index)
@@ -265,7 +275,7 @@ finalDf2 = finalDf2.drop(finalDf2[finalDf2['componente 2']>15].index)
 
 # input("\n--- Pulsar tecla para continuar ---\n")
 
-
+print("CLASIFICACIÓN---------------------------------------------------------")
 
 #RidgeClassifier
 
@@ -346,8 +356,6 @@ elapsed_time = time() - start_time
 # input("\n--- Pulsar tecla para continuar ---\n")
 
 #SGD (STOCHASTIC GRADIENT DESCENT)
-
-# input("\n--- Pulsar tecla para continuar ---\n")
 
 #SQUARED LOSS
 start_time = time()
@@ -457,7 +465,7 @@ predicted = logistic.predict(x_test_class)
 elapsed_time = time() - start_time
 
 
-#Mostrarmos los resultados
+# #Mostrarmos los resultados
 # print("SGD (Gradiente Descendiente Estocástico) con la función de error squared epsilon insensitive:")
 # print("Calculo Elapsed time: %0.10f seconds" %elapsed_time)
 # print("\tEcvs:\n\t\tEcv1: ",scores[0],"\n\t\tEcv2: ",scores[1])
@@ -469,6 +477,30 @@ elapsed_time = time() - start_time
 
 # input("\n--- Pulsar tecla para continuar ---\n")
 
+#REGRESIÓN -------------------------------------------------------------------
+
+print("REGRESIÓN-------------------------------------------------------------")
+
+start_time = time()
+lasso = Lasso(alpha=0)
+#aplicamos cross validation con 5 fold
+scores = cross_val_score(lasso, x_training_reg, y_training_reg, cv=5)
+#creamos nuestro modelo
+logistic = lasso.fit(x_training_reg, y_training_reg.ravel())
+#clasificamos el conjunto test con nuestro modelo
+predicted = logistic.predict(x_test_reg)
+elapsed_time = time() - start_time
+
+
+# #Mostrarmos los resultados
+print("Lasso:")
+print("Calculo Elapsed time: %0.10f seconds" %elapsed_time)
+print("\tEcvs:\n\t\tEcv1: ",scores[0],"\n\t\tEcv2: ",scores[1])
+print("\t\tEcv3: ",scores[2],"\n\t\tEcv4: ",scores[3],"\n\t\tEcv5: ",scores[4])
+print("\tEcv media: ",(np.mean(scores)))
+print("\tEin: ",median_absolute_error(y_training_reg, logistic.predict(x_training_reg)))
+print("\tEtest: ",median_absolute_error(y_test_reg, logistic.predict(x_test_reg)))
+print("\tEout: ",median_absolute_error(y_reg, logistic.predict(x_reg)))
 
 
 # input("\n--- Pulsar tecla para continuar ---\n")
