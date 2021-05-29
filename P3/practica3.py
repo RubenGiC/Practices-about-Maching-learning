@@ -32,7 +32,7 @@ from sklearn.svm import SVR
 from sklearn.metrics import classification_report
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import median_absolute_error
-from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import cross_val_score, cross_val_predict
 from sklearn.metrics import mean_squared_error
 
 #para medir el tiempo que tarda cada modelo
@@ -283,7 +283,7 @@ print("CLASIFICACIÓN---------------------------------------------------------")
 start_time = time()
 rc = RidgeClassifier()
 #aplicamos cross validation con 5 fold
-scores = cross_val_score(rc, x_training_class, y_training_class, cv=5)
+scores = cross_val_score(rc, x_training_class, y_training_class, cv=5, scoring='accuracy')
 
 #creamos nuestro modelo
 logistic = rc.fit(x_training_class, y_training_class)
@@ -312,7 +312,7 @@ elapsed_time = time() - start_time
 start_time = time()
 lr = LogisticRegression(max_iter=1000, C=0.00000001, tol=1e-14)
 #aplicamos cross validation con 5 fold
-scores = cross_val_score(lr, x_training_class, y_training_class, cv=5)
+scores = cross_val_score(lr, x_training_class, y_training_class, cv=5, scoring='accuracy')
 
 #creamos nuestro modelo
 logistic = lr.fit(x_training_class, y_training_class.ravel())
@@ -336,7 +336,7 @@ elapsed_time = time() - start_time
 start_time = time()
 per = Perceptron(penalty='l2')
 #aplicamos cross validation con 5 fold
-scores = cross_val_score(per, x_training_class, y_training_class, cv=5)
+scores = cross_val_score(per, x_training_class, y_training_class, cv=5, scoring='accuracy')
 
 #creamos nuestro modelo
 logistic = per.fit(x_training_class, y_training_class.ravel())
@@ -362,7 +362,7 @@ elapsed_time = time() - start_time
 start_time = time()
 sgd = SGDClassifier(loss='squared_loss')
 #aplicamos cross validation con 5 fold
-scores = cross_val_score(sgd, x_training_class, y_training_class, cv=5)
+scores = cross_val_score(sgd, x_training_class, y_training_class, cv=5, scoring='accuracy')
 #creamos nuestro modelo
 logistic = sgd.fit(x_training_class, y_training_class.ravel())
 #clasificamos el conjunto test con nuestro modelo
@@ -387,7 +387,7 @@ elapsed_time = time() - start_time
 start_time = time()
 sgd = SGDClassifier()
 #aplicamos cross validation con 5 fold
-scores = cross_val_score(sgd, x_training_class, y_training_class, cv=5)
+scores = cross_val_score(sgd, x_training_class, y_training_class, cv=5, scoring='accuracy')
 #creamos nuestro modelo
 logistic = sgd.fit(x_training_class, y_training_class.ravel())
 #clasificamos el conjunto test con nuestro modelo
@@ -411,7 +411,7 @@ elapsed_time = time() - start_time
 start_time = time()
 sgd = SGDClassifier(loss='perceptron')
 #aplicamos cross validation con 5 fold
-scores = cross_val_score(sgd, x_training_class, y_training_class, cv=5)
+scores = cross_val_score(sgd, x_training_class, y_training_class, cv=5, scoring='accuracy')
 #creamos nuestro modelo
 logistic = sgd.fit(x_training_class, y_training_class.ravel())
 #clasificamos el conjunto test con nuestro modelo
@@ -434,7 +434,7 @@ elapsed_time = time() - start_time
 start_time = time()
 sgd = SGDClassifier(loss='huber')
 #aplicamos cross validation con 5 fold
-scores = cross_val_score(sgd, x_training_class, y_training_class, cv=5)
+scores = cross_val_score(sgd, x_training_class, y_training_class, cv=5, scoring='accuracy')
 #creamos nuestro modelo
 logistic = sgd.fit(x_training_class, y_training_class.ravel())
 #clasificamos el conjunto test con nuestro modelo
@@ -458,7 +458,7 @@ elapsed_time = time() - start_time
 start_time = time()
 sgd = SGDClassifier(loss='squared_epsilon_insensitive')
 #aplicamos cross validation con 5 fold
-scores = cross_val_score(sgd, x_training_class, y_training_class, cv=5)
+scores = cross_val_score(sgd, x_training_class, y_training_class, cv=5, scoring='accuracy')
 #creamos nuestro modelo
 logistic = sgd.fit(x_training_class, y_training_class.ravel())
 #clasificamos el conjunto test con nuestro modelo
@@ -483,27 +483,24 @@ elapsed_time = time() - start_time
 print("REGRESIÓN-------------------------------------------------------------")
 
 start_time = time()
-lasso = Lasso(selection='random', tol=1e-14, max_iter=10000)
+lasso = Lasso()
 #aplicamos cross validation con 5 fold
-scores = cross_val_score(lasso, x_training_reg, y_training_reg, cv=5)
+scores = abs(cross_val_score(lasso, x_training_reg, y_training_reg, cv=5, scoring='neg_root_mean_squared_error'))
 #creamos nuestro modelo
 logistic = lasso.fit(x_training_reg, y_training_reg.ravel())
 #clasificamos el conjunto test con nuestro modelo
 predicted = logistic.predict(x_test_reg)
 elapsed_time = time() - start_time
 
-
-print(np.sqrt(mean_squared_error(y_test_reg,predicted)))
-print(np.square(np.subtract(y_test_reg,predicted)).mean())
 # #Mostrarmos los resultados
 print("Lasso:")
 print("Calculo Elapsed time: %0.10f seconds" %elapsed_time)
 print("\tEcvs:\n\t\tEcv1: ",scores[0],"\n\t\tEcv2: ",scores[1])
 print("\t\tEcv3: ",scores[2],"\n\t\tEcv4: ",scores[3],"\n\t\tEcv5: ",scores[4])
 print("\tEcv media: ",(np.mean(scores)))
-print("\tEin: ",median_absolute_error(y_training_reg, logistic.predict(x_training_reg)))
-print("\tEtest: ",median_absolute_error(y_test_reg, logistic.predict(x_test_reg)))
-print("\tEout: ",median_absolute_error(y_reg, logistic.predict(x_reg)))
+print("\tEin: ",mean_squared_error(y_training_reg,logistic.predict(x_training_reg), squared=False))
+print("\tEtest: ",mean_squared_error(y_test_reg,predicted, squared=False))
+print("\tEout: ",mean_squared_error(y_reg,logistic.predict(x_reg), squared=False))
 
 
 # input("\n--- Pulsar tecla para continuar ---\n")
