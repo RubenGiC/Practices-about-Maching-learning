@@ -482,6 +482,7 @@ elapsed_time = time() - start_time
 
 print("REGRESIÓN-------------------------------------------------------------")
 
+#LASSO
 start_time = time()
 lasso = Lasso()
 #aplicamos cross validation con 5 fold
@@ -493,7 +494,31 @@ predicted = logistic.predict(x_test_reg)
 elapsed_time = time() - start_time
 
 # #Mostrarmos los resultados
-print("Lasso:")
+# print("Lasso:")
+# print("Calculo Elapsed time: %0.10f seconds" %elapsed_time)
+# print("\tEcvs:\n\t\tEcv1: ",scores[0],"\n\t\tEcv2: ",scores[1])
+# print("\t\tEcv3: ",scores[2],"\n\t\tEcv4: ",scores[3],"\n\t\tEcv5: ",scores[4])
+# print("\tEcv media: ",(np.mean(scores)))
+# print("\tEin: ",mean_squared_error(y_training_reg,logistic.predict(x_training_reg), squared=False))
+# print("\tEtest: ",mean_squared_error(y_test_reg,predicted, squared=False))
+# print("\tEout: ",mean_squared_error(y_reg,logistic.predict(x_reg), squared=False))
+
+
+# input("\n--- Pulsar tecla para continuar ---\n")
+
+#RIDGE
+start_time = time()
+ridge = Ridge(alpha=0.00001)
+#aplicamos cross validation con 5 fold
+scores = abs(cross_val_score(ridge, x_training_reg, y_training_reg, cv=5, scoring='neg_root_mean_squared_error'))
+#creamos nuestro modelo
+logistic = ridge.fit(x_training_reg, y_training_reg.ravel())
+#clasificamos el conjunto test con nuestro modelo
+predicted = logistic.predict(x_test_reg)
+elapsed_time = time() - start_time
+
+# #Mostrarmos los resultados
+print("Ridge:")
 print("Calculo Elapsed time: %0.10f seconds" %elapsed_time)
 print("\tEcvs:\n\t\tEcv1: ",scores[0],"\n\t\tEcv2: ",scores[1])
 print("\t\tEcv3: ",scores[2],"\n\t\tEcv4: ",scores[3],"\n\t\tEcv5: ",scores[4])
@@ -505,10 +530,26 @@ print("\tEout: ",mean_squared_error(y_reg,logistic.predict(x_reg), squared=False
 
 # input("\n--- Pulsar tecla para continuar ---\n")
 
+#Regresion Lineal
+start_time = time()
+lr = LinearRegression()
+#aplicamos cross validation con 5 fold
+scores = abs(cross_val_score(lr, x_training_reg, y_training_reg, cv=5, scoring='neg_root_mean_squared_error'))
+#creamos nuestro modelo
+logistic = lr.fit(x_training_reg, y_training_reg.ravel())
+#clasificamos el conjunto test con nuestro modelo
+predicted = logistic.predict(x_test_reg)
+elapsed_time = time() - start_time
 
-
-
-
+# #Mostrarmos los resultados
+print("Regresion Lineal:")
+print("Calculo Elapsed time: %0.10f seconds" %elapsed_time)
+print("\tEcvs:\n\t\tEcv1: ",scores[0],"\n\t\tEcv2: ",scores[1])
+print("\t\tEcv3: ",scores[2],"\n\t\tEcv4: ",scores[3],"\n\t\tEcv5: ",scores[4])
+print("\tEcv media: ",(np.mean(scores)))
+print("\tEin: ",mean_squared_error(y_training_reg,logistic.predict(x_training_reg), squared=False))
+print("\tEtest: ",mean_squared_error(y_test_reg,predicted, squared=False))
+print("\tEout: ",mean_squared_error(y_reg,logistic.predict(x_reg), squared=False))
 
 
 
